@@ -49,6 +49,10 @@ public class NettyServer {
         return LazyHolder.INSTANCE;
     }
 
+    public static void start(int port) {
+        getInstance().bind(port, false);
+    }
+
     public static void start(int port, boolean ssl) {
         getInstance().bind(port, ssl);
     }
