@@ -5,7 +5,8 @@ bytehonor-netty-sdk
 
 | head       | length    |  data     |  check    |  end      |  
 | :--------  | :-------- | :-------- | :-------- | :-------- |  
-| 0x88       | 0x0001    |  bytes[]  |  0x01     |  0x99     |  
+| 0x88       | 0x0001    |  bytes[]  |  0x0001   |  0x99     |  
+| 1 byte     | 2 byte    |  * byte   |  2 byte   |  1 byte   |  
 
 ```
 length = data + check + end
