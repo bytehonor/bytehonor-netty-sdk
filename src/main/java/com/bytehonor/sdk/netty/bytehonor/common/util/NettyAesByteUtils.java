@@ -6,20 +6,20 @@ import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.constant.ProtocolConstants;
+import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 
 public class NettyAesByteUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyAesByteUtils.class);
 
-    private static byte[] SEC_KEY_BYTES = to16BitBytes(ProtocolConstants.AES_KEY.getBytes());
+    private static byte[] SEC_KEY_BYTES = to16BitBytes(NettyConstants.AES_KEY.getBytes());
 
     /**
      * 加密
      */
     public static byte[] encrypt(byte[] data) {
         try {
-            Cipher cipher = Cipher.getInstance(ProtocolConstants.AES_MODE);
+            Cipher cipher = Cipher.getInstance(NettyConstants.AES_MODE);
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(SEC_KEY_BYTES, "AES"));
             return cipher.doFinal(to16BitBytes(data));
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class NettyAesByteUtils {
      */
     public static byte[] decrypt(byte[] data) {
         try {
-            Cipher cipher = Cipher.getInstance(ProtocolConstants.AES_MODE);
+            Cipher cipher = Cipher.getInstance(NettyConstants.AES_MODE);
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(SEC_KEY_BYTES, "AES"));
             byte[] bytes = cipher.doFinal(data);
             // String src = new String(bytes, Charset.forName("UTF-8")).trim();

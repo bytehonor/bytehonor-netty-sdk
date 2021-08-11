@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
-import com.bytehonor.sdk.netty.bytehonor.common.util.NettyByteUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -13,22 +12,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyClientByteHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 客户端上传消息
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
-            ByteBuf buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.readBytes(bytes); // 复制内容到字节数组bytes
-            String message = NettyByteUtils.bytesToHexStrings(bytes);
-            // String message1 = new String(bytes);
-            LOG.info("channelRead message:{}, channelId:{}", message, channel.id().asLongText());
-            NettyMessageReceiver.receive(channel, message);
+            NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
         } else {
-            LOG.error("channelRead msg:{}, channelId:{}", msg, channel.id().asLongText());
+            LOG.error("channelRead unknown msg:{}, channelId:{}", msg.toString(), channel.id().asLongText());
         }
     }
 

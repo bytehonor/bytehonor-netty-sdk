@@ -23,7 +23,7 @@ public class NettyServerStringHandler extends SimpleChannelInboundHandler<String
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
         try {
-            NettyMessageReceiver.receive(channel, msg);
+            NettyMessageReceiver.receiveString(channel, msg);
         } catch (Exception e) {
             LOG.error("channelRead0 msg:{}, error", msg, e);
         }

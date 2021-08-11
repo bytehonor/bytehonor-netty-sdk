@@ -18,7 +18,7 @@ public class ServerChannelHolder {
     }
 
     public static Stream<Channel> stream() {
-        return CHANNELS.stream();
+        return CHANNELS.parallelStream();
     }
 
     public static void add(Channel value) {

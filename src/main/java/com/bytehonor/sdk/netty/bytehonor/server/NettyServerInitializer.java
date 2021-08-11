@@ -9,7 +9,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
-    
+
     // ch就可以对channel进行设置
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -17,7 +17,8 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
         // 也可以选择将处理器加到pipeLine的那个位置
         // byte数组写法， 一些限定和编码解码器
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(1024 * 1024, 4, 2, 0, 0));
+        pipeline.addLast(new LengthFieldBasedFrameDecoder(NettyConstants.MAX_LENGTH, NettyConstants.LENGTH_OFFSET,
+                NettyConstants.LENGTH_SIZE, 0, 0));
         pipeline.addLast(new NettyServerByteHandler());
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束

@@ -11,12 +11,12 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class NettyClientStringHandler extends SimpleChannelInboundHandler<String> {
     
-    private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyClientStringHandler.class);
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         Channel channel = ctx.channel();
-        NettyMessageReceiver.receive(channel, msg);
+        NettyMessageReceiver.receiveString(channel, msg);
     }
 
     // 当连接建立好的使用调用

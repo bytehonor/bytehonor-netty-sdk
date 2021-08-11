@@ -5,16 +5,20 @@ import java.util.Map;
 
 public class NettyHandlerFactory {
 
-    private static final Map<String, NettyHandler> MAP = new HashMap<String, NettyHandler>();
+    private static final Map<Integer, NettyHandler> MAP = new HashMap<Integer, NettyHandler>();
     
+    static {
+        put(new NettyHeartHandler());
+    }
+
     public static void put(NettyHandler handler) {
         if (handler == null) {
             return;
         }
-        MAP.put(handler.matchCmd(), handler);
+        MAP.put(handler.type(), handler);
     }
 
-    public static NettyHandler get(String cmd) {
-        return MAP.get(cmd);
+    public static NettyHandler get(int type) {
+        return MAP.get(type);
     }
 }

@@ -29,12 +29,12 @@ import io.netty.handler.ssl.SslContextBuilder;
  *
  */
 public class NettySslUtils {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(NettySslUtils.class);
 
     private static String jksKeyPassw = "123456";
     private static String jksStorePassw = "123456";
-    
+
     // private static String JKS_PATH = "";
 
     public static SslContext server() throws Exception {

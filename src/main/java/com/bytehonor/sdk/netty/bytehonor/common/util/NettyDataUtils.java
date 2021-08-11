@@ -1,83 +1,113 @@
 package com.bytehonor.sdk.netty.bytehonor.common.util;
 
+import java.nio.charset.Charset;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.constant.ProtocolConstants;
-import com.bytehonor.sdk.netty.bytehonor.common.model.NettyContent;
+import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
+
+import io.netty.buffer.ByteBuf;
 
 public class NettyDataUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettySslUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyDataUtils.class);
 
-    public static NettyContent parseFromClient(String msg) {
-        checkProtocol(msg);
-
-        NettyDataUtils.checkProtocol(msg);
-        String cmd = finCmd(msg);
-        String subCmd = finSubCmd(msg);
-        String data = findData(msg);
-
-        byte[] bytes = NettyByteUtils.hexStringToBytes(data);
-        byte[] deviceIdBytes = NettyByteUtils.subBytes(bytes, 4);
-        String deviceId = NettyDataUtils.parseDevicdIdFromBytes4(deviceIdBytes);
-
-        return new NettyContent(cmd, subCmd, data, deviceId);
+    public static byte[] build(String data) {
+        Objects.requireNonNull(data, "data");
+        return build(NettyConstants.TYPE_DEFAULT, data.getBytes(Charset.forName("UTF-8")));
     }
 
-    public static NettyContent parseFromServer(String msg) {
-        checkProtocol(msg);
+    /**
+     * 
+     * @param type
+     * @param data
+     * @return
+     */
+    public static byte[] build(int type, byte[] data) {
+        int lengthData = data.length;
+        LOG.info("type:{}, lengthData:{}", type, lengthData);
+        int total = totalSizeFromData(lengthData);
 
-        NettyDataUtils.checkProtocol(msg);
-        String cmd = finCmd(msg);
-        String subCmd = finSubCmd(msg);
-        String data = findData(msg);
-
-        return new NettyContent(cmd, subCmd, data, null);
-    }
-
-    public static String decryptData(String data) {
-        byte[] decryptBytes = NettyAesByteUtils.decrypt(NettyByteUtils.hexStringToBytes(data));
-        return NettyByteUtils.bytesToHexStrings(decryptBytes);
-    }
-
-    public static String decryptData(String data, int byteLength) {
-        byte[] decryptBytes = NettyAesByteUtils.decrypt(NettyByteUtils.hexStringToBytes(data));
-        byte[] copy = new byte[byteLength];
-        NettyByteUtils.copy(decryptBytes, copy, byteLength);
-        return NettyByteUtils.bytesToHexStrings(copy);
-    }
-
-    public static String finCmd(String msg) {
-        return msg.substring(2, 4);
-    }
-
-    public static String finSubCmd(String msg) {
-        return msg.substring(4, 8);
-    }
-
-    public static void checkProtocol(String msg) {
-        if (msg == null) {
-            throw new RuntimeException("protocol msg empty");
+        byte[] bytes = new byte[total];
+        bytes[0] = NettyConstants.HEAD;
+        bytes[1] = (byte) type;
+        int lengthBody = 3 + lengthData; // 数据长度，2byte，包含data+check+end
+        byte lenBytes[] = NettyByteUtils.intToByte2(lengthBody);
+        bytes[2] = lenBytes[0];
+        bytes[3] = lenBytes[1];
+        for (int i = 0; i < lengthData; i++) {
+            bytes[4 + i] = data[i];
         }
 
-        if (msg.startsWith(ProtocolConstants.HEAD) == false || msg.endsWith(ProtocolConstants.END) == false) {
-            LOG.error("text:{}, not validate protocol content", msg);
-            throw new RuntimeException("invalidate protocol msg");
+        // 校验方式：累加和，check = type + length + data
+        int lengthCheck = NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthData;
+        byte[] checks = new byte[lengthCheck];
+        NettyByteUtils.copy(bytes, 1, lengthCheck, checks);
+        int checkValue = NettyByteUtils.check(checks);
+        byte[] checkBytes = NettyByteUtils.intToByte2(checkValue);
+        bytes[total - 3] = checkBytes[0];
+        bytes[total - 2] = checkBytes[1];
+        bytes[total - 1] = NettyConstants.END;
+        return bytes;
+    }
+
+    public static int totalSizeFromData(int lengthData) {
+        // 1 + 1 + 2 + length + 2 + 1
+        return 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthData + NettyConstants.CHECK_SIZE + 1;
+    }
+
+    public static int dataSizeFromTotal(int lengthTotal) {
+        // 1 + 1 + 2 + length + 2 + 1
+        return lengthTotal - 1 - NettyConstants.TYPE_SIZE - NettyConstants.LENGTH_SIZE - NettyConstants.CHECK_SIZE - 1;
+    }
+
+    public static byte[] readBytes(ByteBuf buf) {
+        Objects.requireNonNull(buf, "buf");
+        byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);// 复制内容到字节数组bytes
+        return bytes;
+    }
+
+    public static void validate(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+        int total = bytes.length;
+        if (total < 8) {
+            LOG.error("bytes:({}) total length invalid", bytes);
+            throw new RuntimeException("bytes total length invalid");
         }
+        // 头字节校验
+        if (NettyConstants.HEAD != bytes[0]) {
+            LOG.error("bytes:({}) HEAD invalid", bytes);
+            throw new RuntimeException("bytes HEAD invalid");
+        }
+        // 尾字节校验
+        if (NettyConstants.END != bytes[total - 1]) {
+            LOG.error("bytes:({}) HEAD invalid", bytes);
+            throw new RuntimeException("bytes END invalid");
+        }
+        byte[] lengthBytes = new byte[NettyConstants.LENGTH_SIZE];
+        NettyByteUtils.copy(bytes, NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, lengthBytes);
+        int lengthData = NettyByteUtils.byte2ToInt(lengthBytes);
+
+        // 长度校验
+        int totalSize = totalSizeFromData(lengthData);
+        if (total != totalSize) {
+            LOG.error("bytes:({}) total:{} != totalSize:{}", bytes, total, totalSize);
+            throw new RuntimeException("bytes total length not true");
+        }
+
+        // 最后check校验
+        // byte[] checkBytes = new byte[NettyConstants.CHECK_SIZE];
     }
 
-    public static String parseDevicdId(String data) {
-        byte[] bytes = NettyByteUtils.hexStringToBytes(data);
-        return parseDevicdIdFromBytes4(bytes);
-    }
-
-    public static String parseDevicdIdFromBytes4(byte[] bytes) {
-        int deviceId = NettyByteUtils.byte4ToInt(bytes);
-        return String.valueOf(deviceId);
-    }
-
-    public static String findData(String msg) {
-        return msg.substring(12, msg.length() - 6);
+    public static String parseData(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+        int lengthTotal = bytes.length;
+        int lengthData = dataSizeFromTotal(lengthTotal);
+        byte[] data = new byte[lengthData];
+        NettyByteUtils.copy(bytes, 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE, lengthData, data);
+        return new String(data);
     }
 }

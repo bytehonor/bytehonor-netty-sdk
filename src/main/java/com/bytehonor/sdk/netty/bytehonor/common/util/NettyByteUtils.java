@@ -101,13 +101,17 @@ public class NettyByteUtils {
         return value;
     }
 
-    public static void copy(byte[] src, byte[] dest, int length) {
-        System.arraycopy(src, 0, dest, 0, length);
+    public static void copy(byte[] src, int length, byte[] dest) {
+        copy(src, length, dest);
+    }
+
+    public static void copy(byte[] src, int from, int length, byte[] dest) {
+        System.arraycopy(src, from, dest, 0, length);
     }
 
     public static byte[] subBytes(byte[] src, int length) {
         byte[] dest = new byte[length];
-        copy(src, dest, length);
+        copy(src, 0, length, dest);
         return dest;
     }
 }

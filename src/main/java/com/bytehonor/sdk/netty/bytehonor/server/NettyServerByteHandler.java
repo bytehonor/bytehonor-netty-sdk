@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
-import com.bytehonor.sdk.netty.bytehonor.common.util.NettyByteUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -13,7 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerByteHandler.class);
 
     @Override
@@ -21,19 +20,9 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         // 客户端上传消息
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
-            ByteBuf buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.readBytes(bytes);// 复制内容到字节数组bytes
-            String message = NettyByteUtils.bytesToHexStrings(bytes);
-            // String message1 = new String(bytes);
-            LOG.info("channelRead message:{}, channelId:{}", message, channel.id().asLongText());
-            try {
-                NettyMessageReceiver.receive(channel, message);
-            } catch (Exception e) {
-                LOG.error("channelRead0 msg:{}, error", msg, e);
-            }
+            NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
         } else {
-            LOG.info("channelRead msg:{}, channelId:{}", msg, channel.id().asLongText());
+            LOG.error("channelRead unknown msg:{}, channelId:{}", msg.toString(), channel.id().asLongText());
         }
     }
 
@@ -60,6 +49,7 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         String channelId = ctx.channel().id().asLongText();
         LOG.info("handlerAdded channelId:{}", channelId);
 
+        // 缓存连接
         ServerChannelHolder.add(ctx.channel());
     }
 

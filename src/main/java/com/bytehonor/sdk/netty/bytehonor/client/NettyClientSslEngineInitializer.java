@@ -2,6 +2,8 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 
 import javax.net.ssl.SSLEngine;
 
+import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -21,7 +23,8 @@ public class NettyClientSslEngineInitializer extends ChannelInitializer<SocketCh
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addFirst("ssl", new SslHandler(sslEngine));
         // byte数组
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(1024 * 1024, 4, 2, 0, 0));
+        pipeline.addLast(new LengthFieldBasedFrameDecoder(NettyConstants.MAX_LENGTH,
+                NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, 0, 0));
         pipeline.addLast(new NettyClientByteHandler());
 
     }
