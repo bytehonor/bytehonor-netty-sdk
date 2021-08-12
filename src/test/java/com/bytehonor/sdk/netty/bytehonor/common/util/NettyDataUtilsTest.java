@@ -14,6 +14,8 @@ public class NettyDataUtilsTest {
     public void testBuildString() {
         String text = "hello world";
         byte[] bytes = NettyDataUtils.build(text);
+        
+        NettyDataUtils.validate(bytes);
 
         int length = bytes.length;
 

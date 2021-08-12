@@ -41,16 +41,23 @@ public class NettyDataUtils {
             bytes[4 + i] = data[i];
         }
 
-        // 校验方式：累加和，check = type + length + data
-        int lengthCheck = NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthData;
-        byte[] checks = new byte[lengthCheck];
-        NettyByteUtils.copy(bytes, 1, lengthCheck, checks);
-        int checkValue = NettyByteUtils.check(checks);
+        byte[] checks = buildCecheckBytes(bytes);
+        int checkValue = NettyByteUtils.sumBytes(checks);
         byte[] checkBytes = NettyByteUtils.intToByte2(checkValue);
         bytes[total - 3] = checkBytes[0];
         bytes[total - 2] = checkBytes[1];
         bytes[total - 1] = NettyConstants.END;
         return bytes;
+    }
+
+    public static byte[] buildCecheckBytes(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+        int total = bytes.length;
+        // 校验方式：累加和，check = type + length + data
+        int lengthCheck = total - 1 - NettyConstants.CHECK_SIZE - 1;
+        byte[] checks = new byte[lengthCheck];
+        NettyByteUtils.copy(bytes, 1, lengthCheck, checks);
+        return checks;
     }
 
     public static int totalSizeFromData(int lengthData) {
@@ -87,25 +94,46 @@ public class NettyDataUtils {
             LOG.error("bytes:({}) HEAD invalid", bytes);
             throw new RuntimeException("bytes END invalid");
         }
-        byte[] lengthBytes = new byte[NettyConstants.LENGTH_SIZE];
-        NettyByteUtils.copy(bytes, NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, lengthBytes);
-        int length = NettyByteUtils.byte2ToInt(lengthBytes);
 
         // 长度校验
-        int totalSize = 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + length;
+        int lengthValue = parseLengthValue(bytes);
+        int totalSize = 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthValue;
         if (total != totalSize) {
             LOG.error("bytes:({}) total:{} != totalSize:{}", bytes, total, totalSize);
             throw new RuntimeException("bytes total length not true");
         }
 
         // 最后check校验
-        // byte[] checkBytes = new byte[NettyConstants.CHECK_SIZE];
+        int checkValue = parseCheckValue(bytes);
+        byte[] checks = buildCecheckBytes(bytes);
+        int checkValue2 = NettyByteUtils.sumBytes(checks);
+        if (checkValue != checkValue2) {
+            LOG.error("bytes:({}) checkValue:{} != checkValue2:{}", bytes, checkValue, checkValue2);
+            throw new RuntimeException("bytes check failed");
+        }
+    }
+
+    public static int parseLengthValue(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+
+        byte[] lengthBytes = new byte[NettyConstants.LENGTH_SIZE];
+        NettyByteUtils.copy(bytes, NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, lengthBytes);
+        return NettyByteUtils.byte2ToInt(lengthBytes);
+    }
+
+    public static int parseCheckValue(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+        int total = bytes.length;
+        byte[] checkValueBytes = new byte[NettyConstants.CHECK_SIZE];
+        int checkFrom = total - 1 - NettyConstants.CHECK_SIZE;
+        NettyByteUtils.copy(bytes, checkFrom, NettyConstants.CHECK_SIZE, checkValueBytes);
+        return NettyByteUtils.byte2ToInt(checkValueBytes);
     }
 
     public static String parseData(byte[] bytes) {
         Objects.requireNonNull(bytes, "bytes");
-        int lengthTotal = bytes.length;
-        int lengthData = dataSizeFromTotal(lengthTotal);
+        int total = bytes.length;
+        int lengthData = dataSizeFromTotal(total);
         byte[] data = new byte[lengthData];
         NettyByteUtils.copy(bytes, 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE, lengthData, data);
         return new String(data);

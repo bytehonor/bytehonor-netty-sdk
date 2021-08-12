@@ -59,7 +59,7 @@ public class NettyByteUtils {
         return (byte) "0123456789abcdef".indexOf(c);
     }
 
-    public static int check(byte[] bytes) {
+    public static int sumBytes(byte[] bytes) {
         int check = 0x00;
         for (int i = 0; i < bytes.length; i++) {
             check += (int) bytes[i];
