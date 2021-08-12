@@ -40,7 +40,7 @@ public class NettyConstants {
 
     public static final int WORD_THREADS = 4;
 
-    public static final int CLIENT_THREADS = 2;
+    public static final int CLIENT_THREADS = 1;
 
     public static final String SSL_PASSWORD = "bytehonor";
     

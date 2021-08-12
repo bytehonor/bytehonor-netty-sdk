@@ -15,7 +15,7 @@ public class NettyClientTest {
     @Test
     public void test() {
         boolean isOk = true;
-        NettyClient client = new NettyClient("127.0,0,1", 9090);
+        NettyClient client = new NettyClient("127.0.0.1", 9090);
         try {
             client.start();
             NettyMessageSender.send(client.getChannel(), "hello world");
