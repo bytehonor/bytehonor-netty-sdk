@@ -1,9 +1,12 @@
 package com.bytehonor.sdk.netty.bytehonor.server;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -50,24 +53,25 @@ public class NettyServer {
     }
 
     public static void start(int port) {
-        getInstance().bind(port, false);
+        start(port, new NettyConfig());
     }
 
-    public static void start(int port, boolean ssl) {
-        getInstance().bind(port, ssl);
+    public static void start(int port, NettyConfig config) {
+        getInstance().bind(port, config);
     }
 
-    public void bind(int port, boolean ssl) {
+    public void bind(int port, NettyConfig config) {
+        Objects.requireNonNull(config, "config");
         if (init) {
             return;
         }
-        LOG.info("Netty server start, port:{}, ssl:{}", port, ssl);
+        LOG.info("Netty server start, port:{}, ssl:{}", port, config.isSsl());
         init = true;
 
         // 负责连接请求
-        bossGroup = new NioEventLoopGroup(4);
+        bossGroup = new NioEventLoopGroup(config.getBossThreads());
         // 负责事件响应
-        workerGroup = new NioEventLoopGroup(8);
+        workerGroup = new NioEventLoopGroup(config.getWorkThreads());
         // 负责连接请求
         // EventLoopGroup bossGroup = new NioEventLoopGroup(4);
         // 负责事件响应
@@ -86,11 +90,7 @@ public class NettyServer {
             // 日志处理 info级别
             bootstrap.handler(new LoggingHandler(LogLevel.INFO));
             // 添加自定义的初始化器
-            if (ssl) {
-                bootstrap.childHandler(new NettyServerSslInitializer());
-            } else {
-                bootstrap.childHandler(new NettyServerInitializer());
-            }
+            bootstrap.childHandler(new NettyServerInitializer(config));
 
             // 端口绑定
             channelFuture = bootstrap.bind(port);

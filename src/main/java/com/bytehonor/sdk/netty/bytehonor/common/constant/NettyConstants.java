@@ -2,6 +2,16 @@ package com.bytehonor.sdk.netty.bytehonor.common.constant;
 
 public class NettyConstants {
 
+    /**
+     * 设置TCP缓冲区
+     */
+    public static final int SO_BACKLOG = 1024;
+
+    /**
+     * 接收客户端信息的最大长度
+     */
+    public static final int SO_RCVBUF = (int) Character.MAX_VALUE; // 两个字节表示长度 ffff = 65535
+
     public static final byte HEAD = 0x24;
     public static final String HEAD_S = "$";
 
@@ -12,7 +22,7 @@ public class NettyConstants {
     public static final int TYPE_DEFAULT = NettyTypeEnum.NORMAL.getType();
     public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节
     public static final int LENGTH_SIZE = 2;
-    public static final int MAX_LENGTH = 1024 * 1024;
+    public static final int MAX_LENGTH = SO_RCVBUF - 32; // 两个字节表示长度 ffff = 65535
     public static final int CHECK_SIZE = 2;
 
     /**
@@ -22,15 +32,17 @@ public class NettyConstants {
 
     public static final String AES_KEY = "bytehonor_201803";
 
-    public static final int CLIENT_HEART_TIMEOUT_SECONDS = 310;
+    public static final int READ_IDLE_TIMEOUT_SECONDS = 5;
+    public static final int WRITE_IDLE_TIMEOUT_SECONDS = 5;
+    public static final int ALL_IDLE_TIMEOUT_SECONDS = 310;
 
-    /**
-     * 设置TCP缓冲区
-     */
-    public static final int SO_BACKLOG = 1024;
+    public static final int BOSS_THREADS = 2;
 
-    /**
-     * 接收客户端信息的最大长度
-     */
-    public static final int SO_RCVBUF = 2 * 1024;
+    public static final int WORD_THREADS = 4;
+
+    public static final int CLIENT_THREADS = 2;
+
+    public static final String SSL_PASSWORD = "bytehonor";
+    
+    public static String JKS_FILE_PATH = "cert/server.jks";
 }

@@ -3,6 +3,8 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -17,28 +19,29 @@ public class NettyClient {
 
     private final String host;
     private final int port;
-    private final boolean ssl;
+    private final NettyConfig config;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, boolean ssl) {
-        this.host = host;
-        this.port = port;
-        this.ssl = ssl;
+    public NettyClient(String host, int port) {
+        this(host, port, new NettyConfig());
     }
 
-    public void start() throws Exception {
-        LOG.info("Netty client start, host:{}, port, ssl", host, port, ssl);
-        final EventLoopGroup group = new NioEventLoopGroup(1);
+    // 连接服务端的端口号地址和端口号
+    public NettyClient(String host, int port, NettyConfig config) {
+        this.host = host;
+        this.port = port;
+        this.config = config;
+    }
+
+    public void start() throws InterruptedException {
+        LOG.info("Netty client start, host:{}, port, ssl", host, port, config.isSsl());
+        final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
-        if (ssl) {
-            bootstrap.handler(new NettyClientSslInitializer());
-        } else {
-            bootstrap.handler(new NettyClientInitializer());
-        }
+        bootstrap.handler(new NettyClientInitializer(config));
         // 发起异步连接请求，绑定连接端口和host信息
-        final ChannelFuture future = bootstrap.connect(host, port).sync();
+        ChannelFuture future = bootstrap.connect(host, port).sync();
 
         future.addListener(new ChannelFutureListener() {
 
