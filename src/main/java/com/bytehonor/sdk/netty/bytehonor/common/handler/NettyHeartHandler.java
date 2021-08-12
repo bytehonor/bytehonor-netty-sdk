@@ -7,6 +7,10 @@ import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 
 import io.netty.channel.Channel;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyHeartHandler implements NettyHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyHeartHandler.class);

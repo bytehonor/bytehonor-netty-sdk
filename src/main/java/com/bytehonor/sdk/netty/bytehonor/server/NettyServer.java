@@ -17,6 +17,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);

@@ -1,12 +1,18 @@
 package com.bytehonor.sdk.netty.bytehonor.common.util;
 
+import java.util.Objects;
+
 /**
  * @author lijianqiang
  *
  */
 public class NettyByteUtils {
 
+    private static final String CHARS = "0123456789abcdef";
+
     public static String bytesToHexStrings(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+
         StringBuilder stringBuilder = new StringBuilder("");
         if (bytes == null || bytes.length <= 0) {
             return null;
@@ -56,7 +62,7 @@ public class NettyByteUtils {
      * @return byte
      */
     private static byte charToByte(char c) {
-        return (byte) "0123456789abcdef".indexOf(c);
+        return (byte) CHARS.indexOf(c);
     }
 
     public static int sumBytes(byte[] bytes) {
@@ -81,6 +87,17 @@ public class NettyByteUtils {
         result[2] = (byte) ((i >> 8) & 0xFF);
         result[3] = (byte) (i & 0xFF);
         return result;
+    }
+
+    public static int bytesToInt(byte[] bytes) {
+        Objects.requireNonNull(bytes, "bytes");
+        int value = 0;
+        int total = bytes.length;
+        for (int i = 0; i < total; i++) {
+            int shift = (total - 1 - i) * 8;
+            value += (bytes[i] & 0xFF) << shift;
+        }
+        return value;
     }
 
     public static int byte2ToInt(byte[] bytes) {

@@ -13,6 +13,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);

@@ -10,6 +10,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientByteHandler.class);
@@ -28,7 +32,7 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
     // 当连接建立好的使用调用
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOG.info("channelActive channelId:{} sendId", ctx.channel().id().asLongText());
+        LOG.info("channelActive channelId:{}", ctx.channel().id().asLongText());
     }
 
     @Override

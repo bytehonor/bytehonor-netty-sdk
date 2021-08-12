@@ -13,6 +13,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);

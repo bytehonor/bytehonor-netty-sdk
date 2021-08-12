@@ -8,6 +8,10 @@ import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyMessageReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);
@@ -22,8 +26,7 @@ public class NettyMessageReceiver {
             String message = NettyDataUtils.parseData(bytes);
             NettyHandler handler = NettyHandlerFactory.get(type);
             if (handler == null) {
-                LOG.error("receive unknown type:{}! message:{}, channelId:{}", type, message,
-                        channel.id().asLongText());
+                LOG.warn("receive unknown type:{}, message:{}, channelId:{}", type, message, channel.id().asLongText());
                 return;
             }
             handler.handle(channel, message);

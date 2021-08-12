@@ -3,6 +3,10 @@ package com.bytehonor.sdk.netty.bytehonor.common.handler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyHandlerFactory {
 
     private static final Map<Integer, NettyHandler> MAP = new HashMap<Integer, NettyHandler>();

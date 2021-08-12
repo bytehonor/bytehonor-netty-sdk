@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyAesUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyAesUtils.class);

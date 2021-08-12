@@ -10,9 +10,14 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyServerStringHandler extends SimpleChannelInboundHandler<String> {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerStringHandler.class);
+
     /**
      * 
      * @param ctx 可以拿到本次处理的上下文信息

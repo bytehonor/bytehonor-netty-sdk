@@ -18,6 +18,8 @@ public class NettyConstants {
     public static final byte END = 0x26;
     public static final String END_S = "#";
 
+    public static final int HEAD_SIZE = 1;
+    public static final int END_SIZE = 1;
     public static final int TYPE_SIZE = 1;
     public static final int TYPE_DEFAULT = NettyTypeEnum.NORMAL.getType();
     public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节

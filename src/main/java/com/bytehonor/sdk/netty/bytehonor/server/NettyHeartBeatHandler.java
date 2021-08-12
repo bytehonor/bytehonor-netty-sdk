@@ -14,6 +14,8 @@ import io.netty.handler.timeout.IdleStateEvent;
 /**
  * 用于检测channel的心跳的handler
  *
+ * @author lijianqiang
+ *
  */
 public class NettyHeartBeatHandler extends ChannelInboundHandlerAdapter {
 

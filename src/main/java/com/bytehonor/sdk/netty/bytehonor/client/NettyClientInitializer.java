@@ -10,6 +10,10 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private NettyConfig config;

@@ -9,6 +9,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyClientStringHandler extends SimpleChannelInboundHandler<String> {
     
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientStringHandler.class);
