@@ -89,10 +89,10 @@ public class NettyDataUtils {
         }
         byte[] lengthBytes = new byte[NettyConstants.LENGTH_SIZE];
         NettyByteUtils.copy(bytes, NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, lengthBytes);
-        int lengthData = NettyByteUtils.byte2ToInt(lengthBytes);
+        int length = NettyByteUtils.byte2ToInt(lengthBytes);
 
         // 长度校验
-        int totalSize = totalSizeFromData(lengthData);
+        int totalSize = 1 + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + length;
         if (total != totalSize) {
             LOG.error("bytes:({}) total:{} != totalSize:{}", bytes, total, totalSize);
             throw new RuntimeException("bytes total length not true");
