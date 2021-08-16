@@ -36,7 +36,7 @@ public class NettyConstants {
 
     public static final int READ_IDLE_TIMEOUT_SECONDS = 5;
     public static final int WRITE_IDLE_TIMEOUT_SECONDS = 5;
-    public static final int ALL_IDLE_TIMEOUT_SECONDS = 310;
+    public static final int ALL_IDLE_TIMEOUT_SECONDS = 60;
 
     public static final int BOSS_THREADS = 2;
 
