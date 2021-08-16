@@ -12,7 +12,8 @@ public class NettyHandlerFactory {
     private static final Map<Integer, NettyHandler> MAP = new HashMap<Integer, NettyHandler>();
     
     static {
-        put(new NettyHeartHandler());
+        put(new NettyPingHandler());
+        put(new NettyPongHandler());
     }
 
     public static void put(NettyHandler handler) {

@@ -45,6 +45,6 @@ public class NettyConstants {
     public static final int CLIENT_THREADS = 1;
 
     public static final String SSL_PASSWORD = "bytehonor";
-    
+
     public static String JKS_FILE_PATH = "cert/server.jks";
 }

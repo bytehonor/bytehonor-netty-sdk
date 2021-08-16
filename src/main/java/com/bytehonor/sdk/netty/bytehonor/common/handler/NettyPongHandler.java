@@ -11,19 +11,19 @@ import io.netty.channel.Channel;
  * @author lijianqiang
  *
  */
-public class NettyHeartHandler implements NettyHandler {
+public class NettyPongHandler implements NettyHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyHeartHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyPongHandler.class);
 
     @Override
     public int type() {
-        return NettyTypeEnum.HEART.getType();
+        return NettyTypeEnum.PONG.getType();
     }
 
     @Override
     public void handle(Channel channel, String message) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("heart:{}, channel:{}", message, channel.id().asLongText());
+            LOG.debug("PONG:{}, channel:{}", message, channel.id().asLongText());
         }
     }
 

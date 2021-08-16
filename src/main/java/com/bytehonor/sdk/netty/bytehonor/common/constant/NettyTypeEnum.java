@@ -4,8 +4,9 @@ package com.bytehonor.sdk.netty.bytehonor.common.constant;
  * <pre>
  * Code    说明
  * 0       为定义
- * 1       心跳
- * 2       普通传输
+ * 1       ping 请求
+ * 2       pong 响应
+ * 10      普通传输
  * 
  * </pre>
  * 
@@ -16,9 +17,11 @@ public enum NettyTypeEnum {
 
     UNDEFINED(0, "未定义"),
 
-    HEART(1, "心跳"),
+    PING(1, "ping"),
 
-    NORMAL(2, "普通传输"),
+    PONG(2, "pong"),
+
+    NORMAL(10, "普通传输"),
 
     ;
 

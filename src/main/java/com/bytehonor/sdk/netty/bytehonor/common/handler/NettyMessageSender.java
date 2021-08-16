@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
+import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -23,10 +24,19 @@ public class NettyMessageSender {
 
     private static final byte[] PING = "ping".getBytes();
 
+    private static final byte[] PONG = "pong".getBytes();
+
     public static void ping(Channel channel) {
         Objects.requireNonNull(channel, "channel");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.HEART.getType(), PING);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PING.getType(), PING);
+        send(channel, bytes);
+    }
+
+    public static void pong(Channel channel) {
+        Objects.requireNonNull(channel, "channel");
+
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PONG.getType(), PONG);
         send(channel, bytes);
     }
 
@@ -42,9 +52,13 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(bytes, "bytes");
 
+        if (channel.isActive() == false) {
+            LOG.debug("send bytes:({}) failed, channelId:{} is not active", bytes, channel.id().asLongText());
+            throw new BytehonorNettySdkException("channel is not active");
+        }
+
         if (LOG.isDebugEnabled()) {
-            String channelId = channel.id().asLongText();
-            LOG.debug("send bytes:({}), channelId:{}", bytes, channelId);
+            LOG.debug("send bytes:({}), channelId:{}", bytes, channel.id().asLongText());
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输

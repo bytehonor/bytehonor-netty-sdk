@@ -27,7 +27,7 @@ public class NettyHeartBeatHandler extends ChannelInboundHandlerAdapter {
         // 判断evt是否是IdleStateEvent（用于触发用户事件，包含 读空闲/写空闲/读写空闲）
         if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent) evt;// 强制类型转换
-            LOG.debug("state:{}", event.state().name());
+            LOG.info("state:{}", event.state().name());
             if (event.state() == IdleState.ALL_IDLE) {
                 LOG.info("before close channel size:{}", ServerChannelHolder.size());
                 Channel channel = ctx.channel();
