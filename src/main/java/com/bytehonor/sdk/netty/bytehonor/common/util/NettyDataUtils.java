@@ -36,7 +36,7 @@ public class NettyDataUtils {
         Objects.requireNonNull(data, "data");
 
         int lengthData = data.length;
-        LOG.info("type:{}, lengthData:{}", type, lengthData);
+        LOG.debug("type:{}, lengthData:{}", type, lengthData);
         int total = totalSizeFromData(lengthData);
 
         byte[] bytes = new byte[total];

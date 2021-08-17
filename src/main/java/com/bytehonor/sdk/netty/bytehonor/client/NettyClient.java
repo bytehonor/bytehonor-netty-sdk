@@ -24,6 +24,7 @@ public class NettyClient {
     private final String host;
     private final int port;
     private final NettyConfig config;
+    private Bootstrap bootstrap;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
@@ -41,7 +42,7 @@ public class NettyClient {
     public void start() throws InterruptedException {
         LOG.info("Netty client start, host:{}, port, ssl", host, port, config.isSsl());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
-        Bootstrap bootstrap = new Bootstrap();
+        bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
         bootstrap.handler(new NettyClientInitializer(config));
         // 发起异步连接请求，绑定连接端口和host信息

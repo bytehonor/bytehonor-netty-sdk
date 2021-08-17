@@ -68,9 +68,13 @@ public class NettyByteUtils {
     public static int sumBytes(byte[] bytes) {
         int check = 0x00;
         for (int i = 0; i < bytes.length; i++) {
-            check += (int) bytes[i];
+            check += byteToInt(bytes[i]);
         }
         return check;
+    }
+    
+    private static int byteToInt(byte b) {
+        return (int) (b & 0xff);
     }
 
     public static byte[] intToByte2(int i) {
