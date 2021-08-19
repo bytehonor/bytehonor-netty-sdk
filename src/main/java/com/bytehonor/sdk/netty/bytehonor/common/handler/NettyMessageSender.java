@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
@@ -96,6 +97,23 @@ public class NettyMessageSender {
         final byte[] bytes = NettyDataUtils.build(value);
         ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
+                return;
+            }
+            send(channel, bytes);
+        });
+    }
+
+    public static void push(String category, String value) {
+        Objects.requireNonNull(category, "category");
+        Objects.requireNonNull(value, "value");
+
+        final byte[] bytes = NettyDataUtils.build(value);
+        ServerChannelHolder.parallelStream().forEach(channel -> {
+            if (channel.isActive() == false) {
+                return;
+            }
+            String key = SubscribeChannelHolder.makeKey(channel.id(), category);
+            if (SubscribeChannelHolder.exists(key) == false) {
                 return;
             }
             send(channel, bytes);
