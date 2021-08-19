@@ -14,6 +14,8 @@ public class NettyHandlerFactory {
     static {
         put(new NettyPingHandler());
         put(new NettyPongHandler());
+        put(new NettySubscribeHandler());
+        put(new NettyUnsubscribeHandler());
     }
 
     public static void put(NettyHandler handler) {

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
+import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 
 import io.netty.buffer.ByteBuf;
 
@@ -23,7 +24,13 @@ public class NettyDataUtils {
     public static byte[] build(String data) {
         Objects.requireNonNull(data, "data");
 
-        return build(NettyConstants.TYPE_DEFAULT, data.getBytes(Charset.forName(UTF_8)));
+        return doBuild(NettyConstants.TYPE_DEFAULT, data.getBytes(Charset.forName(UTF_8)));
+    }
+
+    public static byte[] build(NettyTypeEnum type, String data) {
+        Objects.requireNonNull(data, "data");
+
+        return doBuild(type.getType(), data.getBytes(Charset.forName(UTF_8)));
     }
 
     /**
@@ -32,7 +39,7 @@ public class NettyDataUtils {
      * @param data
      * @return
      */
-    public static byte[] build(int type, byte[] data) {
+    private static byte[] doBuild(int type, byte[] data) {
         Objects.requireNonNull(data, "data");
 
         int lengthData = data.length;

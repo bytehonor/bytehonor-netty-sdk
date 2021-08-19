@@ -34,8 +34,8 @@ public class NettyConstants {
 
     public static final String AES_KEY = "bytehonor_201803";
 
-    public static final int READ_IDLE_TIMEOUT_SECONDS = 5;
-    public static final int WRITE_IDLE_TIMEOUT_SECONDS = 5;
+    public static final int READ_IDLE_TIMEOUT_SECONDS = 10;
+    public static final int WRITE_IDLE_TIMEOUT_SECONDS = 10;
     public static final int ALL_IDLE_TIMEOUT_SECONDS = 60;
 
     public static final int BOSS_THREADS = 2;

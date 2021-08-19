@@ -23,7 +23,7 @@ public class NettyPingHandler implements NettyHandler {
     @Override
     public void handle(Channel channel, String message) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("PING:{}, channel:{}", message, channel.id().asLongText());
+            LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
         }
         NettyMessageSender.pong(channel);
     }

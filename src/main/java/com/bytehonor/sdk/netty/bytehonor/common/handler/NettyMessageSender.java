@@ -22,21 +22,44 @@ public class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
 
-    private static final byte[] PING = "ping".getBytes();
+    private static final String PING = "ping";
 
-    private static final byte[] PONG = "pong".getBytes();
+    private static final String PONG = "pong";
 
     public static void ping(Channel channel) {
         Objects.requireNonNull(channel, "channel");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PING.getType(), PING);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PING, PING);
         send(channel, bytes);
     }
 
     public static void pong(Channel channel) {
         Objects.requireNonNull(channel, "channel");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PONG.getType(), PONG);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PONG, PONG);
+        send(channel, bytes);
+    }
+
+    public static void accept(Channel channel, boolean success) {
+        Objects.requireNonNull(channel, "channel");
+        String data = success ? "true" : "false";
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.ACCEPT, data);
+        send(channel, bytes);
+    }
+
+    public static void subscribe(Channel channel, String value) {
+        Objects.requireNonNull(channel, "channel");
+        Objects.requireNonNull(value, "value");
+
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE, value);
+        send(channel, bytes);
+    }
+
+    public static void unsubscribe(Channel channel, String value) {
+        Objects.requireNonNull(channel, "channel");
+        Objects.requireNonNull(value, "value");
+
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.UNSUBSCRIBE, value);
         send(channel, bytes);
     }
 
@@ -69,9 +92,9 @@ public class NettyMessageSender {
 
     public static void broadcast(String value) {
         Objects.requireNonNull(value, "value");
-        
+
         final byte[] bytes = NettyDataUtils.build(value);
-        ServerChannelHolder.stream().forEach(channel -> {
+        ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
             }

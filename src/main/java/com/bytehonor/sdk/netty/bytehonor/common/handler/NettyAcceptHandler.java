@@ -11,19 +11,19 @@ import io.netty.channel.Channel;
  * @author lijianqiang
  *
  */
-public class NettyPongHandler implements NettyHandler {
+public class NettyAcceptHandler implements NettyHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyPongHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyAcceptHandler.class);
 
     @Override
     public int type() {
-        return NettyTypeEnum.PONG.getType();
+        return NettyTypeEnum.ACCEPT.getType();
     }
 
     @Override
     public void handle(Channel channel, String message) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
+        if (LOG.isInfoEnabled()) {
+            LOG.info("message:{}, channel:{}", message, channel.id().asLongText());
         }
     }
 

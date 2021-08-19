@@ -20,6 +20,12 @@ public enum NettyTypeEnum {
     PING(1, "ping"),
 
     PONG(2, "pong"),
+    
+    SUBSCRIBE(3, "subscribe"),
+    
+    UNSUBSCRIBE(4, "unsubscribe"),
+    
+    ACCEPT(5, "accept"),
 
     NORMAL(10, "普通传输"),
 

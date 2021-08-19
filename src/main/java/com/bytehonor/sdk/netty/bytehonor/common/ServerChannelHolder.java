@@ -21,8 +21,12 @@ public class ServerChannelHolder {
         return CHANNELS.size();
     }
 
-    public static Stream<Channel> stream() {
+    public static Stream<Channel> parallelStream() {
         return CHANNELS.parallelStream();
+    }
+    
+    public static Stream<Channel> stream() {
+        return CHANNELS.stream();
     }
 
     public static void add(Channel value) {
