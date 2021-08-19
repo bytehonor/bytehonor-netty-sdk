@@ -94,6 +94,7 @@ public class NettyDataUtils {
 
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);// 复制内容到字节数组bytes
+        buf.release();
         return bytes;
     }
 
