@@ -48,17 +48,18 @@ public class NettyMessageSender {
         send(channel, bytes);
     }
 
-    public static void send(Channel channel, byte[] bytes) {
+    private static void send(Channel channel, byte[] bytes) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(bytes, "bytes");
 
         if (channel.isActive() == false) {
-            LOG.debug("send bytes:({}) failed, channelId:{} is not active", bytes, channel.id().asLongText());
+            LOG.debug("send bytes:{} failed, channelId:{} is not active", bytes, channel.id().asLongText());
             throw new BytehonorNettySdkException("channel is not active");
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send bytes:({}), channelId:{}", bytes, channel.id().asLongText());
+            LOG.debug("send bytes:{}, data:{}, channelId:{}", bytes, NettyDataUtils.parseData(bytes),
+                    channel.id().asLongText());
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输
@@ -68,8 +69,12 @@ public class NettyMessageSender {
 
     public static void broadcast(String value) {
         Objects.requireNonNull(value, "value");
+        
         final byte[] bytes = NettyDataUtils.build(value);
         ServerChannelHolder.stream().forEach(channel -> {
+            if (channel.isActive() == false) {
+                return;
+            }
             send(channel, bytes);
         });
     }

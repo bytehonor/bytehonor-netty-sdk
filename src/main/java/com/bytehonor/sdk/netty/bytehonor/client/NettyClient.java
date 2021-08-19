@@ -3,6 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 
 import io.netty.bootstrap.Bootstrap;
@@ -39,29 +40,34 @@ public class NettyClient {
         this.config = config;
     }
 
-    public void start() throws InterruptedException {
-        LOG.info("Netty client start, host:{}, port, ssl", host, port, config.isSsl());
+    public void start() {
+        LOG.info("Netty client start, host:{}, port, ssl:{}", host, port, config.isSsl());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
         bootstrap.handler(new NettyClientInitializer(config));
         // 发起异步连接请求，绑定连接端口和host信息
-        ChannelFuture future = bootstrap.connect(host, port).sync();
 
-        future.addListener(new ChannelFutureListener() {
+        try {
+            final ChannelFuture future = bootstrap.connect(host, port).sync();
+            future.addListener(new ChannelFutureListener() {
 
-            @Override
-            public void operationComplete(ChannelFuture arg0) throws Exception {
-                if (future.isSuccess()) {
-                    LOG.info("Netty client start success");
-                } else {
-                    LOG.error("Netty client start failed, error", future.cause());
-                    group.shutdownGracefully(); // 关闭线程组
+                @Override
+                public void operationComplete(ChannelFuture arg0) throws Exception {
+                    if (future.isSuccess()) {
+                        LOG.info("Netty client start success");
+                    } else {
+                        LOG.error("Netty client start failed, error", future.cause());
+                        group.shutdownGracefully(); // 关闭线程组
+                    }
                 }
-            }
-        });
+            });
+            this.channel = future.channel();
+        } catch (InterruptedException e) {
+            LOG.error("connect error:{}", e.getMessage());
+            throw new BytehonorNettySdkException(e);
+        }
 
-        this.channel = future.channel();
     }
 
     public Channel getChannel() {
