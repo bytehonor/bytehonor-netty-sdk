@@ -1,11 +1,14 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 
@@ -19,12 +22,13 @@ public final class NettyClientContanier {
 
     private int port;
 
-    private boolean ping;
+    private static boolean ping = false;
+
+    private static final Set<String> SET = new HashSet<String>();
 
     private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
 
     private NettyClientContanier() {
-        this.ping = false;
     }
 
     /**
@@ -43,17 +47,18 @@ public final class NettyClientContanier {
         LOG.info("connect begin ...");
         getInstance().host = host;
         getInstance().port = port;
-        if (getInstance().client == null) {
-            getInstance().client = new NettyClient(host, port);
+        if (getInstance().client != null) {
+            getInstance().client.getChannel().close();
         }
+        getInstance().client = new NettyClient(host, port);
         getInstance().client.start();
         ping();
     }
 
     private static void ping() {
-        if (getInstance().ping == false) {
+        if (ping == false) {
             LOG.info("ping begin ...");
-            getInstance().ping = true;
+            ping = true;
             // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
             final Runnable runnable = new Runnable() {
                 @Override
@@ -68,18 +73,34 @@ public final class NettyClientContanier {
                 }
             };
             // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-            SERVICE.scheduleAtFixedRate(runnable, 30, 55, TimeUnit.SECONDS);
+            SERVICE.scheduleAtFixedRate(runnable, 20, 35, TimeUnit.SECONDS);
         }
     }
 
     public static void reconnect() {
         LOG.info("reconnect begin ...");
-        getInstance().client = new NettyClient(getInstance().host, getInstance().port);
-
-        try {
-            getInstance().client.start();
-        } catch (Exception e) {
-            LOG.error("reconnect error", e);
+        connect(getInstance().host, getInstance().port);
+        for (int i = 0; i < 20; i++) {
+            try {
+                Thread.sleep(500L);
+            } catch (InterruptedException e) {
+                LOG.error("sleep", e);
+            }
+            if (isConnected()) {
+                LOG.info("reconnect connected ok");
+                break;
+            }
+        }
+        if (isConnected() == false) {
+            LOG.error("reconnect connected failed");
+            return;
+        }
+        // 把任务重新订阅
+        if (CollectionUtils.isEmpty(SET) == false) {
+            LOG.info("subscribe again ...");
+            for (String value : SET) {
+                subscribe(value);
+            }
         }
     }
 
@@ -89,5 +110,13 @@ public final class NettyClientContanier {
 
     public static void send(String value) {
         NettyMessageSender.send(getInstance().client.getChannel(), value);
+    }
+
+    public static void subscribe(String category) {
+        if (category == null) {
+            return;
+        }
+        SET.add(category);
+        NettyMessageSender.subscribe(getInstance().client.getChannel(), category);
     }
 }

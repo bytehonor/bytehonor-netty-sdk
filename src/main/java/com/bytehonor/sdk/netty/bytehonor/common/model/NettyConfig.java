@@ -25,6 +25,8 @@ public class NettyConfig {
     private int workThreads;
     private int clientThreads;
 
+    private int connectTimeoutMills;
+
     public NettyConfig() {
         this.ssl = false;
         this.sslEngine = false;
@@ -38,6 +40,7 @@ public class NettyConfig {
         this.bossThreads = NettyConstants.BOSS_THREADS;
         this.workThreads = NettyConstants.WORD_THREADS;
         this.clientThreads = NettyConstants.CLIENT_THREADS;
+        this.connectTimeoutMills = NettyConstants.CONNECT_TIMEOUT_MILLIS;
     }
 
     public boolean isSsl() {
@@ -134,6 +137,14 @@ public class NettyConfig {
 
     public void setClientThreads(int clientThreads) {
         this.clientThreads = clientThreads;
+    }
+
+    public int getConnectTimeoutMills() {
+        return connectTimeoutMills;
+    }
+
+    public void setConnectTimeoutMills(int connectTimeoutMills) {
+        this.connectTimeoutMills = connectTimeoutMills;
     }
 
 }

@@ -34,17 +34,20 @@ public class NettyConfigBuilder {
         return this;
     }
 
-    public NettyConfigBuilder idles(int readIdleTimeSeconds, int writIdleTimeSeconds, int allIdleTimeSeconds) {
+    public NettyConfigBuilder server(int readIdleTimeSeconds, int writIdleTimeSeconds, int allIdleTimeSeconds,
+            int bossThreads, int workThreads) {
         this.config.setReadIdleTimeSeconds(readIdleTimeSeconds);
         this.config.setWritIdleTimeSeconds(writIdleTimeSeconds);
         this.config.setAllIdleTimeSeconds(allIdleTimeSeconds);
+        this.config.setBossThreads(bossThreads);
+        this.config.setWorkThreads(workThreads);
         return this;
     }
 
-    public NettyConfigBuilder threads(int bossThreads, int workThreads, int clientThreads) {
-        this.config.setBossThreads(bossThreads);
-        this.config.setWorkThreads(workThreads);
+    public NettyConfigBuilder client(int clientThreads, int connectTimeoutMills) {
         this.config.setClientThreads(clientThreads);
+        this.config.setConnectTimeoutMills(connectTimeoutMills);
         return this;
     }
+
 }

@@ -44,7 +44,10 @@ public class NettyConstants {
 
     public static final int CLIENT_THREADS = 2;
 
+    public static final int CONNECT_TIMEOUT_MILLIS = 5000;
+    
     public static final String SSL_PASSWORD = "bytehonor";
+
 
     public static String JKS_FILE_PATH = "cert/server.jks";
 }

@@ -81,8 +81,13 @@ public class NettyMessageSender {
             throw new BytehonorNettySdkException("channel is not active");
         }
 
+        if (channel.isOpen() == false) {
+            LOG.debug("send bytes:{} failed, channelId:{} is not open", bytes, channel.id().asLongText());
+            throw new BytehonorNettySdkException("channel is not open");
+        }
+
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send bytes:{}, data:{}, channelId:{}", bytes, NettyDataUtils.parseData(bytes),
+            LOG.debug("send data:{}, bytes:{}, channelId:{}", NettyDataUtils.parseData(bytes), bytes,
                     channel.id().asLongText());
         }
 

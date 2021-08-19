@@ -19,8 +19,8 @@ public class NettyClientContanierTest {
             NettyClientContanier.connect(host, port);
             Thread.sleep(60000L);
             NettyClientContanier.send("hello world");
-            Thread.sleep(60000L * 5);
-        } catch (InterruptedException e) {
+            Thread.sleep(60000L * 10);
+        } catch (Exception e) {
             LOG.error("error", e);
         }
 
