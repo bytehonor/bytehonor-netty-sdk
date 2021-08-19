@@ -12,8 +12,8 @@ public class SubscribeChannelHolder {
 
     private static final ConcurrentHashMap<String, ChannelId> MAP = new ConcurrentHashMap<String, ChannelId>(CAPACITY);
 
-    public static String makeKey(ChannelId id, String value) {
-        return new StringBuilder().append(id.asLongText()).append(":").append(value).toString();
+    public static String makeKey(ChannelId id, String category) {
+        return new StringBuilder().append(id.asLongText()).append(":").append(category).toString();
     }
 
     public static Set<Entry<String, ChannelId>> entrySet() {
