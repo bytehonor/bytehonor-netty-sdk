@@ -3,10 +3,10 @@ bytehonor-netty-sdk
 
 ## 协议
 
-| head       | type       | length    |  data     |  check    |  end      |  
-| :--------  | :--------  | :-------- | :-------- | :-------- | :-------- |  
-| 0x24       | 0x01       | 0x0001    |  bytes[]  |  0x0001   |  0x26     |  
-| 1 byte     | 1 byte     | 2 byte    |  * byte   |  2 byte   |  1 byte   |  
+| head       | type       | length      |  data     |  check       |  end      |  
+| :--------  | :--------  | :---------  | :-------- | :----------  | :-------- |  
+| 0x24       | 0x01       | 0x00000001  |  bytes[]  |  0x00000001  |  0x26     |  
+| 1 byte     | 1 byte     | 4 byte      |  * byte   |  4 byte      |  1 byte   |  
 
 ```
 length = data + check + end

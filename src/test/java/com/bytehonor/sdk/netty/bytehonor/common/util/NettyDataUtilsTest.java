@@ -13,22 +13,31 @@ public class NettyDataUtilsTest {
     @Test
     public void testBuildString() {
         String text = "hello world";
-        byte[] bytes = NettyDataUtils.build(text);
-        
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 12000; i++) {
+            sb.append(text).append(",");
+        }
+        String full = sb.toString();
+        byte[] bytes = NettyDataUtils.build(full);
+        LOG.info("total:{}", bytes.length);
+
+        byte[] lengths = NettyDataUtils.parseLengthBytes(bytes);
+        int lengthValue = NettyByteUtils.bytesToInt(lengths);
+        LOG.info("lengths:{}, {}", lengths, lengthValue);
+
+        byte[] checks = NettyDataUtils.parseCheckBytes(bytes);
+        LOG.info("checks:{}, value:{}", checks, NettyByteUtils.bytesToInt(checks));
+
         NettyDataUtils.validate(bytes);
 
-        int length = bytes.length;
-
-        int lengthData = length - 7;
-        byte[] data = new byte[lengthData];
-        NettyByteUtils.copy(bytes, 4, lengthData, data);
+        byte[] data = NettyDataUtils.parseDataBytes(bytes);
 
         String msg = new String(data);
 
-        LOG.info("text:{}, bytes:{}", text, bytes);
-        LOG.info("msg:{}, data:{}", msg, data);
+//        LOG.info("text:{}, bytes:{}", text, bytes);
+//        LOG.info("msg:{}, data:{}", msg, data);
 
-        assertTrue("testBuildString", text.equals(msg));
+        assertTrue("testBuildString", full.equals(msg));
     }
 
 }
