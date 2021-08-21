@@ -13,7 +13,7 @@ public class PayloadHandlerFactory {
         return MAP.entrySet();
     }
 
-    public static Set<String> keys() {
+    public static Set<String> names() {
         return MAP.keySet();
     }
 
