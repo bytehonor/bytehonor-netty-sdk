@@ -26,7 +26,9 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ByteBuf) {
             NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
         } else {
-            LOG.error("channelRead unknown msg:{}, channelId:{}", msg.toString(), channel.id().asLongText());
+            String remoteAddress = channel.remoteAddress().toString();
+            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.toString(), remoteAddress,
+                    channel.id().asLongText());
         }
     }
 
@@ -40,7 +42,9 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         // 有异常就关闭连接
         Channel channel = ctx.channel();
-        LOG.error("exceptionCaught channelId:{}, error", channel.id().asLongText(), cause);
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", remoteAddress, channel.id().asLongText(),
+                cause);
         ServerChannelHolder.remove(channel);
         ctx.close();
     }
@@ -50,18 +54,20 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        String channelId = ctx.channel().id().asLongText();
-        LOG.info("handlerAdded channelId:{}", channelId);
+        Channel channel = ctx.channel();
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
 
         // 缓存连接
-        ServerChannelHolder.add(ctx.channel());
+        ServerChannelHolder.add(channel);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
 
         Channel channel = ctx.channel();
-        LOG.info("handlerRemoved channelId:{}", channel.id().asLongText());
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
 
         // 当触发handlerRemoved
         ServerChannelHolder.remove(channel);
