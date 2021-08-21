@@ -7,28 +7,28 @@ public class SubscribeRequest implements Serializable {
 
     private static final long serialVersionUID = -4282705113537223742L;
 
-    private String name;
+    private String category;
 
     private Boolean subscribed;
 
-    public static SubscribeRequest of(String name) {
-        return of(name, true);
+    public static SubscribeRequest of(String category) {
+        return of(category, true);
     }
 
-    public static SubscribeRequest of(String name, boolean subscribed) {
-        Objects.requireNonNull(name, "name");
+    public static SubscribeRequest of(String category, boolean subscribed) {
+        Objects.requireNonNull(category, "category");
         SubscribeRequest request = new SubscribeRequest();
-        request.setName(name);
+        request.setCategory(category);
         request.setSubscribed(subscribed);
         return request;
     }
 
-    public String getName() {
-        return name;
+    public String getCategory() {
+        return category;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public Boolean getSubscribed() {

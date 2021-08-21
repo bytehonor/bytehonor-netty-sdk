@@ -1,7 +1,7 @@
 package com.bytehonor.sdk.netty.bytehonor.common.handler;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lijianqiang
@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class NettyHandlerFactory {
 
-    private static final Map<Integer, NettyHandler> MAP = new HashMap<Integer, NettyHandler>();
+    private static final Map<Integer, NettyHandler> MAP = new ConcurrentHashMap<Integer, NettyHandler>();
 
     static {
         put(new NettyPingHandler());

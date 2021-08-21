@@ -117,8 +117,8 @@ public final class NettyClientContanier {
         if (request == null) {
             return;
         }
-        if (MAP.get(request.getName()) == null) {
-            MAP.put(request.getName(), request);
+        if (MAP.get(request.getCategory()) == null) {
+            MAP.put(request.getCategory(), request);
         }
         NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), request);
     }
