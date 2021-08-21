@@ -1,5 +1,8 @@
 package com.bytehonor.sdk.netty.bytehonor.common.handler;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,23 +36,24 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         NettyPayload payload = NettyPayload.fromJson(message);
         SubscribeRequest request = payload.one(SubscribeRequest.class);
 
-        PayloadHandler handler = PayloadHandlerFactory.get(request.getCategory());
-        boolean hasHandler = handler != null;
-        if (hasHandler) {
-            String key = SubscribeChannelHolder.makeKey(channel.id(), request.getCategory());
+        Set<String> names = toSet(request.getNames());
+        for (String name : names) {
+            LOG.info("subscribe:{}, category:{}", request.getSubscribed(), name);
+            String key = SubscribeChannelHolder.makeKey(channel.id(), name);
             if (request.getSubscribed()) {
                 SubscribeChannelHolder.put(key, channel.id());
             } else {
                 SubscribeChannelHolder.remove(key);
             }
-        } else {
-            LOG.error("no subscribe handler! category:{}", request.getCategory());
         }
 
-        LOG.info("subscribe:{}, category:{}, hasHandler:{}", request.getSubscribed(), request.getCategory(),
-                hasHandler);
-        SubscribeResult result = SubscribeResult.of(request.getCategory(), hasHandler);
+        SubscribeResult result = SubscribeResult.of(request.getNames(), names.size());
         NettyMessageSender.subscribeResult(channel, result);
     }
 
+    private Set<String> toSet(String value) {
+        Set<String> set = new HashSet<String>();
+
+        return set;
+    }
 }
