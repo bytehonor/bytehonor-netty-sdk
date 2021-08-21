@@ -25,19 +25,26 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof ByteBuf) {
             NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
         } else {
-            LOG.error("channelRead unknown msg:{}, channelId:{}", msg.toString(), channel.id().asLongText());
+            String remoteAddress = channel.remoteAddress().toString();
+            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.toString(), remoteAddress,
+                    channel.id().asLongText());
         }
     }
 
     // 当连接建立好的使用调用
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        LOG.info("channelActive channelId:{}", ctx.channel().id().asLongText());
+        Channel channel = ctx.channel();
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("channelActive remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        LOG.error("exceptionCaught error", cause);
+        Channel channel = ctx.channel();
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", remoteAddress, channel.id().asLongText(),
+                cause);
         ctx.close();
     }
 }

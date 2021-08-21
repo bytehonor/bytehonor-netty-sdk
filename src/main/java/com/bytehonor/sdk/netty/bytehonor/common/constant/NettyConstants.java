@@ -10,7 +10,7 @@ public class NettyConstants {
     /**
      * 接收客户端信息的最大长度
      */
-    public static final int SO_RCVBUF = SO_BACKLOG * SO_BACKLOG; // 4个字节表示长度 可以支持 Integer.MAX
+    public static final int SO_RCVBUF = 256 * 1024 * 1024; // 4个字节表示长度 可以支持 Integer.MAX
 
     public static final byte HEAD = 0x24;
     public static final String HEAD_S = "$";
@@ -24,7 +24,7 @@ public class NettyConstants {
     public static final int TYPE_DEFAULT = NettyTypeEnum.PUBLIC_PAYLOAD.getType();
     public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节
     public static final int LENGTH_SIZE = 4;
-    public static final int MAX_LENGTH = SO_RCVBUF - 32; // 两个字节表示长度 ffff = 65535
+    public static final int MAX_LENGTH = SO_RCVBUF - 32; // 最大长度减去一点
     public static final int CHECK_SIZE = 4;
 
     /**
@@ -45,9 +45,8 @@ public class NettyConstants {
     public static final int CLIENT_THREADS = 2;
 
     public static final int CONNECT_TIMEOUT_MILLIS = 5000;
-    
-    public static final String SSL_PASSWORD = "bytehonor";
 
+    public static final String SSL_PASSWORD = "bytehonor";
 
     public static String JKS_FILE_PATH = "cert/server.jks";
 }

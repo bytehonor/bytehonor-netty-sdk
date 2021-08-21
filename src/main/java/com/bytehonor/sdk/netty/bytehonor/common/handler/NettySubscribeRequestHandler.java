@@ -53,7 +53,13 @@ public class NettySubscribeRequestHandler implements NettyHandler {
 
     private Set<String> toSet(String value) {
         Set<String> set = new HashSet<String>();
-
+        String[] arr = value.split(",");
+        for (String a : arr) {
+            if (a.length() < 2) {
+                continue;
+            }
+            set.add(a);
+        }
         return set;
     }
 }
