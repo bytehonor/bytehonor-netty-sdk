@@ -38,7 +38,7 @@ public class NettySubscribeRequestHandler implements NettyHandler {
 
         Set<String> names = toSet(request.getNames());
         for (String name : names) {
-            LOG.info("subscribe:{}, category:{}", request.getSubscribed(), name);
+            LOG.info("subscribe:{}, name:{}", request.getSubscribed(), name);
             String key = SubscribeChannelHolder.makeKey(channel.id(), name);
             if (request.getSubscribed()) {
                 SubscribeChannelHolder.put(key, channel.id());
