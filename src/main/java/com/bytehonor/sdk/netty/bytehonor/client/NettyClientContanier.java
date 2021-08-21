@@ -1,8 +1,9 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,8 @@ public final class NettyClientContanier {
     private static boolean ping = false;
 
     private static final Map<String, SubscribeRequest> MAP = new HashMap<String, SubscribeRequest>();
+
+    private static final Set<String> SET = new HashSet<String>();
 
     private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
 
@@ -99,8 +102,8 @@ public final class NettyClientContanier {
         // 把任务重新订阅
         if (MAP.isEmpty() == false) {
             LOG.info("subscribe again ...");
-            for (Entry<String, SubscribeRequest> item : MAP.entrySet()) {
-                subscribe(item.getValue());
+            for (String category : SET) {
+                subscribe(category);
             }
         }
     }
@@ -113,13 +116,23 @@ public final class NettyClientContanier {
         NettyMessageSender.send(getInstance().client.getChannel(), value);
     }
 
-    public static void subscribe(SubscribeRequest request) {
-        if (request == null) {
+    public static void subscribe(String category) {
+        if (category == null) {
             return;
         }
-        if (MAP.get(request.getCategory()) == null) {
-            MAP.put(request.getCategory(), request);
+        if (SET.contains(category) == false) {
+            SET.add(category);
         }
-        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), request);
+        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), SubscribeRequest.of(category));
+    }
+
+    public static void unsubscribe(String category) {
+        if (category == null) {
+            return;
+        }
+        if (SET.contains(category)) {
+            SET.remove(category);
+        }
+        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), SubscribeRequest.of(category, false));
     }
 }
