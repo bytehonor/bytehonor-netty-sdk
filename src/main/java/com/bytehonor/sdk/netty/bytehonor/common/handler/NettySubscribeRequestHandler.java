@@ -33,7 +33,7 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         NettyPayload payload = NettyPayload.fromJson(message);
         SubscribeRequest request = payload.one(SubscribeRequest.class);
 
-        SubscribeHandler handler = SubscribeHandlerFactory.get(request.getCategory());
+        PayloadHandler handler = PayloadHandlerFactory.get(request.getCategory());
         boolean hasHandler = handler != null;
         if (hasHandler) {
             String key = SubscribeChannelHolder.makeKey(channel.id(), request.getCategory());

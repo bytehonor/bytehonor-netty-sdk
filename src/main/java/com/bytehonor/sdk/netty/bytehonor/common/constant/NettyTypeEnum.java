@@ -25,7 +25,7 @@ public enum NettyTypeEnum {
 
     SUBSCRIBE_RESULT(4, "subscribe_result"),
 
-    NORMAL_MESSAGE(10, "普通传输"),
+    PUBLIC_PAYLOAD(10, "普通传输"),
 
     ;
 

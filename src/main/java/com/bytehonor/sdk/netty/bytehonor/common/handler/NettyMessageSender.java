@@ -73,7 +73,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(value, "value");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, value);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
         doSendBytes(channel, bytes);
     }
 
@@ -103,7 +103,7 @@ public class NettyMessageSender {
     public static void broadcast(String value) {
         Objects.requireNonNull(value, "value");
 
-        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, value);
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
         ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
@@ -112,12 +112,12 @@ public class NettyMessageSender {
         });
     }
 
-    public static void sendGroup(NettyPayload payload) {
+    public static void pushGroup(NettyPayload payload) {
         Objects.requireNonNull(payload, "payload");
         Objects.requireNonNull(payload.getName(), "name");
 
         final String name = payload.getName();
-        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, payload.toString());
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;

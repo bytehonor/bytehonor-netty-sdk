@@ -21,7 +21,7 @@ public class NettyConstants {
     public static final int HEAD_SIZE = 1;
     public static final int END_SIZE = 1;
     public static final int TYPE_SIZE = 1;
-    public static final int TYPE_DEFAULT = NettyTypeEnum.NORMAL_MESSAGE.getType();
+    public static final int TYPE_DEFAULT = NettyTypeEnum.PUBLIC_PAYLOAD.getType();
     public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节
     public static final int LENGTH_SIZE = 4;
     public static final int MAX_LENGTH = SO_RCVBUF - 32; // 两个字节表示长度 ffff = 65535

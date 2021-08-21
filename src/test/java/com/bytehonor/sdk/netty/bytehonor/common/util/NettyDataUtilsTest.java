@@ -20,7 +20,7 @@ public class NettyDataUtilsTest {
             sb.append(text).append(",");
         }
         String full = sb.toString();
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, full);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, full);
         LOG.info("total:{}", bytes.length);
 
         byte[] lengths = NettyDataUtils.parseLengthBytes(bytes);
