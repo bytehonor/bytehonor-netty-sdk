@@ -10,12 +10,12 @@ import java.util.Map;
 public class NettyHandlerFactory {
 
     private static final Map<Integer, NettyHandler> MAP = new HashMap<Integer, NettyHandler>();
-    
+
     static {
         put(new NettyPingHandler());
         put(new NettyPongHandler());
-        put(new NettySubscribeHandler());
-        put(new NettyUnsubscribeHandler());
+        put(new NettySubscribeRequestHandler());
+        put(new NettySubscribeResultHandler());
     }
 
     public static void put(NettyHandler handler) {

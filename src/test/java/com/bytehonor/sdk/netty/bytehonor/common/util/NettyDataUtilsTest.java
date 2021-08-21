@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
+
 public class NettyDataUtilsTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyDataUtilsTest.class);
@@ -18,7 +20,7 @@ public class NettyDataUtilsTest {
             sb.append(text).append(",");
         }
         String full = sb.toString();
-        byte[] bytes = NettyDataUtils.build(full);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, full);
         LOG.info("total:{}", bytes.length);
 
         byte[] lengths = NettyDataUtils.parseLengthBytes(bytes);

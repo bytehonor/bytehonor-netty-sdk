@@ -21,12 +21,6 @@ public class NettyDataUtils {
 
     private static final String UTF_8 = "UTF-8";
 
-    public static byte[] build(String data) {
-        Objects.requireNonNull(data, "data");
-
-        return doBuild(NettyConstants.TYPE_DEFAULT, data.getBytes(Charset.forName(UTF_8)));
-    }
-
     public static byte[] build(NettyTypeEnum type, String data) {
         Objects.requireNonNull(data, "data");
 

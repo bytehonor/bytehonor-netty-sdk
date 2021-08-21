@@ -1,16 +1,17 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
 
 public final class NettyClientContanier {
 
@@ -24,7 +25,7 @@ public final class NettyClientContanier {
 
     private static boolean ping = false;
 
-    private static final Set<String> SET = new HashSet<String>();
+    private static final Map<String, SubscribeRequest> MAP = new HashMap<String, SubscribeRequest>();
 
     private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
 
@@ -96,10 +97,10 @@ public final class NettyClientContanier {
             return;
         }
         // 把任务重新订阅
-        if (CollectionUtils.isEmpty(SET) == false) {
+        if (MAP.isEmpty() == false) {
             LOG.info("subscribe again ...");
-            for (String value : SET) {
-                subscribe(value);
+            for (Entry<String, SubscribeRequest> item : MAP.entrySet()) {
+                subscribe(item.getValue());
             }
         }
     }
@@ -112,11 +113,13 @@ public final class NettyClientContanier {
         NettyMessageSender.send(getInstance().client.getChannel(), value);
     }
 
-    public static void subscribe(String category) {
-        if (category == null) {
+    public static void subscribe(SubscribeRequest request) {
+        if (request == null) {
             return;
         }
-        SET.add(category);
-        NettyMessageSender.subscribe(getInstance().client.getChannel(), category);
+        if (MAP.get(request.getName()) == null) {
+            MAP.put(request.getName(), request);
+        }
+        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), request);
     }
 }

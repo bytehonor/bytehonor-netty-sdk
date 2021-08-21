@@ -9,6 +9,9 @@ import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResult;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -31,64 +34,65 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
 
         byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PING, PING);
-        send(channel, bytes);
+        doSendBytes(channel, bytes);
     }
 
     public static void pong(Channel channel) {
         Objects.requireNonNull(channel, "channel");
 
         byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PONG, PONG);
-        send(channel, bytes);
+        doSendBytes(channel, bytes);
     }
 
-    public static void accept(Channel channel, boolean success) {
+    public static void subscribeResult(Channel channel, SubscribeResult result) {
         Objects.requireNonNull(channel, "channel");
-        String data = success ? "true" : "false";
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.ACCEPT, data);
-        send(channel, bytes);
+        Objects.requireNonNull(result, "result");
+
+        NettyPayload payload = NettyPayload.fromOne(result);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_RESULT, payload.toString());
+        doSendBytes(channel, bytes);
     }
 
-    public static void subscribe(Channel channel, String value) {
+    public static void subscribeRequest(Channel channel, SubscribeRequest request) {
         Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(value, "value");
+        Objects.requireNonNull(request, "request");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE, value);
-        send(channel, bytes);
+        NettyPayload payload = NettyPayload.fromOne(request);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_REQUEST, payload.toString());
+        doSendBytes(channel, bytes);
     }
 
-    public static void unsubscribe(Channel channel, String value) {
+    public static void send(Channel channel, NettyPayload payload) {
         Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(value, "value");
+        Objects.requireNonNull(payload, "payload");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.UNSUBSCRIBE, value);
-        send(channel, bytes);
+        send(channel, payload.toString());
     }
 
     public static void send(Channel channel, String value) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(value, "value");
 
-        byte[] bytes = NettyDataUtils.build(value);
-        send(channel, bytes);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, value);
+        doSendBytes(channel, bytes);
     }
 
-    private static void send(Channel channel, byte[] bytes) {
+    private static void doSendBytes(Channel channel, byte[] bytes) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(bytes, "bytes");
 
         if (channel.isActive() == false) {
-            LOG.debug("send bytes:{} failed, channelId:{} is not active", bytes, channel.id().asLongText());
+            LOG.debug("send bytes failed, channelId:{} is not active", channel.id().asLongText());
             throw new BytehonorNettySdkException("channel is not active");
         }
 
         if (channel.isOpen() == false) {
-            LOG.debug("send bytes:{} failed, channelId:{} is not open", bytes, channel.id().asLongText());
+            LOG.debug("send bytes failed, channelId:{} is not open", channel.id().asLongText());
             throw new BytehonorNettySdkException("channel is not open");
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send data:{}, bytes:{}, channelId:{}", NettyDataUtils.parseData(bytes), bytes,
-                    channel.id().asLongText());
+            LOG.debug("send data:{}, channelId:{}", NettyDataUtils.parseData(bytes), channel.id().asLongText());
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输
@@ -99,29 +103,30 @@ public class NettyMessageSender {
     public static void broadcast(String value) {
         Objects.requireNonNull(value, "value");
 
-        final byte[] bytes = NettyDataUtils.build(value);
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, value);
         ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
             }
-            send(channel, bytes);
+            doSendBytes(channel, bytes);
         });
     }
 
-    public static void push(String category, String value) {
-        Objects.requireNonNull(category, "category");
-        Objects.requireNonNull(value, "value");
+    public static void sendGroup(NettyPayload payload) {
+        Objects.requireNonNull(payload, "payload");
+        Objects.requireNonNull(payload.getName(), "name");
 
-        final byte[] bytes = NettyDataUtils.build(value);
+        final String name = payload.getName();
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.NORMAL_MESSAGE, payload.toString());
         ServerChannelHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
             }
-            String key = SubscribeChannelHolder.makeKey(channel.id(), category);
+            String key = SubscribeChannelHolder.makeKey(channel.id(), name);
             if (SubscribeChannelHolder.exists(key) == false) {
                 return;
             }
-            send(channel, bytes);
+            doSendBytes(channel, bytes);
         });
     }
 }
