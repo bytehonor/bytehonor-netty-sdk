@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
@@ -171,16 +170,6 @@ public final class NettyClientContanier {
 
     public static void whois(String id) {
         getInstance().client.whois(id);
-    }
-
-    public static void whois(Environment env) {
-        Objects.requireNonNull(env, "env");
-        whois(id(env));
-    }
-
-    private static String id(Environment env) {
-        return new StringBuilder().append(env.getProperty("spring.application.name")).append(":")
-                .append(env.getProperty("server.port")).toString();
     }
 
     public static void ping() {
