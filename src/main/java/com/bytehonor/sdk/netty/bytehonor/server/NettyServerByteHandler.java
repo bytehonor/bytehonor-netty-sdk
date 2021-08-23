@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
+import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -18,6 +19,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerByteHandler.class);
+
+    private String whoiam;
+
+    public NettyServerByteHandler() {
+        this(null);
+    }
+
+    public NettyServerByteHandler(String whoiam) {
+        this.whoiam = whoiam;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -57,7 +68,9 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         String remoteAddress = channel.remoteAddress().toString();
         LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
-
+        if (this.whoiam != null) {
+            NettyMessageSender.whoisServer(channel, this.whoiam);
+        }
         // 缓存连接
         ServerChannelHolder.add(channel);
     }

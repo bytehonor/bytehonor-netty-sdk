@@ -4,6 +4,8 @@ import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 
 public class NettyConfig {
 
+    private String whoiam;
+
     private boolean ssl;
 
     private boolean sslEngine;
@@ -28,6 +30,7 @@ public class NettyConfig {
     private int connectTimeoutMills;
 
     public NettyConfig() {
+        this.whoiam = null;
         this.ssl = false;
         this.sslEngine = false;
         this.sslPassword = NettyConstants.SSL_PASSWORD;
@@ -41,6 +44,14 @@ public class NettyConfig {
         this.workThreads = NettyConstants.WORD_THREADS;
         this.clientThreads = NettyConstants.CLIENT_THREADS;
         this.connectTimeoutMills = NettyConstants.CONNECT_TIMEOUT_MILLIS;
+    }
+
+    public String getWhoiam() {
+        return whoiam;
+    }
+
+    public void setWhoiam(String whoiam) {
+        this.whoiam = whoiam;
     }
 
     public boolean isSsl() {

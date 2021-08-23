@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
+import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -17,6 +18,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientByteHandler.class);
+
+    private String whoiam;
+
+    public NettyClientByteHandler() {
+        this(null);
+    }
+
+    public NettyClientByteHandler(String whoiam) {
+        this.whoiam = whoiam;
+    }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -36,6 +47,9 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
         String remoteAddress = channel.remoteAddress().toString();
+        if (this.whoiam != null) {
+            NettyMessageSender.whoisClient(channel, this.whoiam);
+        }
         LOG.info("channelActive remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
     }
 

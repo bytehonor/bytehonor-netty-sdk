@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.ChannelId;
 
-public class AppidChannelCacheHolder {
+public class WhoisServerCacheHolder {
 
     private static int CAPACITY = 1024;
 
@@ -21,24 +21,24 @@ public class AppidChannelCacheHolder {
         return CACHE.size();
     }
 
-    public static void put(String appid, ChannelId channelId) {
-        if (appid == null) {
+    public static void put(String whois, ChannelId channelId) {
+        if (whois == null) {
             return;
         }
-        CACHE.put(appid, channelId);
+        CACHE.put(whois, channelId);
     }
 
-    public static ChannelId get(String appid) {
-        if (appid == null) {
+    public static ChannelId get(String whois) {
+        if (whois == null) {
             return null;
         }
-        return CACHE.get(appid);
+        return CACHE.get(whois);
     }
 
-    public static void remove(String appid) {
-        if (appid == null) {
+    public static void remove(String whois) {
+        if (whois == null) {
             return;
         }
-        CACHE.remove(appid);
+        CACHE.remove(whois);
     }
 }

@@ -6,6 +6,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
+
 public class NettyClientContanierTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientContanierTest.class);
@@ -16,9 +19,9 @@ public class NettyClientContanierTest {
         int port = 81;
 
         try {
-            NettyClientContanier.connect(host, port);
+            NettyConfig config = NettyConfigBuilder.create().whoiam("test").build();
+            NettyClientContanier.connect(host, port, config);
             Thread.sleep(60000L);
-            NettyClientContanier.whois("test");
             NettyClientContanier.send("hello world");
             Thread.sleep(60000L * 10);
         } catch (Exception e) {

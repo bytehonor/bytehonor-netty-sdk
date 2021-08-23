@@ -29,8 +29,6 @@ public final class NettyClientContanier {
 
     private static boolean pinged = false;
 
-    private static boolean whoised = false;
-
     private static final Set<String> SET = new HashSet<String>();
 
     private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
@@ -92,27 +90,6 @@ public final class NettyClientContanier {
         }
     }
 
-    public static void startWhois(final String id) {
-        if (whoised == false) {
-            LOG.info("startWhois begin ...");
-            whoised = true;
-            // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        whois(id);
-                    } catch (Exception e) {
-                        LOG.error("report error:{}", e.getMessage());
-                        reconnect();
-                    }
-                }
-            };
-
-            scheduleAtFixedRate(runnable, 25, 300);
-        }
-    }
-
     public static void reconnect() {
         LOG.info("reconnect begin ...");
         connect(getInstance().host, getInstance().port, getInstance().config);
@@ -166,10 +143,6 @@ public final class NettyClientContanier {
             SET.remove(names);
         }
         getInstance().client.unsubscribe(names);
-    }
-
-    public static void whois(String id) {
-        getInstance().client.whois(id);
     }
 
     public static void ping() {

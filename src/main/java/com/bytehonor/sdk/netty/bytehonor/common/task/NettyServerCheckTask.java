@@ -6,9 +6,9 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.AppidChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.WhoisClientCacheHolder;
 
 import io.netty.channel.ChannelId;
 
@@ -18,7 +18,7 @@ public class NettyServerCheckTask implements Runnable {
 
     @Override
     public void run() {
-        LOG.info("subscribe size:{}, appid size:{}", SubscribeChannelHolder.size(), AppidChannelCacheHolder.size());
+        LOG.info("subscribe size:{}, whois size:{}", SubscribeChannelHolder.size(), WhoisClientCacheHolder.size());
         Iterator<Entry<String, ChannelId>> its = SubscribeChannelHolder.entrySet().iterator();
         while (its.hasNext()) {
             Entry<String, ChannelId> item = its.next();
@@ -28,13 +28,13 @@ public class NettyServerCheckTask implements Runnable {
             }
         }
 
-        Iterator<Entry<String, ChannelId>> itc = AppidChannelCacheHolder.entrySet().iterator();
+        Iterator<Entry<String, ChannelId>> itc = WhoisClientCacheHolder.entrySet().iterator();
         while (its.hasNext()) {
             Entry<String, ChannelId> item = itc.next();
-            LOG.warn("check appid:{}, channel:{}", item.getKey(), item.getValue());
+            LOG.warn("check whois:{}, channel:{}", item.getKey(), item.getValue());
             if (ServerChannelHolder.get(item.getValue()) == null) {
-                LOG.warn("remove appid:{}, channel:{}", item.getKey(), item.getValue());
-                AppidChannelCacheHolder.remove(item.getKey());
+                LOG.warn("remove whois:{}, channel:{}", item.getKey(), item.getValue());
+                WhoisClientCacheHolder.remove(item.getKey());
             }
         }
 

@@ -80,11 +80,6 @@ public class NettyClient {
         return channel;
     }
 
-    public void whois(String id) {
-        Objects.requireNonNull(id, "id");
-        NettyMessageSender.whois(channel, id);
-    }
-
     public void ping() {
         NettyMessageSender.ping(channel);
     }

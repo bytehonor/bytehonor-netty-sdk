@@ -16,6 +16,11 @@ public class NettyConfigBuilder {
         return config;
     }
 
+    public NettyConfigBuilder whoiam(String whoiam) {
+        this.config.setWhoiam(whoiam);
+        return this;
+    }
+
     public NettyConfigBuilder ssl(boolean sslEnabled) {
         return ssl(sslEnabled, false, null);
     }

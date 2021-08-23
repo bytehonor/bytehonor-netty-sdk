@@ -37,8 +37,8 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyClientByteHandler());
-        
+        pipeline.addLast(new NettyClientByteHandler(config.getWhoiam()));
+
         // 自定义的空闲检测
         pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
                 config.getAllIdleTimeSeconds()));

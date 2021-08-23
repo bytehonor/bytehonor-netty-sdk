@@ -21,7 +21,9 @@ public enum NettyTypeEnum {
 
     PONG(2, "pong"),
 
-    WHOIS(3, "whois"),
+    WHOIAM_CLIENT(3, "whoiam_client"),
+
+    WHOIS_SERVER(4, "whoiam_server"),
 
     SUBSCRIBE_REQUEST(10, "subscribe_request"),
 
