@@ -1,8 +1,6 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,8 +23,6 @@ public final class NettyClientContanier {
     private int port;
 
     private static boolean ping = false;
-
-    private static final Map<String, SubscribeRequest> MAP = new HashMap<String, SubscribeRequest>();
 
     private static final Set<String> SET = new HashSet<String>();
 
@@ -77,7 +73,7 @@ public final class NettyClientContanier {
                 }
             };
             // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-            SERVICE.scheduleAtFixedRate(runnable, 20, 35, TimeUnit.SECONDS);
+            SERVICE.scheduleAtFixedRate(runnable, 20, 45, TimeUnit.SECONDS);
         }
     }
 
@@ -100,7 +96,7 @@ public final class NettyClientContanier {
             return;
         }
         // 把任务重新订阅
-        if (MAP.isEmpty() == false) {
+        if (SET.isEmpty() == false) {
             LOG.info("subscribe again ...");
             for (String category : SET) {
                 subscribe(category);

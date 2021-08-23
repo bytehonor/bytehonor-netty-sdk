@@ -7,6 +7,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.AppidChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 
 /**
  * @author lijianqiang
@@ -23,10 +24,11 @@ public class NettyAppidHandler implements NettyHandler {
 
     @Override
     public void handle(Channel channel, String message) {
+        ChannelId channelId = channel.id();
         if (LOG.isDebugEnabled()) {
-            LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
+            LOG.debug("message:{}, channelId:{}", message, channelId.asLongText());
         }
-        AppidChannelCacheHolder.put(message, channel.id());
+        AppidChannelCacheHolder.put(message, channelId);
     }
 
 }

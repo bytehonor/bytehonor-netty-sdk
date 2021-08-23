@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
-import com.bytehonor.sdk.netty.bytehonor.common.task.ChannelCheckTask;
+import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -110,7 +110,7 @@ public class NettyServer {
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
 
-            SERVICE.scheduleAtFixedRate(new ChannelCheckTask(), 30, 150, TimeUnit.SECONDS);
+            SERVICE.scheduleAtFixedRate(new NettyServerCheckTask(), 30, 150, TimeUnit.SECONDS);
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
         }
