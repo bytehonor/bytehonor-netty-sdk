@@ -13,13 +13,13 @@ import io.netty.channel.ChannelId;
  * @author lijianqiang
  *
  */
-public class NettyAppidHandler implements NettyHandler {
+public class NettyWhoisHandler implements NettyHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyAppidHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyWhoisHandler.class);
 
     @Override
     public int type() {
-        return NettyTypeEnum.APPID.getType();
+        return NettyTypeEnum.WHOIS.getType();
     }
 
     @Override

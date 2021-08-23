@@ -21,13 +21,13 @@ public enum NettyTypeEnum {
 
     PONG(2, "pong"),
 
-    SUBSCRIBE_REQUEST(3, "subscribe_request"),
+    WHOIS(3, "whois"),
 
-    SUBSCRIBE_RESULT(4, "subscribe_result"),
+    SUBSCRIBE_REQUEST(10, "subscribe_request"),
 
-    APPID(6, "appid"),
+    SUBSCRIBE_RESULT(11, "subscribe_result"),
 
-    PUBLIC_PAYLOAD(10, "普通传输"),
+    PUBLIC_PAYLOAD(20, "普通传输"),
 
     ;
 

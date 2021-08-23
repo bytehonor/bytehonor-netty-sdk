@@ -1,10 +1,14 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
+import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -74,5 +78,40 @@ public class NettyClient {
 
     public Channel getChannel() {
         return channel;
+    }
+
+    public void whois() {
+        if (config.getWhois() == null) {
+            LOG.error("whois is null");
+            return;
+        }
+        NettyMessageSender.whois(channel, config.getWhois());
+    }
+
+    public void ping() {
+        NettyMessageSender.ping(channel);
+    }
+
+    public boolean isConnected() {
+        return channel.isActive();
+    }
+
+    public void send(String value) {
+        Objects.requireNonNull(value, "value");
+        NettyMessageSender.send(channel, value);
+    }
+
+    public void subscribe(String names) {
+        if (names == null) {
+            return;
+        }
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(names));
+    }
+
+    public void unsubscribe(String names) {
+        if (names == null) {
+            return;
+        }
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(names, false));
     }
 }

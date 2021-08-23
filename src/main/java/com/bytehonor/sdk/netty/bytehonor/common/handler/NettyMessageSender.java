@@ -44,11 +44,11 @@ public class NettyMessageSender {
         doSendBytes(channel, bytes);
     }
 
-    public static void appid(Channel channel, String appid) {
+    public static void whois(Channel channel, String whois) {
         Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(appid, "appid");
+        Objects.requireNonNull(whois, "whois");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.APPID, appid);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.WHOIS, whois);
         doSendBytes(channel, bytes);
     }
 

@@ -1,6 +1,7 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,8 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 
 public final class NettyClientContanier {
 
@@ -22,7 +22,11 @@ public final class NettyClientContanier {
 
     private int port;
 
-    private static boolean ping = false;
+    private NettyConfig config;
+
+    private static boolean pinged = false;
+
+    private static boolean whoised = false;
 
     private static final Set<String> SET = new HashSet<String>();
 
@@ -44,42 +48,71 @@ public final class NettyClientContanier {
     }
 
     public static void connect(String host, int port) {
+        connect(host, port, new NettyConfig());
+    }
+
+    public static void connect(String host, int port, NettyConfig config) {
+        Objects.requireNonNull(host, "host");
+        Objects.requireNonNull(config, "config");
+
         LOG.info("connect begin ...");
         getInstance().host = host;
         getInstance().port = port;
+        getInstance().config = config;
         if (getInstance().client != null) {
             getInstance().client.getChannel().close();
         }
-        getInstance().client = new NettyClient(host, port);
+        getInstance().client = new NettyClient(host, port, config);
         getInstance().client.start();
-        ping();
+        startPing();
     }
 
-    private static void ping() {
-        if (ping == false) {
-            LOG.info("ping begin ...");
-            ping = true;
+    private static void startPing() {
+        if (pinged == false) {
+            LOG.info("startPing begin ...");
+            pinged = true;
             // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
             final Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     // task to run goes here
                     try {
-                        NettyMessageSender.ping(getInstance().client.getChannel());
+                        ping();
                     } catch (Exception e) {
                         LOG.error("ping error:{}", e.getMessage());
                         reconnect();
                     }
                 }
             };
-            // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-            SERVICE.scheduleAtFixedRate(runnable, 20, 45, TimeUnit.SECONDS);
+
+            scheduleAtFixedRate(runnable, 20, 45);
+        }
+    }
+
+    public static void startWhois() {
+        if (whoised == false) {
+            LOG.info("startWhois begin ...");
+            whoised = true;
+            // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
+            final Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        whois();
+                    } catch (Exception e) {
+                        LOG.error("report error:{}", e.getMessage());
+                        reconnect();
+                    }
+                }
+            };
+
+            scheduleAtFixedRate(runnable, 25, 300);
         }
     }
 
     public static void reconnect() {
         LOG.info("reconnect begin ...");
-        connect(getInstance().host, getInstance().port);
+        connect(getInstance().host, getInstance().port, getInstance().config);
         for (int i = 0; i < 20; i++) {
             try {
                 Thread.sleep(500L);
@@ -105,30 +138,43 @@ public final class NettyClientContanier {
     }
 
     public static boolean isConnected() {
-        return getInstance().client.getChannel().isActive();
+        return getInstance().client.isConnected();
     }
 
     public static void send(String value) {
-        NettyMessageSender.send(getInstance().client.getChannel(), value);
+        getInstance().client.send(value);
     }
 
-    public static void subscribe(String category) {
-        if (category == null) {
+    public static void subscribe(String names) {
+        if (names == null) {
             return;
         }
-        if (SET.contains(category) == false) {
-            SET.add(category);
+        if (SET.contains(names) == false) {
+            SET.add(names);
         }
-        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), SubscribeRequest.of(category));
+        getInstance().client.subscribe(names);
     }
 
-    public static void unsubscribe(String category) {
-        if (category == null) {
+    public static void unsubscribe(String names) {
+        if (names == null) {
             return;
         }
-        if (SET.contains(category)) {
-            SET.remove(category);
+        if (SET.contains(names)) {
+            SET.remove(names);
         }
-        NettyMessageSender.subscribeRequest(getInstance().client.getChannel(), SubscribeRequest.of(category, false));
+        getInstance().client.unsubscribe(names);
+    }
+
+    public static void whois() {
+        getInstance().client.whois();
+    }
+
+    public static void ping() {
+        getInstance().client.ping();
+    }
+
+    public static void scheduleAtFixedRate(Runnable command, long delaySeconds, long periodSeconds) {
+        // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
+        SERVICE.scheduleAtFixedRate(command, delaySeconds, periodSeconds, TimeUnit.SECONDS);
     }
 }

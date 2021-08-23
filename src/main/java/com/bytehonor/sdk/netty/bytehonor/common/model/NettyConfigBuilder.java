@@ -8,12 +8,17 @@ public class NettyConfigBuilder {
         this.config = new NettyConfig();
     }
 
-    public static NettyConfigBuilder make() {
+    public static NettyConfigBuilder create() {
         return new NettyConfigBuilder();
     }
 
     public NettyConfig build() {
         return config;
+    }
+
+    public NettyConfigBuilder whois(String whois) {
+        this.config.setWhois(whois);
+        return this;
     }
 
     public NettyConfigBuilder ssl(boolean sslEnabled) {
