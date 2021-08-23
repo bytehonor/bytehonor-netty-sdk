@@ -89,7 +89,7 @@ public final class NettyClientContanier {
         }
     }
 
-    public static void startWhois() {
+    public static void startWhois(final String id) {
         if (whoised == false) {
             LOG.info("startWhois begin ...");
             whoised = true;
@@ -98,7 +98,7 @@ public final class NettyClientContanier {
                 @Override
                 public void run() {
                     try {
-                        whois();
+                        whois(id);
                     } catch (Exception e) {
                         LOG.error("report error:{}", e.getMessage());
                         reconnect();
@@ -165,8 +165,8 @@ public final class NettyClientContanier {
         getInstance().client.unsubscribe(names);
     }
 
-    public static void whois() {
-        getInstance().client.whois();
+    public static void whois(String id) {
+        getInstance().client.whois(id);
     }
 
     public static void ping() {

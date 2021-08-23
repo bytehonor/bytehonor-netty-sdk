@@ -80,12 +80,9 @@ public class NettyClient {
         return channel;
     }
 
-    public void whois() {
-        if (config.getWhois() == null) {
-            LOG.error("whois is null");
-            return;
-        }
-        NettyMessageSender.whois(channel, config.getWhois());
+    public void whois(String id) {
+        Objects.requireNonNull(id, "id");
+        NettyMessageSender.whois(channel, id);
     }
 
     public void ping() {

@@ -16,11 +16,6 @@ public class NettyConfigBuilder {
         return config;
     }
 
-    public NettyConfigBuilder whois(String whois) {
-        this.config.setWhois(whois);
-        return this;
-    }
-
     public NettyConfigBuilder ssl(boolean sslEnabled) {
         return ssl(sslEnabled, false, null);
     }

@@ -18,8 +18,8 @@ public class NettyClientContanierTest {
         try {
             NettyClientContanier.connect(host, port);
             Thread.sleep(60000L);
+            NettyClientContanier.whois("test");
             NettyClientContanier.send("hello world");
-            NettyClientContanier.whois();
             Thread.sleep(60000L * 10);
         } catch (Exception e) {
             LOG.error("error", e);
