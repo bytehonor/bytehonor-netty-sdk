@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
+import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
@@ -171,6 +173,16 @@ public final class NettyClientContanier {
         getInstance().client.whois(id);
     }
 
+    public static void whois(Environment env) {
+        Objects.requireNonNull(env, "env");
+        whois(id(env));
+    }
+
+    private static String id(Environment env) {
+        return new StringBuilder().append(env.getProperty("spring.application.name")).append(":")
+                .append(env.getProperty("server.port")).toString();
+    }
+
     public static void ping() {
         getInstance().client.ping();
     }
@@ -180,16 +192,12 @@ public final class NettyClientContanier {
         SERVICE.scheduleAtFixedRate(command, delaySeconds, periodSeconds, TimeUnit.SECONDS);
     }
 
-    public static void addHandler(PayloadHandler handler) {
-        PayloadHandlerFactory.put(handler);
-    }
-
-    public static void subscribeAuto() {
-        Set<String> names = PayloadHandlerFactory.names();
-        StringBuilder sb = new StringBuilder();
-        for (String name : names) {
-            sb.append(name).append(",");
+    public static void handle(PayloadHandler handler) {
+        Objects.requireNonNull(handler, "handler");
+        if (isConnected() == false) {
+            throw new BytehonorNettySdkException("Handle should be after connected");
         }
-        subscribe(sb.toString());
+        PayloadHandlerFactory.put(handler);
+        subscribe(handler.name());
     }
 }
