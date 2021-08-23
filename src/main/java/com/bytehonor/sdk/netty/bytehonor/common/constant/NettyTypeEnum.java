@@ -25,6 +25,8 @@ public enum NettyTypeEnum {
 
     SUBSCRIBE_RESULT(4, "subscribe_result"),
 
+    APPID(6, "appid"),
+
     PUBLIC_PAYLOAD(10, "普通传输"),
 
     ;
