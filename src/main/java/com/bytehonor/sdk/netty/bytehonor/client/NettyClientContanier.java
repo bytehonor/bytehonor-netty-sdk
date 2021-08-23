@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
+import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 
 public final class NettyClientContanier {
@@ -176,5 +178,18 @@ public final class NettyClientContanier {
     public static void scheduleAtFixedRate(Runnable command, long delaySeconds, long periodSeconds) {
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
         SERVICE.scheduleAtFixedRate(command, delaySeconds, periodSeconds, TimeUnit.SECONDS);
+    }
+
+    public static void addHandler(PayloadHandler handler) {
+        PayloadHandlerFactory.put(handler);
+    }
+
+    public static void subscribeAuto() {
+        Set<String> names = PayloadHandlerFactory.names();
+        StringBuilder sb = new StringBuilder();
+        for (String name : names) {
+            sb.append(name).append(",");
+        }
+        subscribe(sb.toString());
     }
 }
