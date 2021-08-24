@@ -3,9 +3,6 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +11,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkExcep
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
 
 public final class NettyClientContanier {
 
@@ -30,8 +28,6 @@ public final class NettyClientContanier {
     private static boolean pinged = false;
 
     private static final Set<String> SET = new HashSet<String>();
-
-    private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
 
     private NettyClientContanier() {
     }
@@ -86,7 +82,7 @@ public final class NettyClientContanier {
                 }
             };
 
-            scheduleAtFixedRate(runnable, 20, 45);
+            ScheduleTaskExecutor.scheduleAtFixedRate(runnable, 20L, 45L);
         }
     }
 
@@ -147,11 +143,6 @@ public final class NettyClientContanier {
 
     public static void ping() {
         getInstance().client.ping();
-    }
-
-    public static void scheduleAtFixedRate(Runnable command, long delaySeconds, long periodSeconds) {
-        // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-        SERVICE.scheduleAtFixedRate(command, delaySeconds, periodSeconds, TimeUnit.SECONDS);
     }
 
     public static void handle(PayloadHandler handler) {

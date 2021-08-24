@@ -1,16 +1,12 @@
 package com.bytehonor.sdk.netty.bytehonor.server;
 
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
-import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -45,32 +41,19 @@ public class NettyServer {
 
     private boolean init = false;
 
-    private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor();
-
-    private NettyServer() {
+    public NettyServer() {
+        init = false;
     }
 
-    /**
-     * 延迟加载(线程安全)
-     *
-     */
-    private static class LazyHolder {
-        private static NettyServer INSTANCE = new NettyServer();
-    }
-
-    private static NettyServer getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    public static void start(int port) {
+    public void start(int port) {
         start(port, new NettyConfig());
     }
 
-    public static void start(int port, NettyConfig config) {
-        getInstance().bind(port, config);
+    public void start(int port, NettyConfig config) {
+        bind(port, config);
     }
 
-    public void bind(int port, NettyConfig config) {
+    private void bind(int port, NettyConfig config) {
         Objects.requireNonNull(config, "config");
         if (init) {
             return;
@@ -109,8 +92,6 @@ public class NettyServer {
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
-
-            SERVICE.scheduleAtFixedRate(new NettyServerCheckTask(), 30, 150, TimeUnit.SECONDS);
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
         }
