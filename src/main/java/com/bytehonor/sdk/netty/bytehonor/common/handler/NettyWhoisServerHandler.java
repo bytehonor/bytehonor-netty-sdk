@@ -3,7 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.common.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.WhoisClientCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.WhoisServerCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 
 import io.netty.channel.Channel;
@@ -26,7 +26,7 @@ public class NettyWhoisServerHandler implements NettyHandler {
     public void handle(Channel channel, String message) {
         ChannelId channelId = channel.id();
         LOG.info("message:{}, channelId:{}", message, channelId.asLongText());
-        WhoisClientCacheHolder.put(message, channelId);
+        WhoisServerCacheHolder.put(message, channelId);
     }
 
 }
