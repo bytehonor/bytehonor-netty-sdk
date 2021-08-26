@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
 
 import io.netty.bootstrap.Bootstrap;
@@ -27,26 +28,21 @@ public class NettyClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
 
-    private final String host;
-    private final int port;
     private final NettyConfig config;
     private Bootstrap bootstrap;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
     public NettyClient(String host, int port) {
-        this(host, port, new NettyConfig());
+        this.config = NettyConfigBuilder.client(host, port).build();
     }
-
-    // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, NettyConfig config) {
-        this.host = host;
-        this.port = port;
+    
+    public NettyClient(NettyConfig config) {
         this.config = config;
     }
 
     public void start() {
-        LOG.info("Netty client start, host:{}, port, ssl:{}", host, port, config.isSsl());
+        LOG.info("Netty client start, host:{}, port, ssl:{}", config.getHost(), config.getPort(), config.isSsl());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
@@ -55,7 +51,7 @@ public class NettyClient {
         // 发起异步连接请求，绑定连接端口和host信息
 
         try {
-            final ChannelFuture future = bootstrap.connect(host, port).sync();
+            final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();
             future.addListener(new ChannelFutureListener() {
 
                 @Override

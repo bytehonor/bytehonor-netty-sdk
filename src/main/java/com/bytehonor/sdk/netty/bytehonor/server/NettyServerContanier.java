@@ -31,13 +31,9 @@ public class NettyServerContanier {
         return LazyHolder.instance;
     }
 
-    public static void start(int port) {
-        start(port, new NettyConfig());
-    }
-
-    public static void start(int port, NettyConfig config) {
+    public static void start(NettyConfig config) {
         LOG.info("start...");
-        getInstance().server.start(port, config);
+        getInstance().server.start(config);
         ScheduleTaskExecutor.scheduleAtFixedRate(new NettyServerCheckTask(), 30L, 100L);
     }
 

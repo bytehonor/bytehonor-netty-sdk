@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -46,19 +47,20 @@ public class NettyServer {
     }
 
     public void start(int port) {
-        start(port, new NettyConfig());
+        NettyConfig config = NettyConfigBuilder.server(port).build();
+        start(config);
     }
 
-    public void start(int port, NettyConfig config) {
-        bind(port, config);
+    public void start(NettyConfig config) {
+        bind(config);
     }
 
-    private void bind(int port, NettyConfig config) {
+    private void bind(NettyConfig config) {
         Objects.requireNonNull(config, "config");
         if (init) {
             return;
         }
-        LOG.info("Netty server start, port:{}, ssl:{}", port, config.isSsl());
+        LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
         init = true;
 
         // 负责连接请求
@@ -86,7 +88,7 @@ public class NettyServer {
             bootstrap.childHandler(new NettyServerInitializer(config));
 
             // 端口绑定
-            channelFuture = bootstrap.bind(port);
+            channelFuture = bootstrap.bind(config.getPort());
             LOG.info("Netty Tcp start isSuccess:{}", channelFuture.isSuccess());
             // channelFuture = bootstrap.bind(port).sync();
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
@@ -96,4 +98,5 @@ public class NettyServer {
             LOG.error("Netty server start error", e);
         }
     }
+
 }

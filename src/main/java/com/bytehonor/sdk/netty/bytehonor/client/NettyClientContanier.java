@@ -19,10 +19,6 @@ public final class NettyClientContanier {
 
     private NettyClient client;
 
-    private String host;
-
-    private int port;
-
     private NettyConfig config;
 
     private static boolean pinged = false;
@@ -44,22 +40,16 @@ public final class NettyClientContanier {
         return LazyHolder.instance;
     }
 
-    public static void connect(String host, int port) {
-        connect(host, port, new NettyConfig());
-    }
-
-    public static void connect(String host, int port, NettyConfig config) {
-        Objects.requireNonNull(host, "host");
+    public static void connect(NettyConfig config) {
         Objects.requireNonNull(config, "config");
+        Objects.requireNonNull(config.getHost(), "host");
 
         LOG.info("connect begin ...");
-        getInstance().host = host;
-        getInstance().port = port;
         getInstance().config = config;
         if (getInstance().client != null) {
             getInstance().client.getChannel().close();
         }
-        getInstance().client = new NettyClient(host, port, config);
+        getInstance().client = new NettyClient(config);
         getInstance().client.start();
         startPing();
     }
@@ -88,7 +78,7 @@ public final class NettyClientContanier {
 
     public static void reconnect() {
         LOG.info("reconnect begin ...");
-        connect(getInstance().host, getInstance().port, getInstance().config);
+        connect(getInstance().config);
         for (int i = 0; i < 20; i++) {
             try {
                 Thread.sleep(500L);

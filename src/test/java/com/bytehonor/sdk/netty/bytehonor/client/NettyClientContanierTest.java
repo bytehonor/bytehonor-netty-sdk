@@ -19,8 +19,8 @@ public class NettyClientContanierTest {
         int port = 81;
 
         try {
-            NettyConfig config = NettyConfigBuilder.create().whoiam("test").build();
-            NettyClientContanier.connect(host, port, config);
+            NettyConfig config = NettyConfigBuilder.client(host, port).build();
+            NettyClientContanier.connect(config);
             Thread.sleep(60000L);
             NettyClientContanier.send("hello world");
             Thread.sleep(60000L * 10);

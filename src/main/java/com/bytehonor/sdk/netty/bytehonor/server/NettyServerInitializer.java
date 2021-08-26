@@ -1,6 +1,7 @@
 package com.bytehonor.sdk.netty.bytehonor.server;
 
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.util.NettyEnvUtils;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
@@ -40,7 +41,8 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组写法， 一些限定和编码解码器
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyServerByteHandler(config.getWhoiam()));
+        String whoiam = NettyEnvUtils.whoiam(config.getPort());
+        pipeline.addLast(new NettyServerByteHandler(whoiam));
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束
         // ByteBuf buf =

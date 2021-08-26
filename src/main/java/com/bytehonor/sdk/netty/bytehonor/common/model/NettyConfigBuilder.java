@@ -8,17 +8,21 @@ public class NettyConfigBuilder {
         this.config = new NettyConfig();
     }
 
-    public static NettyConfigBuilder create() {
-        return new NettyConfigBuilder();
+    public static NettyConfigBuilder server(int port) {
+        NettyConfigBuilder builder = new NettyConfigBuilder();
+        builder.config.setPort(port);
+        return builder;
+    }
+
+    public static NettyConfigBuilder client(String host, int port) {
+        NettyConfigBuilder builder = new NettyConfigBuilder();
+        builder.config.setHost(host);
+        builder.config.setPort(port);
+        return builder;
     }
 
     public NettyConfig build() {
         return config;
-    }
-
-    public NettyConfigBuilder whoiam(String whoiam) {
-        this.config.setWhoiam(whoiam);
-        return this;
     }
 
     public NettyConfigBuilder ssl(boolean sslEnabled) {
