@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
 import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
 
@@ -29,6 +30,10 @@ public class NettyServerContanier {
 
     private static NettyServerContanier getInstance() {
         return LazyHolder.instance;
+    }
+
+    public static void start(int port) {
+        start(NettyConfigBuilder.server(port).build());
     }
 
     public static void start(NettyConfig config) {

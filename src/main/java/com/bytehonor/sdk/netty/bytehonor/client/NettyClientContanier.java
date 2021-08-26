@@ -11,6 +11,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkExcep
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
 
 public final class NettyClientContanier {
@@ -38,6 +39,10 @@ public final class NettyClientContanier {
 
     private static NettyClientContanier getInstance() {
         return LazyHolder.instance;
+    }
+
+    public static void connect(String host, int port) {
+        connect(NettyConfigBuilder.client(host, port).build());
     }
 
     public static void connect(NettyConfig config) {
