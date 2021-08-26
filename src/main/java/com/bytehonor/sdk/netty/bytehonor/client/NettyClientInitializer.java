@@ -1,7 +1,6 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
-import com.bytehonor.sdk.netty.bytehonor.common.util.NettyEnvUtils;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
@@ -38,8 +37,7 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        String whoiam = NettyEnvUtils.whoiam(config.getPort());
-        pipeline.addLast(new NettyClientByteHandler(whoiam));
+        pipeline.addLast(new NettyClientByteHandler(config.getWhoiam()));
 
         // 自定义的空闲检测
         pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
