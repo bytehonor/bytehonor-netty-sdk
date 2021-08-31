@@ -24,14 +24,17 @@ public class NettyPublicPayloadHandler implements NettyHandler {
             LOG.debug("name:{}, json:{}", payload.getName(), payload.getJson());
         }
 
-        PayloadHandler subscribeHandler = PayloadHandlerFactory.get(payload.getName());
-        if (subscribeHandler != null) {
-            subscribeHandler.handle(payload);
+        PayloadHandler handler = PayloadHandlerFactory.get(payload.getName());
+        if (handler == null) {
+            LOG.warn("no handler! name:{}", payload.getName());
             return;
         }
 
-        // 依次检查其他handler
-        LOG.warn("no handler! name:{}, json:{}", payload.getName(), payload.getJson());
+        try {
+            handler.handle(payload);
+        } catch (Exception e) {
+            LOG.error("handle error", e);
+        }
     }
 
 }
