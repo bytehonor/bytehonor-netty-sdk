@@ -42,7 +42,7 @@ public class NettyClient {
     }
 
     public void start() {
-        LOG.info("Netty client start, host:{}, port, ssl:{}", config.getHost(), config.getPort(), config.isSsl());
+        LOG.info("Netty client start, host:{}, port:{}, ssl:{}", config.getHost(), config.getPort(), config.isSsl());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
