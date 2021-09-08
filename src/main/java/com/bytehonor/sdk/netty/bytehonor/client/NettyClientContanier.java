@@ -12,6 +12,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
 
 public final class NettyClientContanier {
@@ -111,8 +112,14 @@ public final class NettyClientContanier {
     public static boolean isConnected() {
         return getInstance().client.isConnected();
     }
+    
+    public static void send(NettyPayload payload) {
+        Objects.requireNonNull(payload, "payload");
+        send(payload.toString());
+    }
 
     public static void send(String value) {
+        Objects.requireNonNull(value, "value");
         getInstance().client.send(value);
     }
 
