@@ -33,7 +33,7 @@ public class NettyPublicPayloadHandler implements NettyHandler {
         try {
             handler.handle(payload);
         } catch (Exception e) {
-            LOG.error("handle error", e);
+            LOG.error("handle payload:{} handler:{}, error", payload.getName(), handler.getClass().getSimpleName(), e);
         }
     }
 
