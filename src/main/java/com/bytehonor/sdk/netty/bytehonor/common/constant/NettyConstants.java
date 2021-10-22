@@ -10,7 +10,7 @@ public class NettyConstants {
     /**
      * 接收客户端信息的最大长度
      */
-    public static final int SO_RCVBUF = 256 * 1024 * 1024; // 4个字节表示长度 可以支持 Integer.MAX
+    public static final int SO_RCVBUF = Integer.MAX_VALUE - 1024; // 4个字节表示长度 可以支持 Integer.MAX
 
     public static final byte HEAD = 0x24;
     public static final String HEAD_S = "$";
