@@ -25,7 +25,7 @@ public class NettyWhoisClientHandler implements NettyHandler {
     @Override
     public void handle(Channel channel, String message) {
         ChannelId channelId = channel.id();
-        LOG.info("message:{}, channelId:{}", message, channelId.asLongText());
+        LOG.info("whois:{}, channelId:{}", message, channelId.asLongText());
         WhoisClientCacheHolder.put(message, channelId);
     }
 
