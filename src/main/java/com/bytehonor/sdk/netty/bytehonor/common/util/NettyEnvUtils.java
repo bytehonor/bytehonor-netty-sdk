@@ -14,6 +14,8 @@ public class NettyEnvUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyEnvUtils.class);
 
+    private static String LOCAL_IP = "";
+
     public static String whoiam(int port) {
         return whoiam(localIp(), port);
     }
@@ -23,6 +25,9 @@ public class NettyEnvUtils {
     }
 
     public static String localIp() {
+        if (LOCAL_IP != null && LOCAL_IP.isEmpty() == false) {
+            return LOCAL_IP;
+        }
         try {
             Enumeration<NetworkInterface> list = NetworkInterface.getNetworkInterfaces();
             InetAddress ip = null;
@@ -35,15 +40,16 @@ public class NettyEnvUtils {
                     while (addresses.hasMoreElements()) {
                         ip = addresses.nextElement();
                         if (ip != null && ip instanceof Inet4Address) {
-                            return ip.getHostAddress();
+                            LOCAL_IP = ip.getHostAddress();
                         }
                     }
                 }
             }
         } catch (Exception e) {
             LOG.error("error", e);
+            LOCAL_IP = "unknown";
         }
-        return "unknown";
+        return LOCAL_IP;
     }
 
     public static String whoiam(Environment env) {
