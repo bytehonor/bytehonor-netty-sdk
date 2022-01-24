@@ -10,10 +10,24 @@ import org.springframework.util.CollectionUtils;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyJsonUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
+/**
+ * 20220124
+ * 
+ * @author lijianqiang
+ *
+ */
 public class NettyPayload implements Serializable {
 
     private static final long serialVersionUID = 2699241336868045496L;
 
+    /**
+     * 来自whois
+     */
+    private String whois;
+
+    /**
+     * JsonObject的Clazz全名
+     */
     private String name;
 
     private String json;
@@ -71,6 +85,14 @@ public class NettyPayload implements Serializable {
             throw new RuntimeException(this.name);
         }
         return list.get(0);
+    }
+
+    public String getWhois() {
+        return whois;
+    }
+
+    public void setWhois(String whois) {
+        this.whois = whois;
     }
 
     public String getName() {
