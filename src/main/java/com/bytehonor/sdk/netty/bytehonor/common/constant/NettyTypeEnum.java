@@ -3,10 +3,12 @@ package com.bytehonor.sdk.netty.bytehonor.common.constant;
 /**
  * <pre>
  * Code    说明
- * 0       为定义
+ * 0       未定义
  * 1       ping 请求
  * 2       pong 响应
- * 10      普通传输
+ * 3       whois 客户端
+ * 4       whois 服务端
+ * 20      普通传输
  * 
  * </pre>
  * 
@@ -21,13 +23,13 @@ public enum NettyTypeEnum {
 
     PONG(2, "pong"),
 
-    WHOIAM_CLIENT(3, "whoiam_client"),
+    WHOIS_CLIENT(3, "whois_client"),
 
-    WHOIS_SERVER(4, "whoiam_server"),
+    WHOIS_SERVER(4, "whois_server"),
 
-    SUBSCRIBE_REQUEST(10, "subscribe_request"),
+    SUBSCRIBE_REQUEST(5, "subscribe_request"),
 
-    SUBSCRIBE_RESULT(11, "subscribe_result"),
+    SUBSCRIBE_RESPONSE(6, "subscribe_response"),
 
     PUBLIC_PAYLOAD(20, "普通传输"),
 

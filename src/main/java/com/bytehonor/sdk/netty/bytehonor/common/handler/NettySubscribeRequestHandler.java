@@ -10,7 +10,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
-import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResult;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResponse;
 
 import io.netty.channel.Channel;
 
@@ -47,8 +47,8 @@ public class NettySubscribeRequestHandler implements NettyHandler {
             }
         }
 
-        SubscribeResult result = SubscribeResult.of(request.getNames(), names.size());
-        NettyMessageSender.subscribeResult(channel, result);
+        SubscribeResponse result = SubscribeResponse.of(request.getNames(), names.size());
+        NettyMessageSender.subscribeResponse(channel, result);
     }
 
     private Set<String> toSet(String value) {

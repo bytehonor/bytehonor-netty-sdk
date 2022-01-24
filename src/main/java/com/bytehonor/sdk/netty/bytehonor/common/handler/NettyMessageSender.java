@@ -11,7 +11,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
-import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResult;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResponse;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -48,7 +48,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(whois, "whois");
 
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.WHOIAM_CLIENT, whois);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.WHOIS_CLIENT, whois);
         doSendBytes(channel, bytes);
     }
 
@@ -60,12 +60,12 @@ public class NettyMessageSender {
         doSendBytes(channel, bytes);
     }
 
-    public static void subscribeResult(Channel channel, SubscribeResult result) {
+    public static void subscribeResponse(Channel channel, SubscribeResponse response) {
         Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(result, "result");
+        Objects.requireNonNull(response, "response");
 
-        NettyPayload payload = NettyPayload.fromOne(result);
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_RESULT, payload.toString());
+        NettyPayload payload = NettyPayload.fromOne(response);
+        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_RESPONSE, payload.toString());
         doSendBytes(channel, bytes);
     }
 

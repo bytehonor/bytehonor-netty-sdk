@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
-import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResult;
+import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResponse;
 
 import io.netty.channel.Channel;
 
@@ -13,13 +13,13 @@ import io.netty.channel.Channel;
  * @author lijianqiang
  *
  */
-public class NettySubscribeResultHandler implements NettyHandler {
+public class NettySubscribeResponseHandler implements NettyHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeResultHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeResponseHandler.class);
 
     @Override
     public int type() {
-        return NettyTypeEnum.SUBSCRIBE_RESULT.getType();
+        return NettyTypeEnum.SUBSCRIBE_RESPONSE.getType();
     }
 
     @Override
@@ -29,8 +29,8 @@ public class NettySubscribeResultHandler implements NettyHandler {
         }
 
         NettyPayload payload = NettyPayload.fromJson(message);
-        SubscribeResult result = payload.one(SubscribeResult.class);
-        LOG.info("completed:{}, names:{}", result.getCompleted(), result.getNames());
+        SubscribeResponse response = payload.one(SubscribeResponse.class);
+        LOG.info("completed:{}, names:{}", response.getCompleted(), response.getNames());
     }
 
 }

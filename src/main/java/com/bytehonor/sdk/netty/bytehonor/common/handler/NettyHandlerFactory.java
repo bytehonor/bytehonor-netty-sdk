@@ -15,7 +15,7 @@ public class NettyHandlerFactory {
         put(new NettyPingHandler());
         put(new NettyPongHandler());
         put(new NettySubscribeRequestHandler());
-        put(new NettySubscribeResultHandler());
+        put(new NettySubscribeResponseHandler());
         put(new NettyWhoisClientHandler());
         put(new NettyWhoisServerHandler());
         put(new NettyPublicPayloadHandler());

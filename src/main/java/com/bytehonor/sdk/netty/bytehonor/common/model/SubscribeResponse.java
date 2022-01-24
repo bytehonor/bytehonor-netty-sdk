@@ -3,7 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.common.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class SubscribeResult implements Serializable {
+public class SubscribeResponse implements Serializable {
 
     private static final long serialVersionUID = 7625182470937923318L;
 
@@ -11,9 +11,9 @@ public class SubscribeResult implements Serializable {
 
     private Integer completed;
 
-    public static SubscribeResult of(String names, Integer completed) {
+    public static SubscribeResponse of(String names, Integer completed) {
         Objects.requireNonNull(names, "names");
-        SubscribeResult result = new SubscribeResult();
+        SubscribeResponse result = new SubscribeResponse();
         result.setNames(names);
         result.setCompleted(completed);
         return result;

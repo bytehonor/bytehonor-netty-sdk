@@ -19,7 +19,7 @@ public class NettyWhoisClientHandler implements NettyHandler {
 
     @Override
     public int type() {
-        return NettyTypeEnum.WHOIAM_CLIENT.getType();
+        return NettyTypeEnum.WHOIS_CLIENT.getType();
     }
 
     @Override

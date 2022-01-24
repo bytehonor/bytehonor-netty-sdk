@@ -36,7 +36,7 @@ public class NettyConfig {
     public NettyConfig() {
         this.host = "127.0.0.1";
         this.port = 81;
-        this.whoiam = null;
+        this.whoiam = "unkwon";
         this.ssl = false;
         this.sslEngine = false;
         this.sslPassword = NettyConstants.SSL_PASSWORD;
