@@ -5,7 +5,7 @@ plugins {
 apply from: 'repository.gradle'
 
 group = 'com.bytehonor.sdk'
-version = '0.7.1'
+version = '0.7.2'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
@@ -24,12 +24,12 @@ repositories {
 dependencies {
     api('io.netty:netty-transport:4.1.70.Final')
     api('io.netty:netty-handler:4.1.70.Final')
-    api('org.springframework:spring-core:5.3.13')
-    api('com.fasterxml.jackson.core:jackson-annotations:2.13.0')
-    api('com.fasterxml.jackson.core:jackson-databind:2.13.0')
-    api('com.fasterxml.jackson.core:jackson-core:2.13.0')
+    api('org.springframework:spring-core:5.3.15')
+    api('com.fasterxml.jackson.core:jackson-annotations:2.13.1')
+    api('com.fasterxml.jackson.core:jackson-databind:2.13.1')
+    api('com.fasterxml.jackson.core:jackson-core:2.13.1')
     implementation('org.slf4j:slf4j-api:1.7.32')
-    testImplementation('ch.qos.logback:logback-classic:1.2.7')
+    testImplementation('ch.qos.logback:logback-classic:1.2.9')
     testImplementation('junit:junit:4.13.2')
 }
 
