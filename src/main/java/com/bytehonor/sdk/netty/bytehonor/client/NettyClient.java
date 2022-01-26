@@ -92,17 +92,17 @@ public class NettyClient {
         NettyMessageSender.send(channel, payload);
     }
 
-    public void subscribe(String names) {
-        if (names == null) {
+    public void subscribe(String subjects) {
+        if (subjects == null) {
             return;
         }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(names));
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(subjects));
     }
 
-    public void unsubscribe(String names) {
-        if (names == null) {
+    public void unsubscribe(String subjects) {
+        if (subjects == null) {
             return;
         }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(names, false));
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(subjects, false));
     }
 }
