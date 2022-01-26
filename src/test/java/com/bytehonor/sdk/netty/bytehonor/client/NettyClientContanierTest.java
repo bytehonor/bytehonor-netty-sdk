@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 
 public class NettyClientContanierTest {
 
@@ -16,13 +17,13 @@ public class NettyClientContanierTest {
     @Test
     public void test() {
         String host = "vpn.bytehonor.com";
-        int port = 81;
+        int port = 85;
 
         try {
             NettyConfig config = NettyConfigBuilder.client(host, port).build();
             NettyClientContanier.connect(config);
             Thread.sleep(60000L);
-            NettyClientContanier.send("hello world");
+            NettyClientContanier.send(NettyPayload.fromOne("hello world"));
             Thread.sleep(60000L * 10);
         } catch (Exception e) {
             LOG.error("error", e);

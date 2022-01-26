@@ -85,16 +85,18 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(payload, "payload");
 
-        send(channel, payload.toString());
-    }
-
-    public static void send(Channel channel, String value) {
-        Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(value, "value");
-
-        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
+        payload.setWhois(WhoiamHolder.getWhoiam());
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         doSendBytes(channel, bytes);
     }
+
+//    public static void send(Channel channel, String value) {
+//        Objects.requireNonNull(channel, "channel");
+//        Objects.requireNonNull(value, "value");
+//
+//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
+//        doSendBytes(channel, bytes);
+//    }
 
     private static void doSendBytes(Channel channel, byte[] bytes) {
         Objects.requireNonNull(channel, "channel");

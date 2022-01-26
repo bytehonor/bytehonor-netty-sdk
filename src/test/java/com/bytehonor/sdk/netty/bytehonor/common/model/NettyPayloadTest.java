@@ -39,7 +39,7 @@ public class NettyPayloadTest {
         NettyPayload pm2 = NettyPayload.fromJson(json1);
 
         Class<?> cz = ClasszUtils.find(pm2.getSubject());
-        LOG.info("2:{}, {}, {}", pm2.getSubject(), cz.getName(), pm2.getJson());
+        LOG.info("2: subject:{}, name:{}, body:{}", pm2.getSubject(), cz.getName(), pm2.getBody());
 
 //        final TypeReference<List<NettyConfig>> valueTypeRef = new TypeReference<List<NettyConfig>>() {
 //        };
@@ -53,4 +53,15 @@ public class NettyPayloadTest {
         assertTrue("*test", vo1.getBossThreads() == first.getBossThreads());
     }
 
+    @Test
+    public void test2() {
+        String text = "hello world";
+        NettyPayload np = NettyPayload.fromOne(text);
+        LOG.info("test2 json:{}", NettyJsonUtils.toJson(np));
+
+        String src = np.one(String.class);
+        LOG.info("test2 src:{}", src);
+
+        assertTrue("*test2", text.equals(src));
+    }
 }

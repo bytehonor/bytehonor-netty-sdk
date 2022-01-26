@@ -10,6 +10,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkExcep
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
 
 import io.netty.bootstrap.Bootstrap;
@@ -86,9 +87,9 @@ public class NettyClient {
         return channel.isActive();
     }
 
-    public void send(String value) {
-        Objects.requireNonNull(value, "value");
-        NettyMessageSender.send(channel, value);
+    public void send(NettyPayload payload) {
+        Objects.requireNonNull(payload, "payload");
+        NettyMessageSender.send(channel, payload);
     }
 
     public void subscribe(String names) {

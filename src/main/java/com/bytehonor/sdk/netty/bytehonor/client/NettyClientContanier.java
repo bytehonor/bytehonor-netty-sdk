@@ -116,12 +116,7 @@ public final class NettyClientContanier {
 
     public static void send(NettyPayload payload) {
         Objects.requireNonNull(payload, "payload");
-        send(payload.toString());
-    }
-
-    public static void send(String value) {
-        Objects.requireNonNull(value, "value");
-        getInstance().client.send(value);
+        getInstance().client.send(payload);
     }
 
     public static void subscribe(String names) {

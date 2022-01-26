@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 
 import io.netty.channel.Channel;
 
@@ -25,7 +26,7 @@ public class NettyClientTest {
         try {
             client.start();
             final Channel channel = client.getChannel();
-            NettyMessageSender.send(channel, "hello world");
+            NettyMessageSender.send(channel, NettyPayload.fromOne("hello world"));
 
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             final Runnable runnable = new Runnable() {

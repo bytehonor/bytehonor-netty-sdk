@@ -21,7 +21,7 @@ public class NettyPublicPayloadHandler implements NettyHandler {
     public void handle(Channel channel, String message) {
         NettyPayload payload = NettyPayload.fromJson(message);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("subject:{}, json:{}", payload.getSubject(), payload.getJson());
+            LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
         }
 
         PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());

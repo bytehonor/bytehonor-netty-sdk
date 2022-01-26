@@ -26,11 +26,11 @@ public class NettyPayload implements Serializable {
     private String whois;
 
     /**
-     * JsonObject的Clazz全名, 就是subject
+     * Body Object的Clazz全名就是subject
      */
     private String subject;
 
-    private String json;
+    private String body;
 
     public static NettyPayload fromJson(String json) {
         Objects.requireNonNull(json, "json");
@@ -53,14 +53,14 @@ public class NettyPayload implements Serializable {
 
         NettyPayload model = new NettyPayload();
         model.setSubject(list.get(0).getClass().getName());
-        model.setJson(NettyJsonUtils.toJson(list));
+        model.setBody(NettyJsonUtils.toJson(list));
         return model;
     }
 
     public <T> List<T> list(TypeReference<List<T>> valueTypeRef) {
         Objects.requireNonNull(valueTypeRef, "valueTypeRef");
         try {
-            return NettyJsonUtils.fromJson(this.json, valueTypeRef);
+            return NettyJsonUtils.fromJson(this.body, valueTypeRef);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +72,7 @@ public class NettyPayload implements Serializable {
             throw new RuntimeException(this.subject);
         }
         try {
-            return NettyJsonUtils.fromListJson(this.json, valueType);
+            return NettyJsonUtils.fromListJson(this.body, valueType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -103,12 +103,12 @@ public class NettyPayload implements Serializable {
         this.subject = subject;
     }
 
-    public String getJson() {
-        return json;
+    public String getBody() {
+        return body;
     }
 
-    public void setJson(String json) {
-        this.json = json;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     @Override
