@@ -1,5 +1,7 @@
 package com.bytehonor.sdk.netty.bytehonor.server;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +53,8 @@ public class NettyServerContanier {
         PayloadHandlerFactory.put(handler);
     }
 
-    public static void addLimitation(SubjectLimitation limitation) {
-        NettySubscribeSubjectLimiter.add(limitation);
+    public static void addLimitation(String subject, int limit) {
+        Objects.requireNonNull(subject, "subject");
+        NettySubscribeSubjectLimiter.add(SubjectLimitation.of(subject, limit));
     }
 }
