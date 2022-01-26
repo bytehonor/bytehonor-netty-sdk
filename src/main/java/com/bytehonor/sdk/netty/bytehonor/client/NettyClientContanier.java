@@ -149,6 +149,6 @@ public final class NettyClientContanier {
             throw new BytehonorNettySdkException("Handle should be after connected");
         }
         PayloadHandlerFactory.put(handler);
-        subscribe(handler.name());
+        subscribe(handler.subject());
     }
 }

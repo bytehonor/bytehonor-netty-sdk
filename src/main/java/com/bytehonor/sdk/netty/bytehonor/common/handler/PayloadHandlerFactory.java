@@ -13,7 +13,7 @@ public class PayloadHandlerFactory {
         return MAP.entrySet();
     }
 
-    public static Set<String> names() {
+    public static Set<String> subjects() {
         return MAP.keySet();
     }
 
@@ -21,13 +21,13 @@ public class PayloadHandlerFactory {
         if (handler == null) {
             return;
         }
-        MAP.put(handler.name(), handler);
+        MAP.put(handler.subject(), handler);
     }
 
-    public static PayloadHandler get(String category) {
-        if (category == null) {
+    public static PayloadHandler get(String subject) {
+        if (subject == null) {
             return null;
         }
-        return MAP.get(category);
+        return MAP.get(subject);
     }
 }

@@ -4,7 +4,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 
 public interface PayloadHandler {
 
-    public String name();
+    public String subject();
 
     public void handle(NettyPayload payload);
 }
