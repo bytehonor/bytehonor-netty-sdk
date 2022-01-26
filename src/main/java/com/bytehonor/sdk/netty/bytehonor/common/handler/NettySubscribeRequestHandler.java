@@ -6,13 +6,14 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.SubscribeSubjectCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeResponse;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 
 /**
  * @author lijianqiang
@@ -29,25 +30,29 @@ public class NettySubscribeRequestHandler implements NettyHandler {
 
     @Override
     public void handle(Channel channel, String message) {
+        final ChannelId id = channel.id();
         if (LOG.isDebugEnabled()) {
-            LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
+            LOG.debug("message:{}, channel:{}", message, id.asLongText());
         }
 
         NettyPayload payload = NettyPayload.fromJson(message);
         SubscribeRequest request = payload.one(SubscribeRequest.class);
+        if (request.getSubjects() == null) {
+            LOG.warn("subscribe subject null");
+            return;
+        }
 
-        Set<String> names = toSet(request.getNames());
-        for (String name : names) {
-            LOG.info("subscribe:{}, name:{}", request.getSubscribed(), name);
-            String key = SubscribeChannelHolder.makeKey(channel.id(), name);
+        Set<String> subjects = toSet(request.getSubjects());
+        for (String subject : subjects) {
+            LOG.info("subscribe:{}, subject:{}", request.getSubscribed(), subject);
             if (request.getSubscribed()) {
-                SubscribeChannelHolder.put(key, channel.id());
+                SubscribeSubjectCacheHolder.add(subject, id);
             } else {
-                SubscribeChannelHolder.remove(key);
+                SubscribeSubjectCacheHolder.remove(subject, id);
             }
         }
 
-        SubscribeResponse result = SubscribeResponse.of(request.getNames(), names.size());
+        SubscribeResponse result = SubscribeResponse.of(request.getSubjects(), subjects.size());
         NettyMessageSender.subscribeResponse(channel, result);
     }
 

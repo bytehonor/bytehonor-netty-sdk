@@ -19,14 +19,14 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientByteHandler.class);
 
-    private String whoiam;
+    private String whois;
 
     public NettyClientByteHandler() {
         this(null);
     }
 
-    public NettyClientByteHandler(String whoiam) {
-        this.whoiam = whoiam;
+    public NettyClientByteHandler(String whois) {
+        this.whois = whois;
     }
 
     @Override
@@ -46,11 +46,12 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        String remoteAddress = channel.remoteAddress().toString();
-        if (this.whoiam != null) {
-            NettyMessageSender.whoisClient(channel, this.whoiam);
+        if (this.whois != null) {
+            NettyMessageSender.whoisClient(channel, this.whois);
         }
-        LOG.info("channelActive remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("channelActive whois:{}, remoteAddress:{}, channelId:{}", whois, remoteAddress,
+                channel.id().asLongText());
     }
 
     @Override

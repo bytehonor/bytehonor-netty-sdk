@@ -26,7 +26,7 @@ public class NettyPayload implements Serializable {
     private String whois;
 
     /**
-     * JsonObject的Clazz全名
+     * JsonObject的Clazz全名, 就是subject
      */
     private String name;
 

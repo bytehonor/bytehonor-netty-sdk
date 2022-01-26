@@ -30,7 +30,7 @@ public class NettySubscribeResponseHandler implements NettyHandler {
 
         NettyPayload payload = NettyPayload.fromJson(message);
         SubscribeResponse response = payload.one(SubscribeResponse.class);
-        LOG.info("completed:{}, names:{}", response.getCompleted(), response.getNames());
+        LOG.info("completed:{}, subjects:{}", response.getCompleted(), response.getSubjects());
     }
 
 }

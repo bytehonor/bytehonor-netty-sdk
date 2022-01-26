@@ -7,24 +7,24 @@ public class SubscribeResponse implements Serializable {
 
     private static final long serialVersionUID = 7625182470937923318L;
 
-    private String names;
+    private String subjects;
 
     private Integer completed;
 
-    public static SubscribeResponse of(String names, Integer completed) {
-        Objects.requireNonNull(names, "names");
+    public static SubscribeResponse of(String subjects, Integer completed) {
+        Objects.requireNonNull(subjects, "subjects");
         SubscribeResponse result = new SubscribeResponse();
-        result.setNames(names);
+        result.setSubjects(subjects);
         result.setCompleted(completed);
         return result;
     }
 
-    public String getNames() {
-        return names;
+    public String getSubjects() {
+        return subjects;
     }
 
-    public void setNames(String names) {
-        this.names = names;
+    public void setSubjects(String subjects) {
+        this.subjects = subjects;
     }
 
     public Integer getCompleted() {

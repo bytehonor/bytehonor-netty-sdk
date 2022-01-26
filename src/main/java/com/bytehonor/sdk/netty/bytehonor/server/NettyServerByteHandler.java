@@ -3,7 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.ChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 
@@ -20,14 +20,14 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerByteHandler.class);
 
-    private String whoiam;
+    private String whois;
 
     public NettyServerByteHandler() {
         this(null);
     }
 
-    public NettyServerByteHandler(String whoiam) {
-        this.whoiam = whoiam;
+    public NettyServerByteHandler(String whois) {
+        this.whois = whois;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         String remoteAddress = channel.remoteAddress().toString();
         LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", remoteAddress, channel.id().asLongText(),
                 cause);
-        ServerChannelHolder.remove(channel);
+        ChannelCacheHolder.remove(channel);
         ctx.close();
     }
 
@@ -66,13 +66,14 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
-        if (this.whoiam != null) {
-            NettyMessageSender.whoisServer(channel, this.whoiam);
+        if (this.whois != null) {
+            NettyMessageSender.whoisServer(channel, this.whois);
         }
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("handlerAdded whois:{}, remoteAddress:{}, channelId:{}", whois, remoteAddress,
+                channel.id().asLongText());
         // 缓存连接
-        ServerChannelHolder.add(channel);
+        ChannelCacheHolder.add(channel);
     }
 
     @Override
@@ -83,7 +84,7 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
         LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
 
         // 当触发handlerRemoved
-        ServerChannelHolder.remove(channel);
+        ChannelCacheHolder.remove(channel);
     }
 
 }

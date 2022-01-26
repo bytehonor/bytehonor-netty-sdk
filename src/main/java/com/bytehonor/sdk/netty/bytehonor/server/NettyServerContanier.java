@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
+import com.bytehonor.sdk.netty.bytehonor.common.limiter.NettySubscribeSubjectLimiter;
+import com.bytehonor.sdk.netty.bytehonor.common.limiter.SubjectLimitation;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
@@ -47,5 +49,9 @@ public class NettyServerContanier {
             return;
         }
         PayloadHandlerFactory.put(handler);
+    }
+
+    public static void addLimitation(SubjectLimitation limitation) {
+        NettySubscribeSubjectLimiter.add(limitation);
     }
 }

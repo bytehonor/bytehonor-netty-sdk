@@ -1,12 +1,13 @@
 package com.bytehonor.sdk.netty.bytehonor.common.handler;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.ServerChannelHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.SubscribeChannelHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.SubscribeSubjectCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -17,6 +18,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.util.NettyDataUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelId;
 
 /**
  * @author lijianqiang
@@ -120,7 +122,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(value, "value");
 
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
-        ServerChannelHolder.parallelStream().forEach(channel -> {
+        ChannelCacheHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
             }
@@ -134,15 +136,18 @@ public class NettyMessageSender {
 
         final String name = payload.getName();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
-        ServerChannelHolder.parallelStream().forEach(channel -> {
-            if (channel.isActive() == false) {
-                return;
+
+        List<ChannelId> channelIds = SubscribeSubjectCacheHolder.get(name);
+        for (ChannelId id : channelIds) {
+            Channel channel = ChannelCacheHolder.get(id);
+            if (channel == null) {
+                SubscribeSubjectCacheHolder.remove(name, id);
             }
-            String key = SubscribeChannelHolder.makeKey(channel.id(), name);
-            if (SubscribeChannelHolder.exists(key) == false) {
-                return;
+            try {
+                doSendBytes(channel, bytes);
+            } catch (Exception e) {
+                LOG.error("pushGroup name:{}, error", name, e);
             }
-            doSendBytes(channel, bytes);
-        });
+        }
     }
 }
