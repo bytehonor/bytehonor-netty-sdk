@@ -50,8 +50,7 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
             NettyMessageSender.whoisClient(channel, this.whois);
         }
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("channelActive whois:{}, remoteAddress:{}, channelId:{}", whois, remoteAddress,
-                channel.id().asLongText());
+        LOG.info("channelActive remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
     }
 
     @Override

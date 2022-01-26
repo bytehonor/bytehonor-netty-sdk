@@ -70,8 +70,7 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
             NettyMessageSender.whoisServer(channel, this.whois);
         }
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("handlerAdded whois:{}, remoteAddress:{}, channelId:{}", whois, remoteAddress,
-                channel.id().asLongText());
+        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
         // 缓存连接
         ChannelCacheHolder.add(channel);
     }
