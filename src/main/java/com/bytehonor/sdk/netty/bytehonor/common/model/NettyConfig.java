@@ -33,6 +33,11 @@ public class NettyConfig {
 
     private int connectTimeoutMills;
 
+    /**
+     * 服务端检查任务周期
+     */
+    private long periodSeconds;
+
     public NettyConfig() {
         this.host = "127.0.0.1";
         this.port = 81;
@@ -50,6 +55,7 @@ public class NettyConfig {
         this.workThreads = NettyConstants.WORD_THREADS;
         this.clientThreads = NettyConstants.CLIENT_THREADS;
         this.connectTimeoutMills = NettyConstants.CONNECT_TIMEOUT_MILLIS;
+        this.periodSeconds = 100L;
     }
 
     public String getHost() {
@@ -178,6 +184,14 @@ public class NettyConfig {
 
     public void setConnectTimeoutMills(int connectTimeoutMills) {
         this.connectTimeoutMills = connectTimeoutMills;
+    }
+
+    public long getPeriodSeconds() {
+        return periodSeconds;
+    }
+
+    public void setPeriodSeconds(long periodSeconds) {
+        this.periodSeconds = periodSeconds;
     }
 
 }

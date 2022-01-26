@@ -10,7 +10,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.limiter.SubjectLimitation;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
-import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
+import com.bytehonor.sdk.netty.bytehonor.common.task.NettyScheduleTaskExecutor;
 
 public class NettyServerContanier {
 
@@ -41,7 +41,7 @@ public class NettyServerContanier {
     public static void start(NettyConfig config) {
         LOG.info("start...");
         getInstance().server.start(config);
-        ScheduleTaskExecutor.scheduleAtFixedRate(new NettyServerCheckTask(), 30L, 100L);
+        NettyScheduleTaskExecutor.scheduleAtFixedRate(new NettyServerCheckTask(), 30L, config.getPeriodSeconds());
     }
 
     public static void handle(PayloadHandler handler) {

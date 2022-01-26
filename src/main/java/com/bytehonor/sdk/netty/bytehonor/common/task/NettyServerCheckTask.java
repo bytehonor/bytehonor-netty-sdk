@@ -22,7 +22,9 @@ public class NettyServerCheckTask implements Runnable {
 
     @Override
     public void run() {
-        LOG.info("subscribe size:{}, whois size:{}", SubscribeSubjectCacheHolder.size(), WhoisClientCacheHolder.size());
+        LOG.info("channel size:{}, subscribe size:{}, whois size:{}", ChannelCacheHolder.size(),
+                SubscribeSubjectCacheHolder.size(), WhoisClientCacheHolder.size());
+
         Iterator<Entry<String, NettyChannels>> its = SubscribeSubjectCacheHolder.entrySet().iterator();
         while (its.hasNext()) {
             Entry<String, NettyChannels> item = its.next();

@@ -13,7 +13,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
-import com.bytehonor.sdk.netty.bytehonor.common.task.ScheduleTaskExecutor;
+import com.bytehonor.sdk.netty.bytehonor.common.task.NettyScheduleTaskExecutor;
 
 public final class NettyClientContanier {
 
@@ -78,7 +78,7 @@ public final class NettyClientContanier {
                 }
             };
 
-            ScheduleTaskExecutor.scheduleAtFixedRate(runnable, 20L, 45L);
+            NettyScheduleTaskExecutor.scheduleAtFixedRate(runnable, 20L, 45L);
         }
     }
 
