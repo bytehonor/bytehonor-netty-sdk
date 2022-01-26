@@ -94,8 +94,7 @@ public class NettyMessageSender {
 //        Objects.requireNonNull(channel, "channel");
 //        Objects.requireNonNull(value, "value");
 //
-//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
-//        doSendBytes(channel, bytes);
+//        send(channel, NettyPayload.fromOne(value));
 //    }
 
     private static void doSendBytes(Channel channel, byte[] bytes) {

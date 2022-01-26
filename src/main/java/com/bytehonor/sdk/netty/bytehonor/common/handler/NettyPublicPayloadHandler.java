@@ -21,19 +21,20 @@ public class NettyPublicPayloadHandler implements NettyHandler {
     public void handle(Channel channel, String message) {
         NettyPayload payload = NettyPayload.fromJson(message);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
+            LOG.debug("whois:{}, subject:{}, body:{}", payload.getWhois(), payload.getSubject(), payload.getBody());
         }
 
         PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());
         if (handler == null) {
-            LOG.warn("no handler! subject:{}", payload.getSubject());
+            LOG.warn("no handler! whois:{}, subject:{}", payload.getWhois(), payload.getSubject());
             return;
         }
 
         try {
             handler.handle(payload);
         } catch (Exception e) {
-            LOG.error("subject:{}, handler:{}, error", payload.getSubject(), handler.getClass().getSimpleName(), e);
+            LOG.error("whois:{}, subject:{}, handler:{}, error", payload.getWhois(), payload.getSubject(),
+                    handler.getClass().getSimpleName(), e);
         }
     }
 
