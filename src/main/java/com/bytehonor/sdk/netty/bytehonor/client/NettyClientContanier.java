@@ -55,6 +55,7 @@ public final class NettyClientContanier {
         if (getInstance().client != null) {
             getInstance().client.getChannel().close();
         }
+
         getInstance().client = new NettyClient(config);
         getInstance().client.start();
         startPing();
@@ -112,7 +113,7 @@ public final class NettyClientContanier {
     public static boolean isConnected() {
         return getInstance().client.isConnected();
     }
-    
+
     public static void send(NettyPayload payload) {
         Objects.requireNonNull(payload, "payload");
         send(payload.toString());

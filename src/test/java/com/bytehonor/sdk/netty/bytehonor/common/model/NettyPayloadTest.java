@@ -38,8 +38,8 @@ public class NettyPayloadTest {
         String json1 = pm1.toString();
         NettyPayload pm2 = NettyPayload.fromJson(json1);
 
-        Class<?> cz = ClasszUtils.find(pm2.getName());
-        LOG.info("2:{}, {}, {}", pm2.getName(), cz.getName(), pm2.getJson());
+        Class<?> cz = ClasszUtils.find(pm2.getSubject());
+        LOG.info("2:{}, {}, {}", pm2.getSubject(), cz.getName(), pm2.getJson());
 
 //        final TypeReference<List<NettyConfig>> valueTypeRef = new TypeReference<List<NettyConfig>>() {
 //        };

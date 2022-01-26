@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.netty.bytehonor.common;
+package com.bytehonor.sdk.netty.bytehonor.common.cache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,13 @@ import com.bytehonor.sdk.netty.bytehonor.common.model.NettyChannels;
 
 import io.netty.channel.ChannelId;
 
-public class SubscribeSubjectCacheHolder {
+public class SubscribeCacheHolder {
 
     private static int CAPACITY = 1024;
 
+    /**
+     * subject channel
+     */
     private static final ConcurrentHashMap<String, NettyChannels> MAP = new ConcurrentHashMap<String, NettyChannels>(
             CAPACITY);
 

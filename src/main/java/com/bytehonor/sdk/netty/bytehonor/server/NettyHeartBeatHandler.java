@@ -3,7 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;

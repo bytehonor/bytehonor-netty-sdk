@@ -7,8 +7,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.ChannelCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.SubscribeSubjectCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
@@ -35,7 +35,7 @@ public class NettySubscribeSubjectLimiter {
     private static void doProcess(SubjectLimitation limitation) {
         Objects.requireNonNull(limitation, "limitation");
         String subject = limitation.getSubject();
-        List<ChannelId> channels = SubscribeSubjectCacheHolder.get(subject);
+        List<ChannelId> channels = SubscribeCacheHolder.get(subject);
         int size = channels.size();
         if (size < 1) {
             return;
@@ -47,7 +47,7 @@ public class NettySubscribeSubjectLimiter {
             if (last != null) {
                 last.close();
             }
-            SubscribeSubjectCacheHolder.remove(subject, id);
+            SubscribeCacheHolder.remove(subject, id);
         }
     }
 }

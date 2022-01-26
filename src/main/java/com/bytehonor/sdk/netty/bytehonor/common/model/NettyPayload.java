@@ -28,7 +28,7 @@ public class NettyPayload implements Serializable {
     /**
      * JsonObject的Clazz全名, 就是subject
      */
-    private String name;
+    private String subject;
 
     private String json;
 
@@ -52,7 +52,7 @@ public class NettyPayload implements Serializable {
         }
 
         NettyPayload model = new NettyPayload();
-        model.setName(list.get(0).getClass().getName());
+        model.setSubject(list.get(0).getClass().getName());
         model.setJson(NettyJsonUtils.toJson(list));
         return model;
     }
@@ -68,8 +68,8 @@ public class NettyPayload implements Serializable {
 
     public <T> List<T> list(Class<T> valueType) {
         Objects.requireNonNull(valueType, "valueType");
-        if (valueType.getName().equals(this.name) == false) {
-            throw new RuntimeException(this.name);
+        if (valueType.getName().equals(this.subject) == false) {
+            throw new RuntimeException(this.subject);
         }
         try {
             return NettyJsonUtils.fromListJson(this.json, valueType);
@@ -82,7 +82,7 @@ public class NettyPayload implements Serializable {
         Objects.requireNonNull(valueType, "valueType");
         List<T> list = this.list(valueType);
         if (CollectionUtils.isEmpty(list)) {
-            throw new RuntimeException(this.name);
+            throw new RuntimeException(this.subject);
         }
         return list.get(0);
     }
@@ -95,12 +95,12 @@ public class NettyPayload implements Serializable {
         this.whois = whois;
     }
 
-    public String getName() {
-        return name;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getJson() {

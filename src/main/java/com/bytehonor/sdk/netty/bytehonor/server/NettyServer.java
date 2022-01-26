@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
@@ -60,6 +61,7 @@ public class NettyServer {
         if (init) {
             return;
         }
+        WhoiamHolder.setWhoiam(config.getWhoiam());
         LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
         init = true;
 

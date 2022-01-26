@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
@@ -36,12 +37,13 @@ public class NettyClient {
     public NettyClient(String host, int port) {
         this.config = NettyConfigBuilder.client(host, port).build();
     }
-    
+
     public NettyClient(NettyConfig config) {
         this.config = config;
     }
 
     public void start() {
+        WhoiamHolder.setWhoiam(config.getWhoiam());
         LOG.info("Netty client start, host:{}, port:{}, ssl:{}", config.getHost(), config.getPort(), config.isSsl());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap = new Bootstrap();

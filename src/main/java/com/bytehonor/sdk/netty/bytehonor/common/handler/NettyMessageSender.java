@@ -6,8 +6,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.ChannelCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.SubscribeSubjectCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -118,10 +119,12 @@ public class NettyMessageSender {
         channel.writeAndFlush(buf);
     }
 
-    public static void broadcast(String value) {
-        Objects.requireNonNull(value, "value");
+    public static void broadcast(NettyPayload payload) {
+        Objects.requireNonNull(payload, "payload");
+        Objects.requireNonNull(payload.getSubject(), "subject");
 
-        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, value);
+        payload.setWhois(WhoiamHolder.getWhoiam());
+        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         ChannelCacheHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
                 return;
@@ -132,21 +135,22 @@ public class NettyMessageSender {
 
     public static void pushGroup(NettyPayload payload) {
         Objects.requireNonNull(payload, "payload");
-        Objects.requireNonNull(payload.getName(), "name");
+        Objects.requireNonNull(payload.getSubject(), "subject");
 
-        final String name = payload.getName();
+        payload.setWhois(WhoiamHolder.getWhoiam());
+        final String subject = payload.getSubject();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 
-        List<ChannelId> channelIds = SubscribeSubjectCacheHolder.get(name);
+        List<ChannelId> channelIds = SubscribeCacheHolder.get(subject);
         for (ChannelId id : channelIds) {
             Channel channel = ChannelCacheHolder.get(id);
             if (channel == null) {
-                SubscribeSubjectCacheHolder.remove(name, id);
+                SubscribeCacheHolder.remove(subject, id);
             }
             try {
                 doSendBytes(channel, bytes);
             } catch (Exception e) {
-                LOG.error("pushGroup name:{}, error", name, e);
+                LOG.error("pushGroup name:{}, error", subject, e);
             }
         }
     }
