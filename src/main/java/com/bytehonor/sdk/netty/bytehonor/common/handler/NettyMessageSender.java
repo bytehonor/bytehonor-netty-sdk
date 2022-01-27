@@ -112,7 +112,7 @@ public class NettyMessageSender {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send data:{}, channelId:{}", NettyDataUtils.parseData(bytes), channel.id().asLongText());
+            LOG.debug("send data:{}, channel:{}", NettyDataUtils.parseData(bytes), channel.id().asLongText());
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输

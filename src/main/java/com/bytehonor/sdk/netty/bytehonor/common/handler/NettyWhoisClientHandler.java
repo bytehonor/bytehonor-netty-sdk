@@ -26,7 +26,7 @@ public class NettyWhoisClientHandler implements NettyHandler {
     public void handle(Channel channel, String message) {
         ChannelId id = channel.id();
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("whois:{}, remoteAddress:{}, channelId:{}", message, remoteAddress, id.asLongText());
+        LOG.info("whois:{}, remoteAddress:{}, channel:{}", message, remoteAddress, id.asLongText());
         WhoisCacheHolder.put(id, message);
     }
 

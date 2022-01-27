@@ -1,8 +1,6 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -23,9 +22,11 @@ public final class NettyClientContanier {
 
     private NettyConfig config;
 
+    private NettyListener listener;
+
     private static boolean pinged = false;
 
-    private static final Set<String> SET = new HashSet<String>();
+    // private static final Set<String> SUBJECTS = new HashSet<String>();
 
     private NettyClientContanier() {
     }
@@ -42,28 +43,35 @@ public final class NettyClientContanier {
         return LazyHolder.instance;
     }
 
+    public static void connect(String host, int port, NettyListener listener) {
+        connect(NettyConfigBuilder.client(host, port).build(), listener);
+    }
+
     public static void connect(String host, int port) {
-        connect(NettyConfigBuilder.client(host, port).build());
+        connect(host, port, null);
     }
 
     public static void connect(NettyConfig config) {
+        connect(config, null);
+    }
+
+    public static void connect(NettyConfig config, NettyListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(config.getHost(), "host");
 
         LOG.info("connect begin ...");
         getInstance().config = config;
         if (getInstance().client != null) {
-            getInstance().client.getChannel().close();
+            getInstance().client.close();
         }
 
-        getInstance().client = new NettyClient(config);
+        getInstance().client = new NettyClient(config, listener);
         getInstance().client.start();
-        startPing();
     }
 
-    private static void startPing() {
+    public static void ping() {
         if (pinged == false) {
-            LOG.info("startPing begin ...");
+            LOG.info("ping task begin ...");
             pinged = true;
             // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
             final Runnable runnable = new Runnable() {
@@ -71,10 +79,10 @@ public final class NettyClientContanier {
                 public void run() {
                     // task to run goes here
                     try {
-                        ping();
+                        doPing();
                     } catch (Exception e) {
                         LOG.error("ping error:{}", e.getMessage());
-                        reconnect();
+                        doReconnect();
                     }
                 }
             };
@@ -83,13 +91,13 @@ public final class NettyClientContanier {
         }
     }
 
-    public static void reconnect() {
+    private static void doReconnect() {
         LOG.info("reconnect begin ...");
-        connect(getInstance().config);
-        for (int i = 0; i < 20; i++) {
+        connect(getInstance().config, getInstance().listener);
+        for (int i = 0; i < 40; i++) {
             try {
-                Thread.sleep(500L);
-            } catch (InterruptedException e) {
+                Thread.sleep(250L);
+            } catch (Exception e) {
                 LOG.error("sleep", e);
             }
             if (isConnected()) {
@@ -102,12 +110,12 @@ public final class NettyClientContanier {
             return;
         }
         // 把任务重新订阅
-        if (SET.isEmpty() == false) {
-            LOG.info("subscribe again ...");
-            for (String category : SET) {
-                subscribe(category);
-            }
-        }
+//        if (SUBJECTS.isEmpty() == false) {
+//            LOG.info("subscribe again ...");
+//            for (String subject : SUBJECTS) {
+//                subscribe(subject);
+//            }
+//        }
     }
 
     public static boolean isConnected() {
@@ -119,27 +127,27 @@ public final class NettyClientContanier {
         getInstance().client.send(payload);
     }
 
-    public static void subscribe(String names) {
-        if (names == null) {
+    public static void subscribe(String subjects) {
+        if (subjects == null) {
             return;
         }
-        if (SET.contains(names) == false) {
-            SET.add(names);
-        }
-        getInstance().client.subscribe(names);
+//        if (SUBJECTS.contains(subjects) == false) {
+//            SUBJECTS.add(subjects);
+//        }
+        getInstance().client.subscribe(subjects);
     }
 
-    public static void unsubscribe(String names) {
-        if (names == null) {
+    public static void unsubscribe(String subjects) {
+        if (subjects == null) {
             return;
         }
-        if (SET.contains(names)) {
-            SET.remove(names);
-        }
-        getInstance().client.unsubscribe(names);
+//        if (SUBJECTS.contains(subjects)) {
+//            SUBJECTS.remove(subjects);
+//        }
+        getInstance().client.unsubscribe(subjects);
     }
 
-    public static void ping() {
+    private static void doPing() {
         getInstance().client.ping();
     }
 
