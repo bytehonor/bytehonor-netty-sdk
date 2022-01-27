@@ -56,7 +56,7 @@ public class NettyServerContanier {
         LOG.info("start...");
         getInstance().listener = listener;
         getInstance().server.start(config);
-        NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.server(), 30L, config.getPeriodSeconds());
+        NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 30L, config.getPeriodSeconds());
     }
 
     public static void addHandler(PayloadHandler handler) {

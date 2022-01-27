@@ -13,6 +13,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyScheduleTaskExecutor;
+import com.bytehonor.sdk.netty.bytehonor.common.task.NettyTaskBuilder;
 
 public final class NettyClientContanier {
 
@@ -23,10 +24,6 @@ public final class NettyClientContanier {
     private NettyConfig config;
 
     private ClientListener listener;
-
-    private static boolean pinged = false;
-
-    // private static final Set<String> SUBJECTS = new HashSet<String>();
 
     private NettyClientContanier() {
     }
@@ -52,46 +49,31 @@ public final class NettyClientContanier {
         Objects.requireNonNull(config.getHost(), "host");
 
         LOG.info("connect begin ...");
-        if (getInstance().config == null) {
-            getInstance().config = config;
-        }
-        if (getInstance().listener == null) {
-            getInstance().listener = listener;
-        }
+        getInstance().config = config;
+        getInstance().listener = listener;
 
-        if (getInstance().client != null) {
-            getInstance().client.close();
-        }
+        doConnect();
+        NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.clientPing(), 40L, 45L);
+    }
 
-        getInstance().client = new NettyClient(config, listener);
+    private static void doConnect() {
+        Objects.requireNonNull(getInstance().config, "config");
+
+        getInstance().client = new NettyClient(getInstance().config, getInstance().listener);
         getInstance().client.start();
     }
 
     public static void ping() {
-        if (pinged == false) {
-            LOG.info("ping task begin ...");
-            pinged = true;
-            // 连接成功后，设置定时器，每隔25，自动向服务器发送心跳，保持与服务器连接
-            final Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    // task to run goes here
-                    try {
-                        doPing();
-                    } catch (Exception e) {
-                        LOG.error("ping error:{}", e.getMessage());
-                        doReconnect();
-                    }
-                }
-            };
-
-            NettyScheduleTaskExecutor.scheduleAtFixedRate(runnable, 20L, 45L);
-        }
+        getInstance().client.ping();
     }
 
-    private static void doReconnect() {
+    public static void reconnect() {
         LOG.info("reconnect begin ...");
-        connect(getInstance().config, getInstance().listener);
+        if (getInstance().client != null) {
+            getInstance().client.close();
+        }
+        doConnect();
+
         for (int i = 0; i < 40; i++) {
             try {
                 Thread.sleep(250L);
@@ -99,7 +81,7 @@ public final class NettyClientContanier {
                 LOG.error("sleep", e);
             }
             if (isConnected()) {
-                LOG.info("reconnect connected ok");
+                LOG.info("reconnect connected ok, i:{}", i);
                 break;
             }
         }
@@ -136,10 +118,6 @@ public final class NettyClientContanier {
             throw new BytehonorNettySdkException("unsubscribe should be after connected");
         }
         getInstance().client.unsubscribe(subjects);
-    }
-
-    private static void doPing() {
-        getInstance().client.ping();
     }
 
     public static void addHandler(PayloadHandler handler) {
