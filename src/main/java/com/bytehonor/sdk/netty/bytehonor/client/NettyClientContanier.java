@@ -153,6 +153,7 @@ public final class NettyClientContanier {
 
     public static void addHandler(PayloadHandler handler) {
         Objects.requireNonNull(handler, "handler");
+        Objects.requireNonNull(handler.subject(), "subject");
         PayloadHandlerFactory.put(handler);
     }
 }

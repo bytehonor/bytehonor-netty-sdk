@@ -47,9 +47,8 @@ public class NettyServerContanier {
     }
 
     public static void addHandler(PayloadHandler handler) {
-        if (handler == null) {
-            return;
-        }
+        Objects.requireNonNull(handler, "handler");
+        Objects.requireNonNull(handler.subject(), "subject");
         PayloadHandlerFactory.put(handler);
     }
 
