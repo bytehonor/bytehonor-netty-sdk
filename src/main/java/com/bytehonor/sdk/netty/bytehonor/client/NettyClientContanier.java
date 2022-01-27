@@ -47,14 +47,6 @@ public final class NettyClientContanier {
         connect(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
-    public static void connect(String host, int port) {
-        connect(host, port, null);
-    }
-
-    public static void connect(NettyConfig config) {
-        connect(config, null);
-    }
-
     public static void connect(NettyConfig config, NettyListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(config.getHost(), "host");
