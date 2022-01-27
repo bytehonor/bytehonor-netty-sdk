@@ -60,7 +60,9 @@ public final class NettyClientContanier {
         Objects.requireNonNull(config.getHost(), "host");
 
         LOG.info("connect begin ...");
-        getInstance().config = config;
+        if (getInstance().config == null) {
+            getInstance().config = config;
+        }
         if (getInstance().client != null) {
             getInstance().client.close();
         }
