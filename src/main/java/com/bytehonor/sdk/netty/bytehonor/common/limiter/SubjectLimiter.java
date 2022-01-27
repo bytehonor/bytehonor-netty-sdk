@@ -2,15 +2,15 @@ package com.bytehonor.sdk.netty.bytehonor.common.limiter;
 
 import java.util.Objects;
 
-public class SubjectLimitation {
+public class SubjectLimiter {
 
     private String subject;
 
     private int limit;
 
-    public static SubjectLimitation of(String subject, int limit) {
+    public static SubjectLimiter of(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
-        SubjectLimitation model = new SubjectLimitation();
+        SubjectLimiter model = new SubjectLimiter();
         model.setSubject(subject);
         model.setLimit(limit);
         return model;

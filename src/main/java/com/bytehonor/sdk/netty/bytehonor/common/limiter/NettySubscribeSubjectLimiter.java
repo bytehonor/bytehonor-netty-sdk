@@ -17,33 +17,33 @@ public class NettySubscribeSubjectLimiter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeSubjectLimiter.class);
 
-    private static final List<SubjectLimitation> LIST = new ArrayList<SubjectLimitation>();
+    private static final List<SubjectLimiter> LIST = new ArrayList<SubjectLimiter>();
 
-    public static void add(SubjectLimitation limitation) {
-        Objects.requireNonNull(limitation, "limitation");
-        Objects.requireNonNull(limitation.getSubject(), "subject");
-        LIST.add(limitation);
+    public static void add(SubjectLimiter limiter) {
+        Objects.requireNonNull(limiter, "limiter");
+        Objects.requireNonNull(limiter.getSubject(), "subject");
+        LIST.add(limiter);
     }
 
-    public static void process() {
+    public static void limit() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("LIMITATIONS size:{}", LIST.size());
+            LOG.debug("LIST size:{}", LIST.size());
         }
-        for (SubjectLimitation limitation : LIST) {
-            doProcess(limitation);
+        for (SubjectLimiter limiter : LIST) {
+            doLimit(limiter);
         }
     }
 
-    private static void doProcess(SubjectLimitation limitation) {
-        Objects.requireNonNull(limitation, "limitation");
-        String subject = limitation.getSubject();
+    private static void doLimit(SubjectLimiter limiter) {
+        Objects.requireNonNull(limiter, "limiter");
+        String subject = limiter.getSubject();
         List<ChannelId> channels = SubscribeCacheHolder.get(subject);
         int size = channels.size();
         if (size < 1) {
             return;
         }
-        if (size > limitation.getLimit()) {
-            LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limitation.getLimit(), size);
+        if (size > limiter.getLimit()) {
+            LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limiter.getLimit(), size);
             ChannelId id = channels.get(size - 1); // 踢掉最后一个
             Channel last = ChannelCacheHolder.get(id);
             if (last != null) {
