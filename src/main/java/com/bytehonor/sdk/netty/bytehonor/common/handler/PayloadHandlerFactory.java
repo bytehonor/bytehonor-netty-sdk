@@ -18,7 +18,7 @@ public class PayloadHandlerFactory {
     }
 
     public static void put(PayloadHandler handler) {
-        if (handler == null) {
+        if (handler == null || handler.subject() == null) {
             return;
         }
         MAP.put(handler.subject(), handler);

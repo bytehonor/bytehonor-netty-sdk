@@ -125,6 +125,9 @@ public final class NettyClientContanier {
         if (subjects == null) {
             return;
         }
+        if (isConnected() == false) {
+            throw new BytehonorNettySdkException("subscribe should be after connected");
+        }
 //        if (SUBJECTS.contains(subjects) == false) {
 //            SUBJECTS.add(subjects);
 //        }
@@ -134,6 +137,9 @@ public final class NettyClientContanier {
     public static void unsubscribe(String subjects) {
         if (subjects == null) {
             return;
+        }
+        if (isConnected() == false) {
+            throw new BytehonorNettySdkException("unsubscribe should be after connected");
         }
 //        if (SUBJECTS.contains(subjects)) {
 //            SUBJECTS.remove(subjects);
@@ -145,12 +151,8 @@ public final class NettyClientContanier {
         getInstance().client.ping();
     }
 
-    public static void handle(PayloadHandler handler) {
+    public static void addHandler(PayloadHandler handler) {
         Objects.requireNonNull(handler, "handler");
-        if (isConnected() == false) {
-            throw new BytehonorNettySdkException("Handle should be after connected");
-        }
         PayloadHandlerFactory.put(handler);
-        subscribe(handler.subject());
     }
 }

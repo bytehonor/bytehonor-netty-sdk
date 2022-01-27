@@ -46,7 +46,7 @@ public class NettyServerContanier {
         NettyScheduleTaskExecutor.scheduleAtFixedRate(new NettyServerCheckTask(), 30L, config.getPeriodSeconds());
     }
 
-    public static void handle(PayloadHandler handler) {
+    public static void addHandler(PayloadHandler handler) {
         if (handler == null) {
             return;
         }
