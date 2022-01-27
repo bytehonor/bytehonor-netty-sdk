@@ -44,7 +44,7 @@ public class NettyServerCheckTask implements Runnable {
             Entry<ChannelId, String> item = itc.next();
             LOG.info("whois:{}, channel:{}", item.getValue(), item.getKey().asLongText());
             if (ChannelCacheHolder.get(item.getKey()) == null) {
-                LOG.warn("remove whois:{}", item.getKey());
+                LOG.warn("remove whois:{}", item.getValue());
                 WhoisCacheHolder.remove(item.getKey());
             }
         }
