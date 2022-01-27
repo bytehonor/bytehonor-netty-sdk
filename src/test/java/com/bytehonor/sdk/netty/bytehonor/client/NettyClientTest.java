@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 
 import io.netty.channel.Channel;
@@ -23,7 +23,7 @@ public class NettyClientTest {
     @Test
     public void test() {
         boolean isOk = true;
-        NettyClient client = new NettyClient("127.0.0.1", 85, new NettyListener() {
+        NettyClient client = new NettyClient("127.0.0.1", 85, new ClientListener() {
 
             @Override
             public void onOpen(Channel channel) {

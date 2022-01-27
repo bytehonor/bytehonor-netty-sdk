@@ -7,10 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.client.NettyClientContanier;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
-import com.bytehonor.sdk.netty.bytehonor.server.NettyServer;
+import com.bytehonor.sdk.netty.bytehonor.server.NettyServerContanier;
 
 import io.netty.channel.Channel;
 
@@ -22,7 +23,7 @@ public class SdkTester {
     public void test() {
         NettyConfig sc = new NettyConfig();
         sc.setWhoiam("server");
-        new NettyServer().start(sc);
+        NettyServerContanier.start(sc, new DefaultServerListener());
 
         try {
             Thread.sleep(2000L);
@@ -33,7 +34,7 @@ public class SdkTester {
         NettyConfig cc = new NettyConfig();
         cc.setWhoiam("client");
         try {
-            NettyClientContanier.connect(cc, new NettyListener() {
+            NettyClientContanier.connect(cc, new ClientListener() {
 
                 @Override
                 public void onOpen(Channel channel) {

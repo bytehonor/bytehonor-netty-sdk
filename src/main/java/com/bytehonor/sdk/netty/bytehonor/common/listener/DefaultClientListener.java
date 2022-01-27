@@ -5,23 +5,23 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.Channel;
 
-public class DefaultNettyListener implements NettyListener {
+public class DefaultClientListener implements ClientListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultClientListener.class);
 
     @Override
     public void onOpen(Channel channel) {
-        LOG.info("onOpen");
+        LOG.info("Client onOpen");
     }
 
     @Override
     public void onClosed(String msg) {
-        LOG.warn("onClosed msg:{}", msg);
+        LOG.warn("Client onClosed msg:{}", msg);
     }
 
     @Override
     public void onError(Throwable error) {
-        LOG.error("onError error", error);
+        LOG.error("Client onError error", error);
     }
 
 }

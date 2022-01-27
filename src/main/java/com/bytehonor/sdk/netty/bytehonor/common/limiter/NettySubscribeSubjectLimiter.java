@@ -26,7 +26,9 @@ public class NettySubscribeSubjectLimiter {
     }
 
     public static void process() {
-        LOG.info("LIMITATIONS size:{}", LIST.size());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("LIMITATIONS size:{}", LIST.size());
+        }
         for (SubjectLimitation limitation : LIST) {
             doProcess(limitation);
         }
@@ -41,7 +43,7 @@ public class NettySubscribeSubjectLimiter {
             return;
         }
         if (size > limitation.getLimit()) {
-            LOG.info("subject:{}, limit:{}, size:{}", subject, limitation.getLimit(), size);
+            LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limitation.getLimit(), size);
             ChannelId id = channels.get(size - 1); // 踢掉最后一个
             Channel last = ChannelCacheHolder.get(id);
             if (last != null) {

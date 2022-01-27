@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -22,7 +22,7 @@ public final class NettyClientContanier {
 
     private NettyConfig config;
 
-    private NettyListener listener;
+    private ClientListener listener;
 
     private static boolean pinged = false;
 
@@ -43,11 +43,11 @@ public final class NettyClientContanier {
         return LazyHolder.instance;
     }
 
-    public static void connect(String host, int port, NettyListener listener) {
+    public static void connect(String host, int port, ClientListener listener) {
         connect(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
-    public static void connect(NettyConfig config, NettyListener listener) {
+    public static void connect(NettyConfig config, ClientListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(config.getHost(), "host");
 

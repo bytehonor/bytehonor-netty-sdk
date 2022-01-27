@@ -9,16 +9,20 @@ import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.NettySubscribeSubjectLimiter;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.SubjectLimitation;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyScheduleTaskExecutor;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyServerCheckTask;
+import com.bytehonor.sdk.netty.bytehonor.common.util.NettyListenerUtils;
 
 public class NettyServerContanier {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerContanier.class);
 
     private NettyServer server;
+
+    private ServerListener listener;
 
     private NettyServerContanier() {
         this.server = new NettyServer();
@@ -37,11 +41,20 @@ public class NettyServerContanier {
     }
 
     public static void start(int port) {
-        start(NettyConfigBuilder.server(port).build());
+        start(NettyConfigBuilder.server(port).build(), null);
+    }
+
+    public static void start(int port, ServerListener listener) {
+        start(NettyConfigBuilder.server(port).build(), listener);
     }
 
     public static void start(NettyConfig config) {
+        start(config, null);
+    }
+
+    public static void start(NettyConfig config, ServerListener listener) {
         LOG.info("start...");
+        getInstance().listener = listener;
         getInstance().server.start(config);
         NettyScheduleTaskExecutor.scheduleAtFixedRate(new NettyServerCheckTask(), 30L, config.getPeriodSeconds());
     }
@@ -55,5 +68,13 @@ public class NettyServerContanier {
     public static void addLimitation(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
         NettySubscribeSubjectLimiter.add(SubjectLimitation.of(subject, limit));
+    }
+
+    public static void onTotal(int total) {
+        NettyListenerUtils.onTotal(getInstance().listener, total);
+    }
+
+    public static void limit() {
+        NettySubscribeSubjectLimiter.process();
     }
 }

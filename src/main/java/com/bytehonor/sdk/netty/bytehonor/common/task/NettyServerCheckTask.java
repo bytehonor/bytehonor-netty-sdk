@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoisCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.limiter.NettySubscribeSubjectLimiter;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyChannel;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyChannels;
+import com.bytehonor.sdk.netty.bytehonor.server.NettyServerContanier;
 
 import io.netty.channel.ChannelId;
 
@@ -50,7 +50,10 @@ public class NettyServerCheckTask implements Runnable {
         }
 
         // 限幅
-        NettySubscribeSubjectLimiter.process();
+        NettyServerContanier.limit();
+
+        // 通知
+        NettyServerContanier.onTotal(ChannelCacheHolder.size());
     }
 
 }

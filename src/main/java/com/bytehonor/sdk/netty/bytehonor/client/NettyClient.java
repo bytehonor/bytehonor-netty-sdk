@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultNettyListener;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -33,26 +33,26 @@ public class NettyClient {
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
 
     private final NettyConfig config;
-    private final NettyListener listener;
+    private final ClientListener listener;
     private Bootstrap bootstrap;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, NettyListener listener) {
+    public NettyClient(String host, int port, ClientListener listener) {
         this(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
     public NettyClient(String host, int port) {
-        this(host, port, new DefaultNettyListener());
+        this(host, port, new DefaultClientListener());
     }
 
-    public NettyClient(NettyConfig config, NettyListener listener) {
+    public NettyClient(NettyConfig config, ClientListener listener) {
         this.config = config;
-        this.listener = listener != null ? listener : new DefaultNettyListener();
+        this.listener = listener != null ? listener : new DefaultClientListener();
     }
 
     public NettyClient(NettyConfig config) {
-        this(config, new DefaultNettyListener());
+        this(config, new DefaultClientListener());
     }
 
     public void start() {
