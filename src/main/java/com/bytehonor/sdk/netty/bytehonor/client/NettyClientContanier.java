@@ -55,6 +55,10 @@ public final class NettyClientContanier {
         if (getInstance().config == null) {
             getInstance().config = config;
         }
+        if (getInstance().listener == null) {
+            getInstance().listener = listener;
+        }
+
         if (getInstance().client != null) {
             getInstance().client.close();
         }
@@ -103,13 +107,6 @@ public final class NettyClientContanier {
             LOG.error("reconnect connected failed");
             return;
         }
-        // 把任务重新订阅
-//        if (SUBJECTS.isEmpty() == false) {
-//            LOG.info("subscribe again ...");
-//            for (String subject : SUBJECTS) {
-//                subscribe(subject);
-//            }
-//        }
     }
 
     public static boolean isConnected() {
@@ -128,9 +125,6 @@ public final class NettyClientContanier {
         if (isConnected() == false) {
             throw new BytehonorNettySdkException("subscribe should be after connected");
         }
-//        if (SUBJECTS.contains(subjects) == false) {
-//            SUBJECTS.add(subjects);
-//        }
         getInstance().client.subscribe(subjects);
     }
 
@@ -141,9 +135,6 @@ public final class NettyClientContanier {
         if (isConnected() == false) {
             throw new BytehonorNettySdkException("unsubscribe should be after connected");
         }
-//        if (SUBJECTS.contains(subjects)) {
-//            SUBJECTS.remove(subjects);
-//        }
         getInstance().client.unsubscribe(subjects);
     }
 
