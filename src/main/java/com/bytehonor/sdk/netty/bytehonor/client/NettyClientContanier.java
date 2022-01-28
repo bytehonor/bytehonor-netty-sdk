@@ -9,6 +9,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkExcep
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -40,19 +41,31 @@ public final class NettyClientContanier {
         return LazyHolder.instance;
     }
 
+    public static void connect(String host, int port) {
+        connect(NettyConfigBuilder.client(host, port).build(), new DefaultClientListener());
+    }
+
     public static void connect(String host, int port, ClientListener listener) {
         connect(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
+    /**
+     * 有启动ping任务，只能调一次，重连用reconnect
+     * 
+     * @param config
+     * @param listener
+     */
     public static void connect(NettyConfig config, ClientListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(config.getHost(), "host");
+        Objects.requireNonNull(listener, "listener");
 
         LOG.info("connect begin ...");
         getInstance().config = config;
         getInstance().listener = listener;
 
         doConnect();
+
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.clientPing(), 40L, 45L);
     }
 

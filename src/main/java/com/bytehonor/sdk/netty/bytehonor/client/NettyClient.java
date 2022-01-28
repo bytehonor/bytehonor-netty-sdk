@@ -8,12 +8,12 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
-import com.bytehonor.sdk.netty.bytehonor.common.util.NettyListenerUtils;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -73,18 +73,18 @@ public class NettyClient {
                 public void operationComplete(ChannelFuture arg0) throws Exception {
                     if (future.isSuccess()) {
                         LOG.info("Netty client start success");
-                        NettyListenerUtils.onOpen(listener, future.channel());
+                        NettyListenerHelper.onOpen(listener, future.channel());
                     } else {
                         LOG.error("Netty client start failed, cause", future.cause());
                         group.shutdownGracefully(); // 关闭线程组
-                        NettyListenerUtils.onClosed(listener, future.cause().getMessage());
+                        NettyListenerHelper.onClosed(listener, future.cause().getMessage());
                     }
                 }
             });
             this.channel = future.channel();
         } catch (Exception e) {
             LOG.error("connect ({}:{}) error:{}", config.getHost(), config.getPort(), e.getMessage());
-            NettyListenerUtils.onError(listener, e);
+            NettyListenerHelper.onError(listener, e);
         }
     }
 
@@ -118,7 +118,7 @@ public class NettyClient {
         }
         NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(subjects, false));
     }
-    
+
     public void close() {
         if (channel != null) {
             channel.close();

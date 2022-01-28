@@ -9,12 +9,13 @@ import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandler;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.NettySubscribeSubjectLimiter;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.SubjectLimiter;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyScheduleTaskExecutor;
 import com.bytehonor.sdk.netty.bytehonor.common.task.NettyTaskBuilder;
-import com.bytehonor.sdk.netty.bytehonor.common.util.NettyListenerUtils;
 
 public class NettyServerContanier {
 
@@ -41,7 +42,7 @@ public class NettyServerContanier {
     }
 
     public static void start(int port) {
-        start(NettyConfigBuilder.server(port).build(), null);
+        start(NettyConfigBuilder.server(port).build(), new DefaultServerListener());
     }
 
     public static void start(int port, ServerListener listener) {
@@ -49,13 +50,18 @@ public class NettyServerContanier {
     }
 
     public static void start(NettyConfig config) {
-        start(config, null);
+        start(config, new DefaultServerListener());
     }
 
     public static void start(NettyConfig config, ServerListener listener) {
+        Objects.requireNonNull(config, "config");
+        Objects.requireNonNull(listener, "listener");
         LOG.info("start...");
+
         getInstance().listener = listener;
+
         getInstance().server.start(config);
+
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 30L, config.getPeriodSeconds());
     }
 
@@ -71,7 +77,7 @@ public class NettyServerContanier {
     }
 
     public static void onTotal(int total) {
-        NettyListenerUtils.onTotal(getInstance().listener, total);
+        NettyListenerHelper.onTotal(getInstance().listener, total);
     }
 
     public static void limit() {

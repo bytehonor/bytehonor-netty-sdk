@@ -1,16 +1,13 @@
-package com.bytehonor.sdk.netty.bytehonor.common.util;
+package com.bytehonor.sdk.netty.bytehonor.common.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
-
 import io.netty.channel.Channel;
 
-public class NettyListenerUtils {
+public class NettyListenerHelper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyListenerUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyListenerHelper.class);
 
     public static void onOpen(ClientListener listener, Channel channel) {
         try {
