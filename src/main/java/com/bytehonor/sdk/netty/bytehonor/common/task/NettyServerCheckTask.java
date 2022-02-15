@@ -16,12 +16,12 @@ import com.bytehonor.sdk.netty.bytehonor.server.NettyServerContanier;
 
 import io.netty.channel.ChannelId;
 
-public class NettyServerCheckTask implements Runnable {
+public class NettyServerCheckTask extends NettyTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerCheckTask.class);
 
     @Override
-    public void run() {
+    public void runInSafe() {
         LOG.info("channel size:{}, subscribe size:{}, whois size:{}", ChannelCacheHolder.size(),
                 SubscribeCacheHolder.size(), WhoisCacheHolder.size());
 

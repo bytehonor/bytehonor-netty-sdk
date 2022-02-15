@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.client.NettyClientContanier;
 
-public class NettyClientPingTask implements Runnable {
+public class NettyClientPingTask extends NettyTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientPingTask.class);
 
     @Override
-    public void run() {
+    public void runInSafe() {
         try {
             NettyClientContanier.ping();
         } catch (Exception e) {
