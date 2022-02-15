@@ -66,7 +66,7 @@ public final class NettyClientContanier {
 
         doConnect();
 
-        NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.clientPing(), 40L, 45L);
+        NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.clientPing(), 30L, 45L);
     }
 
     private static void doConnect() {
