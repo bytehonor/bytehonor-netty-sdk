@@ -30,20 +30,25 @@ public class NettySubscribeSubjectLimiter {
             LOG.debug("LIST size:{}", LIST.size());
         }
         for (SubjectLimiter limiter : LIST) {
-            doLimit(limiter);
+            limit(limiter);
         }
     }
 
-    private static void doLimit(SubjectLimiter limiter) {
+    public static void limit(SubjectLimiter limiter) {
         Objects.requireNonNull(limiter, "limiter");
-        String subject = limiter.getSubject();
+        doLimit(limiter.getSubject(), limiter.getLimit());
+    }
+
+    private static void doLimit(String subject, int limit) {
+        Objects.requireNonNull(subject, "subject");
         List<ChannelId> channels = SubscribeCacheHolder.get(subject);
-        int size = channels.size();
-        if (size < 1) {
-            return;
-        }
-        if (size > limiter.getLimit()) {
-            LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limiter.getLimit(), size);
+        int size = 0;
+        LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limit, size);
+        for (int i = 0; i < limit; i++) {
+            size = channels.size();
+            if (size <= limit || size < 1) {
+                return;
+            }
             ChannelId id = channels.get(size - 1); // 踢掉最后一个
             Channel last = ChannelCacheHolder.get(id);
             if (last != null) {
