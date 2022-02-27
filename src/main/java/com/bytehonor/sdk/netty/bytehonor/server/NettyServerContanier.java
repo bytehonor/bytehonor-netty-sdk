@@ -81,6 +81,6 @@ public class NettyServerContanier {
     }
 
     public static void limit() {
-        NettySubscribeSubjectLimiter.limit();
+        NettySubscribeSubjectLimiter.limitAll();
     }
 }
