@@ -28,7 +28,7 @@ dependencies {
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.2')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.2')
     api('com.fasterxml.jackson.core:jackson-core:2.13.2')
-    implementation('org.slf4j:slf4j-api:1.7.33')
+    implementation('org.slf4j:slf4j-api:1.7.36')
     testImplementation('ch.qos.logback:logback-classic:1.2.11')
     testImplementation('junit:junit:4.13.2')
 }
