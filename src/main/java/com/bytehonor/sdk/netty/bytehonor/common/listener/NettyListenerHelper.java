@@ -39,6 +39,26 @@ public class NettyListenerHelper {
         }
     }
 
+    public static void onSucceed(ServerListener listener) {
+        try {
+            if (listener != null) {
+                listener.onSucceed();
+            }
+        } catch (Exception e) {
+            LOG.error("onSucceed", e);
+        }
+    }
+
+    public static void onFailed(ServerListener listener, Throwable error) {
+        try {
+            if (listener != null) {
+                listener.onFailed(error);
+            }
+        } catch (Exception e) {
+            LOG.error("onFailed", e);
+        }
+    }
+
     public static void onTotal(ServerListener listener, int total) {
         try {
             if (listener != null) {

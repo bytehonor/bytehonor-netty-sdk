@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 
@@ -49,15 +52,17 @@ public class NettyServer {
 
     public void start(int port) {
         NettyConfig config = NettyConfigBuilder.server(port).build();
-        start(config);
+        start(config, new DefaultServerListener());
     }
 
-    public void start(NettyConfig config) {
-        bind(config);
+    public void start(NettyConfig config, ServerListener listener) {
+        bind(config, listener);
     }
 
-    private void bind(NettyConfig config) {
+    private void bind(NettyConfig config, ServerListener listener) {
         Objects.requireNonNull(config, "config");
+        Objects.requireNonNull(listener, "listener");
+
         if (init) {
             return;
         }
@@ -96,8 +101,10 @@ public class NettyServer {
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
+            NettyListenerHelper.onSucceed(listener);
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
+            NettyListenerHelper.onFailed(listener, e);
         }
     }
 

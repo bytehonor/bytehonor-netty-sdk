@@ -42,7 +42,7 @@ public class NettyServerContanier {
     }
 
     public static void start(int port) {
-        start(NettyConfigBuilder.server(port).build(), new DefaultServerListener());
+        start(port, new DefaultServerListener());
     }
 
     public static void start(int port, ServerListener listener) {
@@ -60,7 +60,7 @@ public class NettyServerContanier {
 
         getInstance().listener = listener;
 
-        getInstance().server.start(config);
+        getInstance().server.start(config, listener);
 
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 20L, config.getPeriodSeconds());
     }
