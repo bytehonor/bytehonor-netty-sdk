@@ -38,7 +38,7 @@ public class NettyPayload implements Serializable {
         return model;
     }
 
-    public static <T> T reflect(String json, Class<T> valueType) {
+    public static <T extends Serializable> T reflect(String json, Class<T> valueType) {
         NettyPayload payload = fromJson(json);
 
         return payload.reflect(valueType);
