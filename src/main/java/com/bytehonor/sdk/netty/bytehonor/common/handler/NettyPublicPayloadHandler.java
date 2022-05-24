@@ -25,16 +25,16 @@ public class NettyPublicPayloadHandler implements NettyHandler {
             LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
         }
 
-        String whois = ChannelCacheManager.getWhois(channel.id());
         PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());
         if (handler == null) {
-            LOG.warn("no handler! whois:{}, subject:{}", whois, payload.getSubject());
+            LOG.warn("no PayloadHandler! subject:{}, channel:{}", payload.getSubject(), channel.id().asLongText());
             return;
         }
 
         try {
             handler.handle(payload);
         } catch (Exception e) {
+            String whois = ChannelCacheManager.getWhois(channel.id());
             LOG.error("whois:{}, subject:{}, handler:{}, error", whois, payload.getSubject(),
                     handler.getClass().getSimpleName(), e);
         }
