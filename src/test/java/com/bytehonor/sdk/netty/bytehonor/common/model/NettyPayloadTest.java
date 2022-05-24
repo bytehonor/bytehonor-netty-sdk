@@ -2,9 +2,6 @@ package com.bytehonor.sdk.netty.bytehonor.common.model;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,19 +18,11 @@ public class NettyPayloadTest {
     @Test
     public void test() throws ClassNotFoundException, JsonMappingException, JsonProcessingException {
 
-        NettyConfig vo1 = new NettyConfig();
-        vo1.setBossThreads(11);
+        SubscribeRequest request = SubscribeRequest.of("test");
 
-        NettyConfig vo2 = new NettyConfig();
-        vo2.setBossThreads(22);
+        LOG.info("1:{}", NettyJsonUtils.toJson(request));
 
-        List<NettyConfig> list = new ArrayList<NettyConfig>();
-        list.add(vo1);
-        list.add(vo2);
-
-        LOG.info("1:{}", NettyJsonUtils.toJson(list));
-
-        NettyPayload pm1 = NettyPayload.fromList(list);
+        NettyPayload pm1 = NettyPayload.build(request);
 
         String json1 = pm1.toString();
         NettyPayload pm2 = NettyPayload.fromJson(json1);
@@ -41,25 +30,17 @@ public class NettyPayloadTest {
         Class<?> cz = ClasszUtils.find(pm2.getSubject());
         LOG.info("2: subject:{}, name:{}, body:{}", pm2.getSubject(), cz.getName(), pm2.getBody());
 
-//        final TypeReference<List<NettyConfig>> valueTypeRef = new TypeReference<List<NettyConfig>>() {
-//        };
-//        List<NettyConfig> list1 = lm1.to(valueTypeRef);
-//        LOG.info("3:{}", NettyJsonUtils.toJson(list1));
-
-        List<NettyConfig> list1 = pm2.list(NettyConfig.class);
-        LOG.info("4:{}", NettyJsonUtils.toJson(list1));
-
-        NettyConfig first = list1.get(0);
-        assertTrue("*test", vo1.getBossThreads() == first.getBossThreads());
+        SubscribeRequest request2 = NettyPayload.reflect(json1, SubscribeRequest.class);
+        assertTrue("*test", request.getSubjects().equals(request2.getSubjects()));
     }
 
     @Test
     public void test2() {
         String text = "hello world";
-        NettyPayload np = NettyPayload.fromOne(text);
+        NettyPayload np = NettyPayload.build(text);
         LOG.info("test2 json:{}", NettyJsonUtils.toJson(np));
 
-        String src = np.one(String.class);
+        String src = np.reflect(String.class);
         LOG.info("test2 src:{}", src);
 
         assertTrue("*test2", text.equals(src));

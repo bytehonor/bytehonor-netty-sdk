@@ -66,7 +66,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(response, "response");
 
-        NettyPayload payload = NettyPayload.fromOne(response);
+        NettyPayload payload = NettyPayload.build(response);
         byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_RESPONSE, payload.toString());
         doSendBytes(channel, bytes);
     }
@@ -75,7 +75,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(request, "request");
 
-        NettyPayload payload = NettyPayload.fromOne(request);
+        NettyPayload payload = NettyPayload.build(request);
         byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_REQUEST, payload.toString());
         doSendBytes(channel, bytes);
     }

@@ -36,7 +36,7 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         }
 
         NettyPayload payload = NettyPayload.fromJson(message);
-        SubscribeRequest request = payload.one(SubscribeRequest.class);
+        SubscribeRequest request = payload.reflect(SubscribeRequest.class);
         if (request.getSubjects() == null) {
             LOG.warn("subscribe subject null");
             return;

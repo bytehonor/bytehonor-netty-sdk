@@ -21,7 +21,7 @@ public class NettyClientContanierTest {
         try {
             NettyClientContanier.connect(host, port, new DefaultClientListener());
             Thread.sleep(60000L);
-            NettyClientContanier.send(NettyPayload.fromOne("hello world"));
+            NettyClientContanier.send(NettyPayload.build("hello world"));
             Thread.sleep(60000L * 10);
         } catch (Exception e) {
             LOG.error("error", e);

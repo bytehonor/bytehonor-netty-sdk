@@ -1,8 +1,12 @@
 package com.bytehonor.sdk.netty.bytehonor.common.model;
 
+import java.io.Serializable;
+
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 
-public class NettyConfig {
+public class NettyConfig implements Serializable {
+
+    private static final long serialVersionUID = 1158507238071086040L;
 
     private String host;
 

@@ -28,7 +28,7 @@ public class NettyClientTest {
             @Override
             public void onConnect(Channel channel) {
                 LOG.info("onOpen");
-                NettyMessageSender.send(channel, NettyPayload.fromOne("hello world"));
+                NettyMessageSender.send(channel, NettyPayload.build("hello world"));
 
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 final Runnable runnable = new Runnable() {

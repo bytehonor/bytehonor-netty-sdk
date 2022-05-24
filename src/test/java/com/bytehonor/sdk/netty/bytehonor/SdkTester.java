@@ -39,7 +39,7 @@ public class SdkTester {
                 @Override
                 public void onConnect(Channel channel) {
                     LOG.info("onConnect");
-                    NettyClientContanier.send(NettyPayload.fromOne("hello world"));
+                    NettyClientContanier.send(NettyPayload.build("hello world"));
                     NettyClientContanier.ping();
                 }
 

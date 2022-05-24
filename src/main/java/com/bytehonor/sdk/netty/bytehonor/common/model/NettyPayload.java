@@ -1,17 +1,14 @@
 package com.bytehonor.sdk.netty.bytehonor.common.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-import org.springframework.util.CollectionUtils;
-
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettyJsonUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * 20220124
+ * 
+ * 20220514, body只能是String或json
  * 
  * @author lijianqiang
  *
@@ -32,54 +29,31 @@ public class NettyPayload implements Serializable {
         return NettyJsonUtils.fromJson(json, NettyPayload.class);
     }
 
-    public static <T> NettyPayload fromOne(T obj) {
+    public static <T extends Serializable> NettyPayload build(T obj) {
         Objects.requireNonNull(obj, "obj");
 
-        ArrayList<T> list = new ArrayList<T>();
-        list.add(obj);
-        return fromList(list);
-    }
-
-    public static <T> NettyPayload fromList(List<T> list) {
-        Objects.requireNonNull(list, "list");
-        if (CollectionUtils.isEmpty(list)) {
-            throw new RuntimeException("list cannot be empty");
-        }
-
         NettyPayload model = new NettyPayload();
-        model.setSubject(list.get(0).getClass().getName());
-        model.setBody(NettyJsonUtils.toJson(list));
+        model.setSubject(obj.getClass().getName());
+        model.setBody(NettyJsonUtils.toJson(obj));
         return model;
     }
 
-    public <T> List<T> list(TypeReference<List<T>> valueTypeRef) {
-        Objects.requireNonNull(valueTypeRef, "valueTypeRef");
+    public static <T> T reflect(String json, Class<T> valueType) {
+        NettyPayload payload = fromJson(json);
+
+        return payload.reflect(valueType);
+    }
+
+    public <T> T reflect(Class<T> valueType) {
+        Objects.requireNonNull(valueType, "valueType");
+        if (subject.equals(valueType.getName()) == false) {
+            throw new RuntimeException("Class not match: " + subject);
+        }
         try {
-            return NettyJsonUtils.fromJson(this.body, valueTypeRef);
+            return NettyJsonUtils.fromJson(body, valueType);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public <T> List<T> list(Class<T> valueType) {
-        Objects.requireNonNull(valueType, "valueType");
-        if (valueType.getName().equals(this.subject) == false) {
-            throw new RuntimeException(this.subject);
-        }
-        try {
-            return NettyJsonUtils.fromListJson(this.body, valueType);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public <T> T one(Class<T> valueType) {
-        Objects.requireNonNull(valueType, "valueType");
-        List<T> list = this.list(valueType);
-        if (CollectionUtils.isEmpty(list)) {
-            throw new RuntimeException(this.subject);
-        }
-        return list.get(0);
     }
 
     public String getSubject() {
