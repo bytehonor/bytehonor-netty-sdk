@@ -64,12 +64,12 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private void onDisconnect(Channel channel) {
         ChannelCacheManager.remove(channel);
-        ClientListenerHelper.onDisconnect(listener, "channel close");
+        ClientListenerHelper.onClosed(listener, "channel close");
     }
 
     private void onConnect(Channel channel) {
         ChannelCacheManager.add(channel);
         NettyMessageSender.whoisClient(channel, whoiam);
-        ClientListenerHelper.onConnect(listener, channel);
+        ClientListenerHelper.onOpen(listener, channel);
     }
 }

@@ -9,23 +9,23 @@ public class ClientListenerHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientListenerHelper.class);
 
-    public static void onConnect(ClientListener listener, Channel channel) {
+    public static void onOpen(ClientListener listener, Channel channel) {
         try {
             if (listener != null) {
-                listener.onConnect(channel);
+                listener.onOpen(channel);
             }
         } catch (Exception e) {
-            LOG.error("onConnect", e);
+            LOG.error("onOpen", e);
         }
     }
 
-    public static void onDisconnect(ClientListener listener, String msg) {
+    public static void onClosed(ClientListener listener, String msg) {
         try {
             if (listener != null) {
-                listener.onDisconnect(msg);
+                listener.onClosed(msg);
             }
         } catch (Exception e) {
-            LOG.error("onDisconnect", e);
+            LOG.error("onClosed", e);
         }
     }
 

@@ -26,7 +26,7 @@ public class NettyClientTest {
         NettyClient client = new NettyClient("127.0.0.1", 85, new ClientListener() {
 
             @Override
-            public void onConnect(Channel channel) {
+            public void onOpen(Channel channel) {
                 LOG.info("onOpen");
                 NettyMessageSender.send(channel, NettyPayload.build("hello world"));
 
@@ -46,7 +46,7 @@ public class NettyClientTest {
             }
 
             @Override
-            public void onDisconnect(String msg) {
+            public void onClosed(String msg) {
                 LOG.warn("onClosed:{}", msg);
             }
 

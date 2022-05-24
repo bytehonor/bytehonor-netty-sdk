@@ -37,7 +37,7 @@ public class SdkTester {
             NettyClientContanier.connect(client, new ClientListener() {
 
                 @Override
-                public void onConnect(Channel channel) {
+                public void onOpen(Channel channel) {
                     LOG.info("onConnect");
                     NettyClientContanier.send(NettyPayload.build("hello world"));
                     NettyClientContanier.ping();
@@ -49,7 +49,7 @@ public class SdkTester {
                 }
 
                 @Override
-                public void onDisconnect(String msg) {
+                public void onClosed(String msg) {
                     LOG.warn("onDisconnect:{}", msg);
                 }
             });
