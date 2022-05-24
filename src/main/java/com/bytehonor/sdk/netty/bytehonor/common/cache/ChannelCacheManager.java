@@ -10,10 +10,7 @@ public class ChannelCacheManager {
     public static void add(Channel channel) {
         Objects.requireNonNull(channel, "channel");
 
-        ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.get(channelId) == null) {
-            ChannelCacheHolder.add(channel);
-        }
+        ChannelCacheHolder.add(channel);
     }
 
     public static int size() {
@@ -24,21 +21,18 @@ public class ChannelCacheManager {
         Objects.requireNonNull(whois, "whois");
         Objects.requireNonNull(channel, "channel");
 
-        ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.get(channelId) == null) {
-            ChannelCacheHolder.add(channel);
-        }
-        WhoisChannelCacheHolder.put(whois, channelId);
+        ChannelCacheHolder.add(channel);
+        WhoisChannelCacheHolder.put(whois, channel.id());
     }
 
     public static Channel getChannel(String whois) {
         Objects.requireNonNull(whois, "whois");
 
-        ChannelId channelId = WhoisChannelCacheHolder.get(whois);
+        ChannelId channelId = getChannelId(whois);
         if (channelId == null) {
             return null;
         }
-        Channel channel = ChannelCacheHolder.get(channelId);
+        Channel channel = getChannel(channelId);
         if (channel == null) {
             WhoisChannelCacheHolder.remove(whois);
             return null;

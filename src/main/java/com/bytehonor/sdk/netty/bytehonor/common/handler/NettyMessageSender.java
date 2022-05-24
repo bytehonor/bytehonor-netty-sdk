@@ -129,10 +129,10 @@ public class NettyMessageSender {
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 
         Set<ChannelId> channelIds = SubjectChannelCacheHolder.get(subject);
-        for (ChannelId id : channelIds) {
-            Channel channel = ChannelCacheManager.getChannel(id);
+        for (ChannelId channelId : channelIds) {
+            Channel channel = ChannelCacheManager.getChannel(channelId);
             if (channel == null) {
-                SubjectChannelCacheHolder.remove(subject, id);
+                SubjectChannelCacheHolder.remove(subject, channelId);
             }
             try {
                 doSendBytes(channel, bytes);

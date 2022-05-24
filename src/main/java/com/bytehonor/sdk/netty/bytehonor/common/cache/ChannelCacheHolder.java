@@ -27,11 +27,14 @@ public class ChannelCacheHolder {
 //        return CHANNELS.stream();
 //    }
 
-    public static void add(Channel value) {
-        if (value == null) {
+    public static void add(Channel channel) {
+        if (channel == null) {
             return;
         }
-        CHANNELS.add(value);
+        if (get(channel.id()) != null) {
+            return;
+        }
+        CHANNELS.add(channel);
     }
 
     public static Channel get(ChannelId id) {
@@ -41,10 +44,10 @@ public class ChannelCacheHolder {
         return CHANNELS.find(id);
     }
 
-    public static void remove(Channel value) {
-        if (value == null) {
+    public static void remove(Channel channel) {
+        if (channel == null) {
             return;
         }
-        CHANNELS.remove(value);
+        CHANNELS.remove(channel);
     }
 }
