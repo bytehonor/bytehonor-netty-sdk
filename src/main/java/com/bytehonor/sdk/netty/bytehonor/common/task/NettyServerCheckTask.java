@@ -7,7 +7,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ClientChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoisChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
@@ -21,7 +21,7 @@ public class NettyServerCheckTask extends NettyTask {
 
     @Override
     public void runInSafe() {
-        LOG.info("channel size:{}, subscribe size:{}, whois size:{}/{}", ChannelCacheHolder.size(),
+        LOG.info("channel size:{}, subscribe size:{}, whois size:{}/{}", ClientChannelCacheHolder.size(),
                 SubjectChannelCacheHolder.size(), WhoisChannelCacheHolder.whoisSize(),
                 WhoisChannelCacheHolder.channelSize());
 

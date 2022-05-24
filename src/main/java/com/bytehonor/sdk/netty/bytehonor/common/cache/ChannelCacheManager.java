@@ -11,13 +11,13 @@ public class ChannelCacheManager {
         Objects.requireNonNull(channel, "channel");
 
         ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.find(channelId) == null) {
-            ChannelCacheHolder.add(channel);
+        if (ClientChannelCacheHolder.get(channelId) == null) {
+            ClientChannelCacheHolder.add(channel);
         }
     }
 
     public static int size() {
-        return ChannelCacheHolder.size();
+        return ClientChannelCacheHolder.size();
     }
 
     public static void put(String whois, Channel channel) {
@@ -25,8 +25,8 @@ public class ChannelCacheManager {
         Objects.requireNonNull(channel, "channel");
 
         ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.find(channelId) == null) {
-            ChannelCacheHolder.add(channel);
+        if (ClientChannelCacheHolder.get(channelId) == null) {
+            ClientChannelCacheHolder.add(channel);
         }
         WhoisChannelCacheHolder.put(whois, channelId);
     }
@@ -38,7 +38,7 @@ public class ChannelCacheManager {
         if (channelId == null) {
             return null;
         }
-        Channel channel = ChannelCacheHolder.find(channelId);
+        Channel channel = ClientChannelCacheHolder.get(channelId);
         if (channel == null) {
             WhoisChannelCacheHolder.remove(whois);
             return null;
@@ -49,7 +49,7 @@ public class ChannelCacheManager {
     public static Channel getChannel(ChannelId channelId) {
         Objects.requireNonNull(channelId, "channelId");
 
-        return ChannelCacheHolder.find(channelId);
+        return ClientChannelCacheHolder.get(channelId);
     }
 
     public static ChannelId getChannelId(String whois) {
@@ -64,7 +64,7 @@ public class ChannelCacheManager {
         }
 
         WhoisChannelCacheHolder.remove(channel.id());
-        ChannelCacheHolder.remove(channel);
+        ClientChannelCacheHolder.remove(channel);
     }
 
     public static void remove(String whois) {
@@ -73,7 +73,7 @@ public class ChannelCacheManager {
         }
 
         ChannelId channelId = WhoisChannelCacheHolder.get(whois);
-        ChannelCacheHolder.remove(ChannelCacheHolder.find(channelId));
+        ClientChannelCacheHolder.remove(ClientChannelCacheHolder.get(channelId));
         WhoisChannelCacheHolder.remove(whois);
     }
 
@@ -82,7 +82,7 @@ public class ChannelCacheManager {
             return;
         }
 
-        ChannelCacheHolder.remove(ChannelCacheHolder.find(channelId));
+        ClientChannelCacheHolder.remove(ClientChannelCacheHolder.get(channelId));
         WhoisChannelCacheHolder.remove(channelId);
     }
 }

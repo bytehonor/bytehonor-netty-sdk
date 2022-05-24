@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
@@ -119,20 +118,6 @@ public class NettyMessageSender {
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输
         buf.writeBytes(bytes);
         channel.writeAndFlush(buf);
-    }
-
-    public static void broadcast(NettyPayload payload) {
-        Objects.requireNonNull(payload, "payload");
-        Objects.requireNonNull(payload.getSubject(), "subject");
-
-        payload.setWhois(WhoiamHolder.whoiam());
-        final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
-        ChannelCacheHolder.parallelStream().forEach(channel -> {
-            if (channel.isActive() == false) {
-                return;
-            }
-            doSendBytes(channel, bytes);
-        });
     }
 
     public static void pushGroup(NettyPayload payload) {
