@@ -7,8 +7,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
@@ -45,9 +45,8 @@ public class NettySubscribeSubjectLimiter {
 
     private static void doLimit(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
-        List<ChannelId> channels = SubscribeCacheHolder.get(subject);
+        List<ChannelId> channels = new ArrayList<ChannelId>(SubjectChannelCacheHolder.get(subject));
         int size = channels.size();
-        ;
         for (int i = 0; i < limit; i++) {
             size = channels.size();
             if (size <= limit || size < 1) {
@@ -56,11 +55,11 @@ public class NettySubscribeSubjectLimiter {
             LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limit, size);
             try {
                 ChannelId id = channels.get(size - 1); // 踢掉最后一个
-                Channel last = ChannelCacheHolder.get(id);
+                Channel last = ChannelCacheManager.getChannel(id);
                 if (last != null) {
                     last.close();
                 }
-                SubscribeCacheHolder.remove(subject, id);
+                SubjectChannelCacheHolder.remove(subject, id);
             } catch (Exception e) {
                 LOG.error("error", e);
             }

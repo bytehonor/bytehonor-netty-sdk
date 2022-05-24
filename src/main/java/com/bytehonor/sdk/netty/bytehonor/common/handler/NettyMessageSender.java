@@ -1,14 +1,15 @@
 package com.bytehonor.sdk.netty.bytehonor.common.handler;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -142,11 +143,11 @@ public class NettyMessageSender {
         final String subject = payload.getSubject();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 
-        List<ChannelId> channelIds = SubscribeCacheHolder.get(subject);
+        Set<ChannelId> channelIds = SubjectChannelCacheHolder.get(subject);
         for (ChannelId id : channelIds) {
-            Channel channel = ChannelCacheHolder.get(id);
+            Channel channel = ChannelCacheManager.getChannel(id);
             if (channel == null) {
-                SubscribeCacheHolder.remove(subject, id);
+                SubjectChannelCacheHolder.remove(subject, id);
             }
             try {
                 doSendBytes(channel, bytes);

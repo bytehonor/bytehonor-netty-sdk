@@ -6,7 +6,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 import com.bytehonor.sdk.netty.bytehonor.common.model.SubscribeRequest;
@@ -46,9 +46,9 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         for (String subject : subjects) {
             LOG.info("subscribe:{}, subject:{}", request.getSubscribed(), subject);
             if (request.getSubscribed()) {
-                SubscribeCacheHolder.add(subject, id);
+                SubjectChannelCacheHolder.add(subject, id);
             } else {
-                SubscribeCacheHolder.remove(subject, id);
+                SubjectChannelCacheHolder.remove(subject, id);
             }
         }
 

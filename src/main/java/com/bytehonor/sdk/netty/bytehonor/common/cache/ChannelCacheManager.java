@@ -11,7 +11,7 @@ public class ChannelCacheManager {
         Objects.requireNonNull(channel, "channel");
 
         ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.get(channelId) == null) {
+        if (ChannelCacheHolder.find(channelId) == null) {
             ChannelCacheHolder.add(channel);
         }
     }
@@ -25,22 +25,22 @@ public class ChannelCacheManager {
         Objects.requireNonNull(channel, "channel");
 
         ChannelId channelId = channel.id();
-        if (ChannelCacheHolder.get(channelId) == null) {
+        if (ChannelCacheHolder.find(channelId) == null) {
             ChannelCacheHolder.add(channel);
         }
-        ChannelWhoisCacheHolder.put(whois, channelId);
+        WhoisChannelCacheHolder.put(whois, channelId);
     }
 
     public static Channel getChannel(String whois) {
         Objects.requireNonNull(whois, "whois");
 
-        ChannelId channelId = ChannelWhoisCacheHolder.get(whois);
+        ChannelId channelId = WhoisChannelCacheHolder.get(whois);
         if (channelId == null) {
             return null;
         }
-        Channel channel = ChannelCacheHolder.get(channelId);
+        Channel channel = ChannelCacheHolder.find(channelId);
         if (channel == null) {
-            ChannelWhoisCacheHolder.remove(whois);
+            WhoisChannelCacheHolder.remove(whois);
             return null;
         }
         return channel;
@@ -49,13 +49,13 @@ public class ChannelCacheManager {
     public static Channel getChannel(ChannelId channelId) {
         Objects.requireNonNull(channelId, "channelId");
 
-        return ChannelCacheHolder.get(channelId);
+        return ChannelCacheHolder.find(channelId);
     }
 
     public static ChannelId getChannelId(String whois) {
         Objects.requireNonNull(whois, "whois");
 
-        return ChannelWhoisCacheHolder.get(whois);
+        return WhoisChannelCacheHolder.get(whois);
     }
 
     public static void remove(Channel channel) {
@@ -63,7 +63,7 @@ public class ChannelCacheManager {
             return;
         }
 
-        ChannelWhoisCacheHolder.remove(channel.id());
+        WhoisChannelCacheHolder.remove(channel.id());
         ChannelCacheHolder.remove(channel);
     }
 
@@ -72,9 +72,9 @@ public class ChannelCacheManager {
             return;
         }
 
-        ChannelId channelId = ChannelWhoisCacheHolder.get(whois);
-        ChannelCacheHolder.remove(ChannelCacheHolder.get(channelId));
-        ChannelWhoisCacheHolder.remove(whois);
+        ChannelId channelId = WhoisChannelCacheHolder.get(whois);
+        ChannelCacheHolder.remove(ChannelCacheHolder.find(channelId));
+        WhoisChannelCacheHolder.remove(whois);
     }
 
     public static void remove(ChannelId channelId) {
@@ -82,7 +82,7 @@ public class ChannelCacheManager {
             return;
         }
 
-        ChannelCacheHolder.remove(ChannelCacheHolder.get(channelId));
-        ChannelWhoisCacheHolder.remove(channelId);
+        ChannelCacheHolder.remove(ChannelCacheHolder.find(channelId));
+        WhoisChannelCacheHolder.remove(channelId);
     }
 }

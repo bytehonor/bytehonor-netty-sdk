@@ -24,7 +24,7 @@ public class ChannelCacheHolder {
     public static Stream<Channel> parallelStream() {
         return CHANNELS.parallelStream();
     }
-    
+
     public static Stream<Channel> stream() {
         return CHANNELS.stream();
     }
@@ -36,7 +36,7 @@ public class ChannelCacheHolder {
         CHANNELS.add(value);
     }
 
-    public static Channel get(ChannelId id) {
+    public static Channel find(ChannelId id) {
         if (id == null) {
             return null;
         }

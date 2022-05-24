@@ -7,7 +7,7 @@ import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 
 import io.netty.channel.ChannelId;
 
-public class ChannelWhoisCacheHolder {
+public class WhoisChannelCacheHolder {
 
     private static final int CAP = NettyConstants.CAPACITY;
     /**
