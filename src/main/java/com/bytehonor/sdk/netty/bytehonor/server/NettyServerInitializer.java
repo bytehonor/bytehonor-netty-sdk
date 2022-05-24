@@ -19,7 +19,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private NettyConfig config;
-    
+
     private ServerListener listener;
 
     public NettyServerInitializer(NettyConfig config, ServerListener listener) {

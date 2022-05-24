@@ -35,8 +35,4 @@ public class NettyMessageReceiver {
         }
 
     }
-
-    public static void receiveString(Channel channel, String msg) {
-        throw new RuntimeException("TODO");
-    }
 }

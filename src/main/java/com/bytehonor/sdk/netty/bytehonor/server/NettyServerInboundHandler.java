@@ -35,11 +35,11 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
             NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
-        } else {
-            String remoteAddress = channel.remoteAddress().toString();
-            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.toString(), remoteAddress,
-                    channel.id().asLongText());
+            return;
         }
+        LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.getClass().getSimpleName(),
+                channel.remoteAddress().toString(), channel.id().asLongText());
+
     }
 
     /**
