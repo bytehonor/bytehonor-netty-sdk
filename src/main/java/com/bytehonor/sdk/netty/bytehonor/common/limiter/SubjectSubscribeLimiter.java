@@ -46,7 +46,7 @@ public class SubjectSubscribeLimiter {
 
     private static void doLimit(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
-        List<ChannelId> channels = new ArrayList<ChannelId>(SubjectChannelCacheHolder.get(subject));
+        List<ChannelId> channels = new ArrayList<ChannelId>(SubjectChannelCacheHolder.list(subject));
         int size = channels.size();
         for (int i = 0; i < limit; i++) {
             size = channels.size();

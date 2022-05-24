@@ -23,30 +23,30 @@ public class SubjectChannelCacheHolder {
         return MAP.size();
     }
 
-    public static boolean exists(String subject, ChannelId id) {
-        if (isEmpty(subject) || id == null) {
+    public static boolean exists(String subject, ChannelId channelId) {
+        if (isEmpty(subject) || channelId == null) {
             return false;
         }
         Set<ChannelId> channels = MAP.get(subject);
         if (CollectionUtils.isEmpty(channels)) {
             return false;
         }
-        return channels.contains(id);
+        return channels.contains(channelId);
     }
 
-    public static void add(String subject, ChannelId id) {
-        if (exists(subject, id)) {
+    public static void put(String subject, ChannelId channelId) {
+        if (exists(subject, channelId)) {
             return;
         }
         Set<ChannelId> channels = MAP.get(subject);
         if (CollectionUtils.isEmpty(channels)) {
             channels = new HashSet<ChannelId>();
         }
-        channels.add(id);
+        channels.add(channelId);
         MAP.put(subject, channels);
     }
 
-    public static Set<ChannelId> get(String subject) {
+    public static Set<ChannelId> list(String subject) {
         if (isEmpty(subject)) {
             return new HashSet<ChannelId>();
         }

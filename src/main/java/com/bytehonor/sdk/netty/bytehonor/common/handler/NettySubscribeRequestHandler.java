@@ -45,7 +45,7 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         for (String subject : subjects) {
             LOG.info("subscribe:{}, subject:{}", request.getSubscribed(), subject);
             if (request.getSubscribed()) {
-                SubjectChannelCacheHolder.add(subject, id);
+                SubjectChannelCacheHolder.put(subject, id);
             } else {
                 SubjectChannelCacheHolder.remove(subject, id);
             }
