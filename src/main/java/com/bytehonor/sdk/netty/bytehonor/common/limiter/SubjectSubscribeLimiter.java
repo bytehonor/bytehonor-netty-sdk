@@ -13,9 +13,9 @@ import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 
-public class NettySubscribeSubjectLimiter {
+public class SubjectSubscribeLimiter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeSubjectLimiter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SubjectSubscribeLimiter.class);
 
     private static final List<SubjectLimiter> LIST = new ArrayList<SubjectLimiter>();
 
@@ -25,7 +25,7 @@ public class NettySubscribeSubjectLimiter {
         LIST.add(limiter);
     }
 
-    public static void limitAll() {
+    public static void limits() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("LIST size:{}", LIST.size());
         }
@@ -40,6 +40,7 @@ public class NettySubscribeSubjectLimiter {
 
     public static void limit(SubjectLimiter limiter) {
         Objects.requireNonNull(limiter, "limiter");
+
         doLimit(limiter.getSubject(), limiter.getLimit());
     }
 

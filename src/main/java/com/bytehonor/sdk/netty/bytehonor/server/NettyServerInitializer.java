@@ -49,7 +49,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组写法， 一些限定和编码解码器
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyServerInboundHandler(listener));
+        pipeline.addLast(new NettyServerInboundHandler(config.getWhoiam(), listener));
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束
         // ByteBuf buf =

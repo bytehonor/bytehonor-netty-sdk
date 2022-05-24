@@ -3,6 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.common.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
 
@@ -21,19 +22,20 @@ public class NettyPublicPayloadHandler implements NettyHandler {
     public void handle(Channel channel, String message) {
         NettyPayload payload = NettyPayload.fromJson(message);
         if (LOG.isDebugEnabled()) {
-            LOG.debug("whois:{}, subject:{}, body:{}", payload.getWhois(), payload.getSubject(), payload.getBody());
+            LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
         }
 
+        String whois = ChannelCacheManager.getWhois(channel.id());
         PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());
         if (handler == null) {
-            LOG.warn("no handler! whois:{}, subject:{}", payload.getWhois(), payload.getSubject());
+            LOG.warn("no handler! whois:{}, subject:{}", whois, payload.getSubject());
             return;
         }
 
         try {
             handler.handle(payload);
         } catch (Exception e) {
-            LOG.error("whois:{}, subject:{}, handler:{}, error", payload.getWhois(), payload.getSubject(),
+            LOG.error("whois:{}, subject:{}, handler:{}, error", whois, payload.getSubject(),
                     handler.getClass().getSimpleName(), e);
         }
     }

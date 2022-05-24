@@ -6,7 +6,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
@@ -85,7 +84,6 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(payload, "payload");
 
-        payload.setWhois(WhoiamHolder.whoiam());
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         doSendBytes(channel, bytes);
     }
@@ -124,7 +122,6 @@ public class NettyMessageSender {
         Objects.requireNonNull(payload, "payload");
         Objects.requireNonNull(payload.getSubject(), "subject");
 
-        payload.setWhois(WhoiamHolder.whoiam());
         final String subject = payload.getSubject();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 

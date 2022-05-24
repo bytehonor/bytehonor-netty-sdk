@@ -20,6 +20,11 @@ public class NettyConfigBuilder {
         builder.config.setPort(port);
         return builder;
     }
+    
+    public NettyConfigBuilder whoiam(String whoiam) {
+        this.config.setWhoiam(whoiam);
+        return this;
+    }
 
     public NettyConfig build() {
         return config;

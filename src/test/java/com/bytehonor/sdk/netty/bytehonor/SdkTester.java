@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.client.NettyClientContanier;
-import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
@@ -22,10 +21,9 @@ public class SdkTester {
 
     @Test
     public void test() {
-        WhoiamHolder.init("test");
-
-        NettyConfig sc = new NettyConfig();
-        NettyServerContanier.start(sc, new DefaultServerListener());
+        NettyConfig server = new NettyConfig();
+        server.setWhoiam("server");
+        NettyServerContanier.start(server, new DefaultServerListener());
 
         try {
             Thread.sleep(2000L);
@@ -33,13 +31,14 @@ public class SdkTester {
             LOG.error("error", e);
         }
 
-        NettyConfig cc = new NettyConfig();
+        NettyConfig client = new NettyConfig();
+        client.setWhoiam("client");
         try {
-            NettyClientContanier.connect(cc, new ClientListener() {
+            NettyClientContanier.connect(client, new ClientListener() {
 
                 @Override
                 public void onConnect(Channel channel) {
-                    LOG.info("onOpen");
+                    LOG.info("onConnect");
                     NettyClientContanier.send(NettyPayload.fromOne("hello world"));
                     NettyClientContanier.ping();
                 }
@@ -51,7 +50,7 @@ public class SdkTester {
 
                 @Override
                 public void onDisconnect(String msg) {
-                    LOG.warn("onClosed:{}", msg);
+                    LOG.warn("onDisconnect:{}", msg);
                 }
             });
             Thread.sleep(1000L);

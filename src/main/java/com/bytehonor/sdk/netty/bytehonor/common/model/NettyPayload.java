@@ -21,11 +21,6 @@ public class NettyPayload implements Serializable {
     private static final long serialVersionUID = 2699241336868045496L;
 
     /**
-     * 来自whois
-     */
-    private String whois;
-
-    /**
      * Body Object的Clazz全名就是subject
      */
     private String subject;
@@ -85,14 +80,6 @@ public class NettyPayload implements Serializable {
             throw new RuntimeException(this.subject);
         }
         return list.get(0);
-    }
-
-    public String getWhois() {
-        return whois;
-    }
-
-    public void setWhois(String whois) {
-        this.whois = whois;
     }
 
     public String getSubject() {

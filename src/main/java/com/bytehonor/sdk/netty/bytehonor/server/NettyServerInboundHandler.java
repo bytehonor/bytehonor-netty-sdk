@@ -3,12 +3,11 @@ package com.bytehonor.sdk.netty.bytehonor.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListenerHelper;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -23,9 +22,12 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerInboundHandler.class);
 
+    private String whoiam;
+
     private ServerListener listener;
 
-    public NettyServerInboundHandler(ServerListener listener) {
+    public NettyServerInboundHandler(String whoiam, ServerListener listener) {
+        this.whoiam = whoiam != null ? whoiam : "unknown";
         this.listener = listener;
     }
 
@@ -83,7 +85,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
 
     private void onAdded(Channel channel) {
         ChannelCacheManager.add(channel);
-        NettyMessageSender.whoisServer(channel, WhoiamHolder.whoiam());
+        NettyMessageSender.whoisServer(channel, whoiam);
         ServerListenerHelper.onTotal(listener, ChannelCacheManager.size());
     }
 }

@@ -3,7 +3,6 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
@@ -23,9 +22,12 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientInboundHandler.class);
 
+    private String whoiam;
+
     private ClientListener listener;
 
-    public NettyClientInboundHandler(ClientListener listener) {
+    public NettyClientInboundHandler(String whoiam, ClientListener listener) {
+        this.whoiam = whoiam != null ? whoiam : "unknown";
         this.listener = listener;
     }
 
@@ -67,7 +69,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private void onConnect(Channel channel) {
         ChannelCacheManager.add(channel);
-        NettyMessageSender.whoisClient(channel, WhoiamHolder.whoiam());
+        NettyMessageSender.whoisClient(channel, whoiam);
         ClientListenerHelper.onConnect(listener, channel);
     }
 }
