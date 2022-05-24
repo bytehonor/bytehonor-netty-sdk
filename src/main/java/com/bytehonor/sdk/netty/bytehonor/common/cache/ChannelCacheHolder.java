@@ -10,7 +10,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
  * @author lijianqiang
  *
  */
-public class ClientChannelCacheHolder {
+public class ChannelCacheHolder {
 
     // 用于记录和管理所有客户端的channel
     private static ChannelGroup CHANNELS = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);

@@ -3,7 +3,7 @@ package com.bytehonor.sdk.netty.bytehonor.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.ClientChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,11 +31,13 @@ public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
                 LOG.debug("state:{}", event.state().name());
             }
             if (event.state() == IdleState.ALL_IDLE) {
-                LOG.info("before close channel size:{}", ClientChannelCacheHolder.size());
+                LOG.info("before close channel size:{}", ChannelCacheManager.size());
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
+                String whois = ChannelCacheManager.getWhois(channel.id());
+                LOG.info("close whois:{}, channel:{}", whois, channel.id().asLongText());
                 channel.close();
-                LOG.info("after close channel size:{}", ClientChannelCacheHolder.size());
+                LOG.info("after close channel size:{}", ChannelCacheManager.size());
             }
         }
     }
