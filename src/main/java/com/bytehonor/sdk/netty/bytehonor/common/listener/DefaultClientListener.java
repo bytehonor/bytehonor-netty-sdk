@@ -10,12 +10,12 @@ public class DefaultClientListener implements ClientListener {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultClientListener.class);
 
     @Override
-    public void onOpen(Channel channel) {
+    public void onConnect(Channel channel) {
         LOG.info("Client onOpen");
     }
 
     @Override
-    public void onClosed(String msg) {
+    public void onDisconnect(String msg) {
         LOG.warn("Client onClosed msg:{}", msg);
     }
 

@@ -5,11 +5,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultClientListener;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListenerHelper;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -56,12 +55,11 @@ public class NettyClient {
     }
 
     public void start() {
-        WhoiamHolder.setWhoiam(config.getWhoiam());
         LOG.info("Netty client start, host:{}, port:{}", config.getHost(), config.getPort());
         final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap = new Bootstrap();
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
-        bootstrap.handler(new NettyClientInitializer(config));
+        bootstrap.handler(new NettyClientInitializer(config, listener));
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeoutMills());
         // 发起异步连接请求，绑定连接端口和host信息
 
@@ -73,18 +71,16 @@ public class NettyClient {
                 public void operationComplete(ChannelFuture arg0) throws Exception {
                     if (future.isSuccess()) {
                         LOG.info("Netty client start success");
-                        NettyListenerHelper.onOpen(listener, future.channel());
                     } else {
                         LOG.error("Netty client start failed, cause", future.cause());
                         group.shutdownGracefully(); // 关闭线程组
-                        NettyListenerHelper.onClosed(listener, future.cause().getMessage());
                     }
                 }
             });
             this.channel = future.channel();
         } catch (Exception e) {
             LOG.error("connect ({}:{}) error:{}", config.getHost(), config.getPort(), e.getMessage());
-            NettyListenerHelper.onError(listener, e);
+            ClientListenerHelper.onError(listener, e);
         }
     }
 

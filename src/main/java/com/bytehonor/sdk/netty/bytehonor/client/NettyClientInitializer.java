@@ -1,5 +1,6 @@
 package com.bytehonor.sdk.netty.bytehonor.client;
 
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettySslUtils;
 
@@ -9,7 +10,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * @author lijianqiang
@@ -19,8 +19,11 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private NettyConfig config;
 
-    public NettyClientInitializer(NettyConfig config) {
+    private ClientListener listener;
+
+    public NettyClientInitializer(NettyConfig config, ClientListener listener) {
         this.config = config;
+        this.listener = listener;
     }
 
     @Override
@@ -37,11 +40,12 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyClientByteHandler(config.getWhoiam()));
+        pipeline.addLast(new NettyClientInboundHandler(listener));
 
         // 自定义的空闲检测
-        pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
-                config.getAllIdleTimeSeconds()));
+        // pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(),
+        // config.getWritIdleTimeSeconds(),
+        // config.getAllIdleTimeSeconds()));
         // 字符串
         // ByteBuf buf =
         // Unpooled.copiedBuffer(ProtocolConstants.END.getBytes(CharsetUtil.UTF_8));

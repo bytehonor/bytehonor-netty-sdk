@@ -1,5 +1,6 @@
 package com.bytehonor.sdk.netty.bytehonor.server;
 
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.util.NettySslUtils;
 
@@ -18,9 +19,12 @@ import io.netty.handler.timeout.IdleStateHandler;
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     private NettyConfig config;
+    
+    private ServerListener listener;
 
-    public NettyServerInitializer(NettyConfig config) {
+    public NettyServerInitializer(NettyConfig config, ServerListener listener) {
         this.config = config;
+        this.listener = listener;
     }
 
     // ch就可以对channel进行设置
@@ -37,10 +41,15 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
                 pipeline.addFirst("ssl", sslContext.newHandler(ch.alloc()));
             }
         }
+
+        // 自定义的空闲检测
+        pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
+                config.getAllIdleTimeSeconds()));
+
         // byte数组写法， 一些限定和编码解码器
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyServerByteHandler(config.getWhoiam()));
+        pipeline.addLast(new NettyServerInboundHandler(listener));
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束
         // ByteBuf buf =
@@ -50,9 +59,6 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
         // pipeline.addLast(new NettyServerStringHandler());
 
-        // 自定义的空闲检测
-        pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
-                config.getAllIdleTimeSeconds()));
-        pipeline.addLast(new NettyHeartBeatHandler());
+        pipeline.addLast(new NettyServerHeartBeatHandler());
     }
 }

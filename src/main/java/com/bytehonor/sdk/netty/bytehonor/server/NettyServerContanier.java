@@ -10,7 +10,6 @@ import com.bytehonor.sdk.netty.bytehonor.common.handler.PayloadHandlerFactory;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.NettySubscribeSubjectLimiter;
 import com.bytehonor.sdk.netty.bytehonor.common.limiter.SubjectLimiter;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
@@ -22,8 +21,6 @@ public class NettyServerContanier {
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerContanier.class);
 
     private NettyServer server;
-
-    private ServerListener listener;
 
     private NettyServerContanier() {
         this.server = new NettyServer();
@@ -58,8 +55,6 @@ public class NettyServerContanier {
         Objects.requireNonNull(listener, "listener");
         LOG.info("start...");
 
-        getInstance().listener = listener;
-
         getInstance().server.start(config, listener);
 
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 20L, config.getPeriodSeconds());
@@ -74,10 +69,6 @@ public class NettyServerContanier {
     public static void addLimiter(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
         NettySubscribeSubjectLimiter.add(SubjectLimiter.of(subject, limit));
-    }
-
-    public static void onTotal(int total) {
-        NettyListenerHelper.onTotal(getInstance().listener, total);
     }
 
     public static void limit() {

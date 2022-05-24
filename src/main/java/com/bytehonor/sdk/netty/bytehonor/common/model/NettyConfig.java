@@ -8,8 +8,6 @@ public class NettyConfig {
 
     private int port;
 
-    private String whoiam;
-
     private boolean ssl;
 
     private boolean sslEngine;
@@ -41,7 +39,6 @@ public class NettyConfig {
     public NettyConfig() {
         this.host = "127.0.0.1";
         this.port = 85;
-        this.whoiam = "unkwon";
         this.ssl = false;
         this.sslEngine = false;
         this.sslPassword = NettyConstants.SSL_PASSWORD;
@@ -72,14 +69,6 @@ public class NettyConfig {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public String getWhoiam() {
-        return whoiam;
-    }
-
-    public void setWhoiam(String whoiam) {
-        this.whoiam = whoiam;
     }
 
     public boolean isSsl() {

@@ -8,13 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelWhoisCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoisCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyChannel;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyChannels;
 import com.bytehonor.sdk.netty.bytehonor.server.NettyServerContanier;
-
-import io.netty.channel.ChannelId;
 
 public class NettyServerCheckTask extends NettyTask {
 
@@ -22,8 +20,9 @@ public class NettyServerCheckTask extends NettyTask {
 
     @Override
     public void runInSafe() {
-        LOG.info("channel size:{}, subscribe size:{}, whois size:{}", ChannelCacheHolder.size(),
-                SubscribeCacheHolder.size(), WhoisCacheHolder.size());
+        LOG.info("channel size:{}, subscribe size:{}, whois size:{}/{}", ChannelCacheHolder.size(),
+                SubscribeCacheHolder.size(), ChannelWhoisCacheHolder.whoisSize(),
+                ChannelWhoisCacheHolder.channelSize());
 
         Iterator<Entry<String, NettyChannels>> its = SubscribeCacheHolder.entrySet().iterator();
         while (its.hasNext()) {
@@ -39,21 +38,8 @@ public class NettyServerCheckTask extends NettyTask {
             }
         }
 
-        Iterator<Entry<ChannelId, String>> itc = WhoisCacheHolder.entrySet().iterator();
-        while (itc.hasNext()) {
-            Entry<ChannelId, String> item = itc.next();
-            LOG.info("whois:{}, channel:{}", item.getValue(), item.getKey().asLongText());
-            if (ChannelCacheHolder.get(item.getKey()) == null) {
-                LOG.warn("remove whois:{}", item.getValue());
-                WhoisCacheHolder.remove(item.getKey());
-            }
-        }
-
         // 限幅
         NettyServerContanier.limit();
-
-        // 通知
-        NettyServerContanier.onTotal(ChannelCacheHolder.size());
     }
 
 }

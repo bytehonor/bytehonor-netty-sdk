@@ -17,9 +17,9 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @author lijianqiang
  *
  */
-public class NettyHeartBeatHandler extends ChannelInboundHandlerAdapter {
+public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyHeartBeatHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyServerHeartBeatHandler.class);
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

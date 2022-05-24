@@ -6,9 +6,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubscribeCacheHolder;
-import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.netty.bytehonor.common.exception.BytehonorNettySdkException;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyPayload;
@@ -85,7 +85,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(payload, "payload");
 
-        payload.setWhois(WhoiamHolder.getWhoiam());
+        payload.setWhois(WhoiamHolder.whoiam());
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         doSendBytes(channel, bytes);
     }
@@ -124,7 +124,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(payload, "payload");
         Objects.requireNonNull(payload.getSubject(), "subject");
 
-        payload.setWhois(WhoiamHolder.getWhoiam());
+        payload.setWhois(WhoiamHolder.whoiam());
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
         ChannelCacheHolder.parallelStream().forEach(channel -> {
             if (channel.isActive() == false) {
@@ -138,7 +138,7 @@ public class NettyMessageSender {
         Objects.requireNonNull(payload, "payload");
         Objects.requireNonNull(payload.getSubject(), "subject");
 
-        payload.setWhois(WhoiamHolder.getWhoiam());
+        payload.setWhois(WhoiamHolder.whoiam());
         final String subject = payload.getSubject();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 

@@ -3,8 +3,12 @@ package com.bytehonor.sdk.netty.bytehonor.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListener;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ClientListenerHelper;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -15,18 +19,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author lijianqiang
  *
  */
-public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
+public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyClientByteHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyClientInboundHandler.class);
 
-    private String whois;
+    private ClientListener listener;
 
-    public NettyClientByteHandler() {
-        this(null);
-    }
-
-    public NettyClientByteHandler(String whois) {
-        this.whois = whois;
+    public NettyClientInboundHandler(ClientListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -46,19 +46,28 @@ public class NettyClientByteHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        if (this.whois != null) {
-            NettyMessageSender.whoisClient(channel, this.whois);
-        }
-        String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("channelActive remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        onConnect(channel);
+        LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
+                channel.id().asLongText());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        String remoteAddress = channel.remoteAddress().toString();
-        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", remoteAddress, channel.id().asLongText(),
-                cause);
+        onDisconnect(channel);
+        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
+                channel.id().asLongText(), cause);
         ctx.close();
+    }
+
+    private void onDisconnect(Channel channel) {
+        ChannelCacheManager.remove(channel);
+        ClientListenerHelper.onDisconnect(listener, "channel close");
+    }
+
+    private void onConnect(Channel channel) {
+        ChannelCacheManager.add(channel);
+        NettyMessageSender.whoisClient(channel, WhoiamHolder.whoiam());
+        ClientListenerHelper.onConnect(listener, channel);
     }
 }

@@ -5,10 +5,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.WhoiamHolder;
 import com.bytehonor.sdk.netty.bytehonor.common.constant.NettyConstants;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.DefaultServerListener;
-import com.bytehonor.sdk.netty.bytehonor.common.listener.NettyListenerHelper;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListenerHelper;
 import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfig;
 import com.bytehonor.sdk.netty.bytehonor.common.model.NettyConfigBuilder;
@@ -66,7 +65,7 @@ public class NettyServer {
         if (init) {
             return;
         }
-        WhoiamHolder.setWhoiam(config.getWhoiam());
+
         LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
         init = true;
 
@@ -92,7 +91,7 @@ public class NettyServer {
             // 日志处理 info级别
             bootstrap.handler(new LoggingHandler(LogLevel.INFO));
             // 添加自定义的初始化器
-            bootstrap.childHandler(new NettyServerInitializer(config));
+            bootstrap.childHandler(new NettyServerInitializer(config, listener));
 
             // 端口绑定
             channelFuture = bootstrap.bind(config.getPort());
@@ -101,10 +100,10 @@ public class NettyServer {
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
-            NettyListenerHelper.onSucceed(listener);
+            ServerListenerHelper.onSucceed(listener);
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
-            NettyListenerHelper.onFailed(listener, e);
+            ServerListenerHelper.onFailed(listener, e);
         }
     }
 

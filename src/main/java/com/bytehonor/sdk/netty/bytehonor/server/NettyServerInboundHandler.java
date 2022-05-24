@@ -3,9 +3,12 @@ package com.bytehonor.sdk.netty.bytehonor.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.WhoiamHolder;
+import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.netty.bytehonor.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListenerHelper;
+import com.bytehonor.sdk.netty.bytehonor.common.listener.ServerListener;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -16,18 +19,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @author lijianqiang
  *
  */
-public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
+public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyServerByteHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyServerInboundHandler.class);
 
-    private String whois;
+    private ServerListener listener;
 
-    public NettyServerByteHandler() {
-        this(null);
-    }
-
-    public NettyServerByteHandler(String whois) {
-        this.whois = whois;
+    public NettyServerInboundHandler(ServerListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -51,12 +50,10 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        // 有异常就关闭连接
         Channel channel = ctx.channel();
-        String remoteAddress = channel.remoteAddress().toString();
-        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", remoteAddress, channel.id().asLongText(),
-                cause);
-        ChannelCacheHolder.remove(channel);
+        onRemoved(channel);
+        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
+                channel.id().asLongText(), cause);
         ctx.close();
     }
 
@@ -66,24 +63,27 @@ public class NettyServerByteHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        if (this.whois != null) {
-            NettyMessageSender.whoisServer(channel, this.whois);
-        }
-        String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
-        // 缓存连接
-        ChannelCacheHolder.add(channel);
+        onAdded(channel);
+        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
+                channel.id().asLongText());
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-
         Channel channel = ctx.channel();
+        onRemoved(channel);
         String remoteAddress = channel.remoteAddress().toString();
         LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
-
-        // 当触发handlerRemoved
-        ChannelCacheHolder.remove(channel);
     }
 
+    private void onRemoved(Channel channel) {
+        ChannelCacheManager.remove(channel);
+        ServerListenerHelper.onTotal(listener, ChannelCacheManager.size());
+    }
+
+    private void onAdded(Channel channel) {
+        ChannelCacheManager.add(channel);
+        NettyMessageSender.whoisServer(channel, WhoiamHolder.whoiam());
+        ServerListenerHelper.onTotal(listener, ChannelCacheManager.size());
+    }
 }

@@ -2,6 +2,8 @@ package com.bytehonor.sdk.netty.bytehonor.common.constant;
 
 public class NettyConstants {
 
+    public static final int CAPACITY = 4096;
+
     /**
      * 设置TCP缓冲区
      */
@@ -34,8 +36,8 @@ public class NettyConstants {
 
     public static final String AES_KEY = "bytehonor_201803";
 
-    public static final int READ_IDLE_TIMEOUT_SECONDS = 10;
-    public static final int WRITE_IDLE_TIMEOUT_SECONDS = 10;
+    public static final int READ_IDLE_TIMEOUT_SECONDS = 0;
+    public static final int WRITE_IDLE_TIMEOUT_SECONDS = 0;
     public static final int ALL_IDLE_TIMEOUT_SECONDS = 60;
 
     public static final int BOSS_THREADS = 2;
