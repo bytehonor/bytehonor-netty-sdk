@@ -22,9 +22,9 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientInboundHandler.class);
 
-    private String whoiam;
+    private final String whoiam;
 
-    private ClientListener listener;
+    private final ClientListener listener;
 
     public NettyClientInboundHandler(String whoiam, ClientListener listener) {
         this.whoiam = whoiam != null ? whoiam : "unknown";
