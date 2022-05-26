@@ -10,6 +10,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * @author lijianqiang
@@ -37,22 +38,23 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
                 pipeline.addFirst("ssl", sslContext.newHandler(ch.alloc()));
             }
         }
+
+        // 自定义的空闲检测
+        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
+                config.getAllIdleSeconds()));
+
         // byte数组
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
         pipeline.addLast(new NettyClientInboundHandler(config.getWhoiam(), listener));
 
-        // 自定义的空闲检测
-        // pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(),
-        // config.getWritIdleTimeSeconds(),
-        // config.getAllIdleTimeSeconds()));
         // 字符串
         // ByteBuf buf =
         // Unpooled.copiedBuffer(ProtocolConstants.END.getBytes(CharsetUtil.UTF_8));
         // pipeline.addLast(new DelimiterBasedFrameDecoder(2 * 1024, buf));
         // pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
         // pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
-        // pipeline.addLast(new NettyClientStringHandler());
+        pipeline.addLast(new NettyClientHeartBeatHandler());
 
     }
 }

@@ -43,8 +43,8 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         // 自定义的空闲检测
-        pipeline.addLast(new IdleStateHandler(config.getReadIdleTimeSeconds(), config.getWritIdleTimeSeconds(),
-                config.getAllIdleTimeSeconds()));
+        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
+                config.getAllIdleSeconds()));
 
         // byte数组写法， 一些限定和编码解码器
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),

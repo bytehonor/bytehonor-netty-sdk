@@ -20,7 +20,7 @@ public class NettyConfigBuilder {
         builder.config.setPort(port);
         return builder;
     }
-    
+
     public NettyConfigBuilder whoiam(String whoiam) {
         this.config.setWhoiam(whoiam);
         return this;
@@ -48,11 +48,7 @@ public class NettyConfigBuilder {
         return this;
     }
 
-    public NettyConfigBuilder servers(int readIdleTimeSeconds, int writIdleTimeSeconds, int allIdleTimeSeconds,
-            int bossThreads, int workThreads) {
-        this.config.setReadIdleTimeSeconds(readIdleTimeSeconds);
-        this.config.setWritIdleTimeSeconds(writIdleTimeSeconds);
-        this.config.setAllIdleTimeSeconds(allIdleTimeSeconds);
+    public NettyConfigBuilder servers(int bossThreads, int workThreads) {
         this.config.setBossThreads(bossThreads);
         this.config.setWorkThreads(workThreads);
         return this;
@@ -61,6 +57,13 @@ public class NettyConfigBuilder {
     public NettyConfigBuilder clients(int clientThreads, int connectTimeoutMills) {
         this.config.setClientThreads(clientThreads);
         this.config.setConnectTimeoutMills(connectTimeoutMills);
+        return this;
+    }
+
+    public NettyConfigBuilder idles(int readIdleSeconds, int writIdleSeconds, int allIdleSeconds) {
+        this.config.setReadIdleSeconds(readIdleSeconds);
+        this.config.setWritIdleSeconds(writIdleSeconds);
+        this.config.setAllIdleSeconds(allIdleSeconds);
         return this;
     }
 

@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.netty.bytehonor.server;
+package com.bytehonor.sdk.netty.bytehonor.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +17,9 @@ import io.netty.handler.timeout.IdleStateEvent;
  * @author lijianqiang
  *
  */
-public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
+public class NettyClientHeartBeatHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyServerHeartBeatHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyClientHeartBeatHandler.class);
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
@@ -31,13 +31,10 @@ public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
                 LOG.debug("state:{}", event.state().name());
             }
             if (event.state() == IdleState.ALL_IDLE) {
-                LOG.info("before close channel size:{}", ChannelCacheManager.size());
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
                 String whois = ChannelCacheManager.getWhois(channel.id());
-                LOG.info("idle client whois:{}, channel:{}", whois, channel.id().asLongText());
-                channel.close();
-                LOG.info("after close channel size:{}", ChannelCacheManager.size());
+                LOG.info("idle server whois:{}, channel:{}", whois, channel.id().asLongText());
             }
         }
     }

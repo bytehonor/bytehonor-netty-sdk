@@ -21,9 +21,9 @@ public class NettyConfig implements Serializable {
     private String sslPassword;
 
     // idle
-    private int readIdleTimeSeconds;
-    private int writIdleTimeSeconds;
-    private int allIdleTimeSeconds;
+    private int readIdleSeconds;
+    private int writIdleSeconds;
+    private int allIdleSeconds;
 
     // length
     private int maxFrameLength;
@@ -49,9 +49,9 @@ public class NettyConfig implements Serializable {
         this.ssl = false;
         this.sslEngine = false;
         this.sslPassword = NettyConstants.SSL_PASSWORD;
-        this.readIdleTimeSeconds = NettyConstants.READ_IDLE_TIMEOUT_SECONDS;
-        this.writIdleTimeSeconds = NettyConstants.WRITE_IDLE_TIMEOUT_SECONDS;
-        this.allIdleTimeSeconds = NettyConstants.ALL_IDLE_TIMEOUT_SECONDS;
+        this.readIdleSeconds = NettyConstants.READ_IDLE_TIMEOUT_SECONDS;
+        this.writIdleSeconds = NettyConstants.WRITE_IDLE_TIMEOUT_SECONDS;
+        this.allIdleSeconds = NettyConstants.ALL_IDLE_TIMEOUT_SECONDS;
         this.maxFrameLength = NettyConstants.MAX_LENGTH;
         this.lengthFieldOffset = NettyConstants.LENGTH_OFFSET;
         this.lengthFieldLength = NettyConstants.LENGTH_SIZE;
@@ -110,28 +110,28 @@ public class NettyConfig implements Serializable {
         this.sslPassword = sslPassword;
     }
 
-    public int getReadIdleTimeSeconds() {
-        return readIdleTimeSeconds;
+    public int getReadIdleSeconds() {
+        return readIdleSeconds;
     }
 
-    public void setReadIdleTimeSeconds(int readIdleTimeSeconds) {
-        this.readIdleTimeSeconds = readIdleTimeSeconds;
+    public void setReadIdleSeconds(int readIdleSeconds) {
+        this.readIdleSeconds = readIdleSeconds;
     }
 
-    public int getWritIdleTimeSeconds() {
-        return writIdleTimeSeconds;
+    public int getWritIdleSeconds() {
+        return writIdleSeconds;
     }
 
-    public void setWritIdleTimeSeconds(int writIdleTimeSeconds) {
-        this.writIdleTimeSeconds = writIdleTimeSeconds;
+    public void setWritIdleSeconds(int writIdleSeconds) {
+        this.writIdleSeconds = writIdleSeconds;
     }
 
-    public int getAllIdleTimeSeconds() {
-        return allIdleTimeSeconds;
+    public int getAllIdleSeconds() {
+        return allIdleSeconds;
     }
 
-    public void setAllIdleTimeSeconds(int allIdleTimeSeconds) {
-        this.allIdleTimeSeconds = allIdleTimeSeconds;
+    public void setAllIdleSeconds(int allIdleSeconds) {
+        this.allIdleSeconds = allIdleSeconds;
     }
 
     public int getMaxFrameLength() {
