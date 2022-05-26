@@ -3,9 +3,11 @@ package com.bytehonor.sdk.netty.bytehonor.common.limiter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.bytehonor.sdk.netty.bytehonor.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.netty.bytehonor.common.cache.SubjectChannelCacheHolder;
@@ -46,21 +48,30 @@ public class SubjectSubscribeLimiter {
 
     private static void doLimit(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
-        List<ChannelId> channels = new ArrayList<ChannelId>(SubjectChannelCacheHolder.get(subject));
+
+        Set<ChannelId> raw = SubjectChannelCacheHolder.get(subject);
+        if (CollectionUtils.isEmpty(raw)) {
+            return;
+        }
+        List<ChannelId> channels = new ArrayList<ChannelId>(raw);
         int size = channels.size();
-        for (int i = 0; i < limit; i++) {
-            size = channels.size();
-            if (size <= limit || size < 1) {
-                return;
-            }
-            LOG.warn("subject:{}, limit:{}, size:{} overlimit.", subject, limit, size);
+        int remove = size - limit;
+        if (remove < 1) {
+            return;
+        }
+        LOG.warn("subject:{}, remove:{}, limit:{}, size:{} overlimit.", subject, remove, limit, size);
+
+        List<ChannelId> targets = new ArrayList<ChannelId>();
+        for (int i = 0; i < remove; i++) {
+            targets.add(channels.get(i));
+        }
+        for (ChannelId target : targets) {
             try {
-                ChannelId id = channels.get(size - 1); // 踢掉最后一个
-                Channel last = ChannelCacheManager.getChannel(id);
+                Channel last = ChannelCacheManager.getChannel(target);
                 if (last != null) {
                     last.close();
                 }
-                SubjectChannelCacheHolder.remove(subject, id);
+                SubjectChannelCacheHolder.remove(subject, target);
             } catch (Exception e) {
                 LOG.error("error", e);
             }
