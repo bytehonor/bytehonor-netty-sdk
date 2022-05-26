@@ -48,7 +48,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        onConnect(channel);
+        onOpen(channel);
         LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
                 channel.id().asLongText());
     }
@@ -56,18 +56,26 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        onDisconnect(channel);
+        onClosed(channel);
         LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
                 channel.id().asLongText(), cause);
         ctx.close();
     }
+    
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        Channel channel = ctx.channel();
+        onClosed(channel);
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+    }
 
-    private void onDisconnect(Channel channel) {
+    private void onClosed(Channel channel) {
         ChannelCacheManager.remove(channel);
         ClientListenerHelper.onClosed(listener, "channel close");
     }
 
-    private void onConnect(Channel channel) {
+    private void onOpen(Channel channel) {
         ChannelCacheManager.add(channel);
         NettyMessageSender.whoisClient(channel, whoiam);
         ClientListenerHelper.onOpen(listener, channel);
