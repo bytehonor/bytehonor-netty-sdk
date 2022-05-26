@@ -49,7 +49,7 @@ public class SubjectSubscribeLimiter {
     private static void doLimit(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
 
-        Set<ChannelId> raw = SubjectChannelCacheHolder.get(subject);
+        Set<ChannelId> raw = SubjectChannelCacheHolder.list(subject);
         if (CollectionUtils.isEmpty(raw)) {
             return;
         }

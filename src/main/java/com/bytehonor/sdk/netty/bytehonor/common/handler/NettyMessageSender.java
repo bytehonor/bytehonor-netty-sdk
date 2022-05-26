@@ -125,7 +125,7 @@ public class NettyMessageSender {
         final String subject = payload.getSubject();
         final byte[] bytes = NettyDataUtils.build(NettyTypeEnum.PUBLIC_PAYLOAD, payload.toString());
 
-        Set<ChannelId> channelIds = SubjectChannelCacheHolder.get(subject);
+        Set<ChannelId> channelIds = SubjectChannelCacheHolder.list(subject);
         for (ChannelId channelId : channelIds) {
             Channel channel = ChannelCacheManager.getChannel(channelId);
             if (channel == null) {

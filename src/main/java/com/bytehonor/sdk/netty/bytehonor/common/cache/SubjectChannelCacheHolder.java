@@ -34,7 +34,7 @@ public class SubjectChannelCacheHolder {
         return channels.contains(channelId);
     }
 
-    public static void add(String subject, ChannelId channelId) {
+    public static void put(String subject, ChannelId channelId) {
         if (exists(subject, channelId)) {
             return;
         }
@@ -46,7 +46,7 @@ public class SubjectChannelCacheHolder {
         MAP.put(subject, channels);
     }
 
-    public static Set<ChannelId> get(String subject) {
+    public static Set<ChannelId> list(String subject) {
         if (isEmpty(subject)) {
             return new HashSet<ChannelId>();
         }
