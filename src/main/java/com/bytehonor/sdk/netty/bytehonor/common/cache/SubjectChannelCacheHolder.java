@@ -34,10 +34,11 @@ public class SubjectChannelCacheHolder {
         return channels.contains(channelId);
     }
 
-    public static void put(String subject, ChannelId channelId) {
+    public static synchronized void put(String subject, ChannelId channelId) {
         if (exists(subject, channelId)) {
             return;
         }
+
         Set<ChannelId> channels = MAP.get(subject);
         if (CollectionUtils.isEmpty(channels)) {
             channels = new HashSet<ChannelId>();
@@ -61,6 +62,7 @@ public class SubjectChannelCacheHolder {
         if (isEmpty(subject)) {
             return;
         }
+
         Set<ChannelId> channels = MAP.get(subject);
         if (CollectionUtils.isEmpty(channels)) {
             return;
