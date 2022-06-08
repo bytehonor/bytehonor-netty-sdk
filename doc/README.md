@@ -1,5 +1,5 @@
-# bytehonor-netty-sdk
-bytehonor-netty-sdk
+# netty-beautify-sdk
+netty-beautify-sdk
 
 ## 协议
 

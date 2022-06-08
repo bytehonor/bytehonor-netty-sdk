@@ -1,0 +1,31 @@
+package com.bytehonor.sdk.beautify.netty.common.handler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.constant.NettyTypeEnum;
+
+import io.netty.channel.Channel;
+
+/**
+ * @author lijianqiang
+ *
+ */
+public class NettyWhoisClientHandler implements NettyHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NettyWhoisClientHandler.class);
+
+    @Override
+    public int type() {
+        return NettyTypeEnum.WHOIS_CLIENT.getType();
+    }
+
+    @Override
+    public void handle(Channel channel, String message) {
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.info("whois:{}, remoteAddress:{}, channel:{}", message, remoteAddress, channel.id().asLongText());
+        ChannelCacheManager.put(message, channel);
+    }
+
+}
