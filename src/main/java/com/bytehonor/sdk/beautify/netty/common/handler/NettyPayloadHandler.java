@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.task.NettyPayloadTask;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyPayloadExecutor;
 
 import io.netty.channel.Channel;
 
-public class NettyPublicPayloadHandler implements NettyHandler {
+public class NettyPayloadHandler implements NettyHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyPublicPayloadHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadHandler.class);
 
     @Override
     public int type() {
@@ -26,7 +26,7 @@ public class NettyPublicPayloadHandler implements NettyHandler {
         }
 
         // 单线程处理
-        NettyPayloadTask.add(payload);
+        NettyPayloadExecutor.add(payload);
     }
 
 }

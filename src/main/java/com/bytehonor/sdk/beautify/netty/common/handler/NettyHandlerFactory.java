@@ -18,7 +18,7 @@ public class NettyHandlerFactory {
         put(new NettySubscribeResponseHandler());
         put(new NettyWhoisClientHandler());
         put(new NettyWhoisServerHandler());
-        put(new NettyPublicPayloadHandler());
+        put(new NettyPayloadHandler());
     }
 
     public static void put(NettyHandler handler) {

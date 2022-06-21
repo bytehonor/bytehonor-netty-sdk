@@ -5,11 +5,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PayloadHandlerFactory {
+public class SubjectHandlerFactory {
 
-    private static final Map<String, PayloadHandler> MAP = new ConcurrentHashMap<String, PayloadHandler>();
+    private static final Map<String, SubjectHandler> MAP = new ConcurrentHashMap<String, SubjectHandler>();
 
-    public static Set<Entry<String, PayloadHandler>> entries() {
+    public static Set<Entry<String, SubjectHandler>> entries() {
         return MAP.entrySet();
     }
 
@@ -17,14 +17,14 @@ public class PayloadHandlerFactory {
         return MAP.keySet();
     }
 
-    public static void put(PayloadHandler handler) {
+    public static void put(SubjectHandler handler) {
         if (handler == null || handler.subject() == null) {
             return;
         }
         MAP.put(handler.subject(), handler);
     }
 
-    public static PayloadHandler get(String subject) {
+    public static SubjectHandler get(String subject) {
         if (subject == null) {
             return null;
         }

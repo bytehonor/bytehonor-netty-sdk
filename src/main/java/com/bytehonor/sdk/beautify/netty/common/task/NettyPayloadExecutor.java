@@ -5,13 +5,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.PayloadHandler;
-import com.bytehonor.sdk.beautify.netty.common.handler.PayloadHandlerFactory;
+import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandler;
+import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandlerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
-public class NettyPayloadTask {
+public class NettyPayloadExecutor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadExecutor.class);
 
     private final LinkedBlockingQueue<NettyPayload> queue = new LinkedBlockingQueue<NettyPayload>(10240);
 
@@ -20,7 +20,7 @@ public class NettyPayloadTask {
      */
     private Thread thread;
 
-    private NettyPayloadTask() {
+    private NettyPayloadExecutor() {
         init();
     }
 
@@ -42,7 +42,7 @@ public class NettyPayloadTask {
             }
 
         });
-        thread.setName(NettyPayloadTask.class.getSimpleName());
+        thread.setName(NettyPayloadExecutor.class.getSimpleName());
         thread.start();
         LOG.info("[Thread] {} start", thread.getName());
     }
@@ -50,8 +50,7 @@ public class NettyPayloadTask {
     private void process() throws InterruptedException {
         // 从队列中取值,如果没有对象过期则队列一直等待，
         NettyPayload payload = queue.take();
-
-        PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());
+        SubjectHandler handler = SubjectHandlerFactory.get(payload.getSubject());
         if (handler == null) {
             LOG.warn("no PayloadHandler! subject:{}", payload.getSubject());
             return;
@@ -60,19 +59,19 @@ public class NettyPayloadTask {
         handler.handle(payload);
     }
 
-    /**
-     * 延迟加载(线程安全)
-     *
-     */
     private static class LazyHolder {
-        private static NettyPayloadTask INSTANCE = new NettyPayloadTask();
+        private static NettyPayloadExecutor INSTANCE = new NettyPayloadExecutor();
     }
 
-    private static NettyPayloadTask self() {
+    private static NettyPayloadExecutor self() {
         return LazyHolder.INSTANCE;
     }
 
     public static void add(NettyPayload payload) {
+        if (payload == null) {
+            LOG.warn("payload null");
+            return;
+        }
         try {
             self().queue.put(payload);
         } catch (Exception e) {
