@@ -13,7 +13,7 @@ public class NettyPayloadTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadTask.class);
 
-    private final LinkedBlockingQueue<NettyPayload> queue = new LinkedBlockingQueue<NettyPayload>(4096);
+    private final LinkedBlockingQueue<NettyPayload> queue = new LinkedBlockingQueue<NettyPayload>(10240);
 
     /**
      * 线程
