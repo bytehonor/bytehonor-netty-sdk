@@ -3,9 +3,9 @@ package com.bytehonor.sdk.beautify.netty.common.handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyTypeEnum;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyPayloadTask;
 
 import io.netty.channel.Channel;
 
@@ -25,19 +25,8 @@ public class NettyPublicPayloadHandler implements NettyHandler {
             LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
         }
 
-        PayloadHandler handler = PayloadHandlerFactory.get(payload.getSubject());
-        if (handler == null) {
-            LOG.warn("no PayloadHandler! subject:{}, channel:{}", payload.getSubject(), channel.id().asLongText());
-            return;
-        }
-
-        try {
-            handler.handle(payload);
-        } catch (Exception e) {
-            String whois = ChannelCacheManager.getWhois(channel.id());
-            LOG.error("whois:{}, subject:{}, handler:{}, error", whois, payload.getSubject(),
-                    handler.getClass().getSimpleName(), e);
-        }
+        // 单线程处理
+        NettyPayloadTask.add(payload);
     }
 
 }
