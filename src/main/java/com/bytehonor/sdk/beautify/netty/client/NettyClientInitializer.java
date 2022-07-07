@@ -1,6 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
@@ -20,9 +20,9 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private NettyConfig config;
 
-    private ClientListener listener;
+    private NettyClientListener listener;
 
-    public NettyClientInitializer(NettyConfig config, ClientListener listener) {
+    public NettyClientInitializer(NettyConfig config, NettyClientListener listener) {
         this.config = config;
         this.listener = listener;
     }

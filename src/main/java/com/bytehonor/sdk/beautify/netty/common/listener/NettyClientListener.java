@@ -2,7 +2,7 @@ package com.bytehonor.sdk.beautify.netty.common.listener;
 
 import io.netty.channel.Channel;
 
-public interface ClientListener {
+public interface NettyClientListener {
 
     public void onOpen(Channel channel);
 

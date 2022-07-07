@@ -9,7 +9,7 @@ public class ClientListenerHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientListenerHelper.class);
 
-    public static void onOpen(ClientListener listener, Channel channel) {
+    public static void onOpen(NettyClientListener listener, Channel channel) {
         try {
             if (listener != null) {
                 listener.onOpen(channel);
@@ -19,7 +19,7 @@ public class ClientListenerHelper {
         }
     }
 
-    public static void onClosed(ClientListener listener, String msg) {
+    public static void onClosed(NettyClientListener listener, String msg) {
         try {
             if (listener != null) {
                 listener.onClosed(msg);
@@ -29,7 +29,7 @@ public class ClientListenerHelper {
         }
     }
 
-    public static void onError(ClientListener listener, Throwable error) {
+    public static void onError(NettyClientListener listener, Throwable error) {
         try {
             if (listener != null) {
                 listener.onError(error);

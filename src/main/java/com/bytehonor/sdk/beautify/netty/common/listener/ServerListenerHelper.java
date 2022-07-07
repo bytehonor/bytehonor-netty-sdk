@@ -7,7 +7,7 @@ public class ServerListenerHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerListenerHelper.class);
 
-    public static void onSucceed(ServerListener listener) {
+    public static void onSucceed(NettyServerListener listener) {
         try {
             if (listener != null) {
                 listener.onSucceed();
@@ -17,7 +17,7 @@ public class ServerListenerHelper {
         }
     }
 
-    public static void onFailed(ServerListener listener, Throwable error) {
+    public static void onFailed(NettyServerListener listener, Throwable error) {
         try {
             if (listener != null) {
                 listener.onFailed(error);
@@ -27,7 +27,7 @@ public class ServerListenerHelper {
         }
     }
 
-    public static void onTotal(ServerListener listener, int total) {
+    public static void onTotal(NettyServerListener listener, int total) {
         try {
             if (listener != null) {
                 listener.onTotal(total);

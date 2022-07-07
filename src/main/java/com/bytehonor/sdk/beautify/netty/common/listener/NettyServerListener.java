@@ -1,6 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.common.listener;
 
-public interface ServerListener {
+public interface NettyServerListener {
 
     public void onSucceed();
 

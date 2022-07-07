@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.Channel;
 
-public class DefaultClientListener implements ClientListener {
+public class DefaultNettyClientListener implements NettyClientListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultClientListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyClientListener.class);
 
     @Override
     public void onOpen(Channel channel) {

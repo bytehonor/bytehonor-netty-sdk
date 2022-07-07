@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultServerListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.ServerListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.ServerListenerHelper;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
@@ -51,14 +51,14 @@ public class NettyServer {
 
     public void start(int port) {
         NettyConfig config = NettyConfigBuilder.server(port).build();
-        start(config, new DefaultServerListener());
+        start(config, new DefaultNettyServerListener());
     }
 
-    public void start(NettyConfig config, ServerListener listener) {
+    public void start(NettyConfig config, NettyServerListener listener) {
         bind(config, listener);
     }
 
-    private void bind(NettyConfig config, ServerListener listener) {
+    private void bind(NettyConfig config, NettyServerListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(listener, "listener");
 

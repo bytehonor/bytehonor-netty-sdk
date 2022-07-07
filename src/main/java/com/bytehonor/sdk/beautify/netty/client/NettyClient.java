@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.ClientListenerHelper;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
@@ -32,26 +32,26 @@ public class NettyClient {
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
 
     private final NettyConfig config;
-    private final ClientListener listener;
+    private final NettyClientListener listener;
     private Bootstrap bootstrap;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, ClientListener listener) {
+    public NettyClient(String host, int port, NettyClientListener listener) {
         this(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
     public NettyClient(String host, int port) {
-        this(host, port, new DefaultClientListener());
+        this(host, port, new DefaultNettyClientListener());
     }
 
-    public NettyClient(NettyConfig config, ClientListener listener) {
+    public NettyClient(NettyConfig config, NettyClientListener listener) {
         this.config = config;
-        this.listener = listener != null ? listener : new DefaultClientListener();
+        this.listener = listener != null ? listener : new DefaultNettyClientListener();
     }
 
     public NettyClient(NettyConfig config) {
-        this(config, new DefaultClientListener());
+        this(config, new DefaultNettyClientListener());
     }
 
     public void start() {

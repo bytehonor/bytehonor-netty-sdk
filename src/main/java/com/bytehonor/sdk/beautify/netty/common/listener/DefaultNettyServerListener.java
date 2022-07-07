@@ -3,9 +3,9 @@ package com.bytehonor.sdk.beautify.netty.common.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultServerListener implements ServerListener {
+public class DefaultNettyServerListener implements NettyServerListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultServerListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyServerListener.class);
 
     @Override
     public void onSucceed() {

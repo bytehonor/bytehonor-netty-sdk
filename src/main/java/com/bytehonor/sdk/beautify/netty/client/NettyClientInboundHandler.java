@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageReceiver;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.ClientListenerHelper;
 
 import io.netty.buffer.ByteBuf;
@@ -24,9 +24,9 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private final String whoiam;
 
-    private final ClientListener listener;
+    private final NettyClientListener listener;
 
-    public NettyClientInboundHandler(String whoiam, ClientListener listener) {
+    public NettyClientInboundHandler(String whoiam, NettyClientListener listener) {
         this.whoiam = whoiam != null ? whoiam : "unknown";
         this.listener = listener;
     }

@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
 import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandler;
 import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandlerFactory;
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
@@ -24,7 +24,7 @@ public final class NettyClientContanier {
 
     private NettyConfig config;
 
-    private ClientListener listener;
+    private NettyClientListener listener;
 
     private NettyClientContanier() {
     }
@@ -42,10 +42,10 @@ public final class NettyClientContanier {
     }
 
     public static void connect(String host, int port) {
-        connect(NettyConfigBuilder.client(host, port).build(), new DefaultClientListener());
+        connect(NettyConfigBuilder.client(host, port).build(), new DefaultNettyClientListener());
     }
 
-    public static void connect(String host, int port, ClientListener listener) {
+    public static void connect(String host, int port, NettyClientListener listener) {
         connect(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
@@ -55,7 +55,7 @@ public final class NettyClientContanier {
      * @param config
      * @param listener
      */
-    public static void connect(NettyConfig config, ClientListener listener) {
+    public static void connect(NettyConfig config, NettyClientListener listener) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(config.getHost(), "host");
         Objects.requireNonNull(listener, "listener");

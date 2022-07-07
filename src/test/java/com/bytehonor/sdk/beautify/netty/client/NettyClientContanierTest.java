@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientContanierTest {
@@ -19,7 +19,7 @@ public class NettyClientContanierTest {
         int port = 85;
 
         try {
-            NettyClientContanier.connect(host, port, new DefaultClientListener());
+            NettyClientContanier.connect(host, port, new DefaultNettyClientListener());
             Thread.sleep(60000L);
             NettyClientContanier.send(NettyPayload.build("hello world"));
             Thread.sleep(60000L * 10);
