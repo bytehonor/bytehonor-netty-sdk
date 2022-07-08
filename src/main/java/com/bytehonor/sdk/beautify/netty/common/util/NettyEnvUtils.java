@@ -4,11 +4,9 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 
 public class NettyEnvUtils {
 
@@ -20,8 +18,8 @@ public class NettyEnvUtils {
         return whoiam(localIp(), port);
     }
 
-    public static String whoiam(String localIp, int port) {
-        return new StringBuilder().append(localIp).append(":").append(port).toString();
+    public static String whoiam(String name, int port) {
+        return new StringBuilder().append(name).append(":").append(port).toString();
     }
 
     public static String localIp() {
@@ -50,10 +48,5 @@ public class NettyEnvUtils {
             LOCAL_IP = "unknown";
         }
         return LOCAL_IP;
-    }
-
-    public static String whoiam(Environment env) {
-        Objects.requireNonNull(env, "env");
-        return whoiam(Integer.valueOf(env.getProperty("server.port")));
     }
 }

@@ -1,11 +1,17 @@
 package com.bytehonor.sdk.beautify.netty.common.model;
 
+import com.bytehonor.sdk.beautify.netty.common.util.NettyEnvUtils;
+
 public class NettyConfigBuilder {
 
     private NettyConfig config;
 
     private NettyConfigBuilder() {
         this.config = new NettyConfig();
+    }
+
+    public NettyConfig build() {
+        return config;
     }
 
     public static NettyConfigBuilder server(int port) {
@@ -21,13 +27,9 @@ public class NettyConfigBuilder {
         return builder;
     }
 
-    public NettyConfigBuilder whoiam(String whoiam) {
-        this.config.setWhoiam(whoiam);
+    public NettyConfigBuilder whoiam(String name, int port) {
+        this.config.setWhoiam(NettyEnvUtils.whoiam(name, port));
         return this;
-    }
-
-    public NettyConfig build() {
-        return config;
     }
 
     public NettyConfigBuilder ssl(boolean sslEnabled) {
