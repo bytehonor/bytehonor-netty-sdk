@@ -1,7 +1,5 @@
 package com.bytehonor.sdk.beautify.netty.common.model;
 
-import com.bytehonor.sdk.beautify.netty.common.util.NettyEnvUtils;
-
 public class NettyConfigBuilder {
 
     private NettyConfig config;
@@ -27,8 +25,8 @@ public class NettyConfigBuilder {
         return builder;
     }
 
-    public NettyConfigBuilder whoiam(String name, int port) {
-        this.config.setWhoiam(NettyEnvUtils.whoiam(name, port));
+    public NettyConfigBuilder whoiam(String whoiam) {
+        this.config.setWhoiam(whoiam);
         return this;
     }
 
