@@ -2,6 +2,7 @@ package com.bytehonor.sdk.beautify.netty.common.handler;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,16 +19,14 @@ public class SubjectHandlerFactory {
     }
 
     public static void put(SubjectHandler handler) {
-        if (handler == null || handler.subject() == null) {
-            return;
-        }
+        Objects.requireNonNull(handler, "handler");
+
         MAP.put(handler.subject(), handler);
     }
 
     public static SubjectHandler get(String subject) {
-        if (subject == null) {
-            return null;
-        }
+        Objects.requireNonNull(subject, "subject");
+
         return MAP.get(subject);
     }
 }

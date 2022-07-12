@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelIdHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.WhoisChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.server.NettyServerContanier;
@@ -21,20 +22,23 @@ public class NettyServerCheckTask extends NettyTask {
 
     @Override
     public void runInSafe() {
-        LOG.info("channel size:{}, subscribe size:{}, whois size:{}/{}", ChannelCacheHolder.size(),
-                SubjectChannelCacheHolder.size(), WhoisChannelCacheHolder.whoisSize(),
-                WhoisChannelCacheHolder.channelSize());
+        LOG.info("channel size:{}, subscribe size:{}, whois size:{}", ChannelCacheHolder.size(),
+                SubjectChannelCacheHolder.size(), WhoisChannelCacheHolder.size());
 
-        Iterator<Entry<String, Set<ChannelId>>> its = SubjectChannelCacheHolder.entrySet().iterator();
+        Iterator<Entry<String, ChannelIdHolder>> its = SubjectChannelCacheHolder.entrySet().iterator();
         while (its.hasNext()) {
-            Entry<String, Set<ChannelId>> item = its.next();
+            Entry<String, ChannelIdHolder> item = its.next();
             String subject = item.getKey();
-            Set<ChannelId> channels = item.getValue();
-            LOG.info("subject:{}, channels size:{}", subject, channels.size());
-            for (ChannelId channel : channels) {
-                if (ChannelCacheManager.getChannel(channel) == null) {
+            ChannelIdHolder holder = item.getValue();
+            LOG.info("subject:{}, channels size:{}", subject, holder.size());
+            if (holder.size() > 0) {
+                Set<ChannelId> channels = holder.values();
+                for (ChannelId channel : channels) {
+                    if (ChannelCacheManager.exists(channel)) {
+                        continue;
+                    }
                     LOG.warn("remove subject:{}, channel:{}", subject, channel.asLongText());
-                    SubjectChannelCacheHolder.remove(subject, channel);
+                    holder.remove(channel);
                 }
             }
         }

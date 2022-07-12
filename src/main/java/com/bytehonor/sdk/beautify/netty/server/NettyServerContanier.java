@@ -20,7 +20,7 @@ public class NettyServerContanier {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerContanier.class);
 
-    private NettyServer server;
+    private final NettyServer server;
 
     private NettyServerContanier() {
         this.server = new NettyServer();
@@ -31,11 +31,11 @@ public class NettyServerContanier {
      *
      */
     private static class LazyHolder {
-        private static NettyServerContanier instance = new NettyServerContanier();
+        private static NettyServerContanier SINGLE = new NettyServerContanier();
     }
 
-    private static NettyServerContanier getInstance() {
-        return LazyHolder.instance;
+    private static NettyServerContanier self() {
+        return LazyHolder.SINGLE;
     }
 
     public static void start(int port) {
@@ -55,7 +55,7 @@ public class NettyServerContanier {
         Objects.requireNonNull(listener, "listener");
         LOG.info("start...");
 
-        getInstance().server.start(config, listener);
+        self().server.start(config, listener);
 
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 20L, config.getPeriodSeconds());
     }

@@ -18,16 +18,9 @@ public class NettyPayloadExecutor {
     /**
      * 线程
      */
-    private Thread thread;
+    private final Thread thread;
 
     private NettyPayloadExecutor() {
-        init();
-    }
-
-    /**
-     * 初始化线程
-     */
-    private void init() {
         thread = new Thread(new NettyTask() {
 
             @Override
@@ -60,11 +53,11 @@ public class NettyPayloadExecutor {
     }
 
     private static class LazyHolder {
-        private static NettyPayloadExecutor INSTANCE = new NettyPayloadExecutor();
+        private static final NettyPayloadExecutor SINGLE = new NettyPayloadExecutor();
     }
 
     private static NettyPayloadExecutor self() {
-        return LazyHolder.INSTANCE;
+        return LazyHolder.SINGLE;
     }
 
     public static void add(NettyPayload payload) {

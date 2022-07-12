@@ -5,8 +5,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.util.CollectionUtils;
-
 import io.netty.channel.ChannelId;
 
 public class SubjectChannelCacheHolder {
@@ -16,7 +14,7 @@ public class SubjectChannelCacheHolder {
     /**
      * subject channel
      */
-    private static final ConcurrentHashMap<String, Set<ChannelId>> MAP = new ConcurrentHashMap<String, Set<ChannelId>>(
+    private static final ConcurrentHashMap<String, ChannelIdHolder> MAP = new ConcurrentHashMap<String, ChannelIdHolder>(
             CAPACITY);
 
     public static int size() {
@@ -27,11 +25,11 @@ public class SubjectChannelCacheHolder {
         if (isEmpty(subject) || channelId == null) {
             return false;
         }
-        Set<ChannelId> channels = MAP.get(subject);
-        if (CollectionUtils.isEmpty(channels)) {
+        ChannelIdHolder holder = MAP.get(subject);
+        if (holder == null) {
             return false;
         }
-        return channels.contains(channelId);
+        return holder.contains(channelId);
     }
 
     public static synchronized void put(String subject, ChannelId channelId) {
@@ -39,23 +37,23 @@ public class SubjectChannelCacheHolder {
             return;
         }
 
-        Set<ChannelId> channels = MAP.get(subject);
-        if (CollectionUtils.isEmpty(channels)) {
-            channels = new HashSet<ChannelId>();
+        ChannelIdHolder holder = MAP.get(subject);
+        if (holder == null) {
+            holder = new ChannelIdHolder();
+            MAP.put(subject, holder);
         }
-        channels.add(channelId);
-        MAP.put(subject, channels);
+        holder.add(channelId);
     }
 
     public static Set<ChannelId> list(String subject) {
         if (isEmpty(subject)) {
             return new HashSet<ChannelId>();
         }
-        Set<ChannelId> channels = MAP.get(subject);
-        if (CollectionUtils.isEmpty(channels)) {
+        ChannelIdHolder holder = MAP.get(subject);
+        if (holder == null) {
             return new HashSet<ChannelId>();
         }
-        return channels;
+        return holder.values();
     }
 
     public static void remove(String subject, ChannelId channelId) {
@@ -63,30 +61,18 @@ public class SubjectChannelCacheHolder {
             return;
         }
 
-        Set<ChannelId> channels = MAP.get(subject);
-        if (CollectionUtils.isEmpty(channels)) {
+        ChannelIdHolder holder = MAP.get(subject);
+        if (holder == null) {
             return;
         }
-        channels.remove(channelId);
-    }
-
-    public static void remove(String subject) {
-        if (isEmpty(subject)) {
-            return;
-        }
-        Set<ChannelId> channels = MAP.get(subject);
-        if (CollectionUtils.isEmpty(channels)) {
-            return;
-        }
-        channels.clear();
-        MAP.remove(subject);
+        holder.remove(channelId);
     }
 
     private static boolean isEmpty(String str) {
         return (str == null || str.isEmpty());
     }
 
-    public static Set<Entry<String, Set<ChannelId>>> entrySet() {
+    public static Set<Entry<String, ChannelIdHolder>> entrySet() {
         return MAP.entrySet();
     }
 }

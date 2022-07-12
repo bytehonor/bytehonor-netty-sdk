@@ -40,6 +40,12 @@ public class ChannelCacheManager {
         return channel;
     }
 
+    public static boolean exists(ChannelId channelId) {
+        Objects.requireNonNull(channelId, "channelId");
+
+        return ChannelCacheHolder.get(channelId) != null;
+    }
+
     public static Channel getChannel(ChannelId channelId) {
         Objects.requireNonNull(channelId, "channelId");
 
@@ -49,13 +55,13 @@ public class ChannelCacheManager {
     public static ChannelId getChannelId(String whois) {
         Objects.requireNonNull(whois, "whois");
 
-        return WhoisChannelCacheHolder.get(whois);
+        return WhoisChannelCacheHolder.getChannel(whois);
     }
 
     public static String getWhois(ChannelId channelId) {
         Objects.requireNonNull(channelId, "channelId");
 
-        return WhoisChannelCacheHolder.get(channelId);
+        return WhoisChannelCacheHolder.getWhois(channelId);
     }
 
     public static void remove(Channel channel) {
@@ -72,7 +78,7 @@ public class ChannelCacheManager {
             return;
         }
 
-        ChannelId channelId = WhoisChannelCacheHolder.get(whois);
+        ChannelId channelId = WhoisChannelCacheHolder.getChannel(whois);
         ChannelCacheHolder.remove(ChannelCacheHolder.get(channelId));
         WhoisChannelCacheHolder.remove(whois);
     }
