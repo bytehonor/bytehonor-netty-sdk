@@ -18,7 +18,7 @@ public class NettyPayloadTest {
     @Test
     public void test() throws ClassNotFoundException, JsonMappingException, JsonProcessingException {
 
-        SubscribeRequest request = SubscribeRequest.of("test");
+        SubscribeRequest request = SubscribeRequest.yes("test");
 
         LOG.info("1:{}", NettyJsonUtils.toJson(request));
 
@@ -31,7 +31,7 @@ public class NettyPayloadTest {
         LOG.info("2: subject:{}, name:{}, body:{}", pm2.getSubject(), cz.getName(), pm2.getBody());
 
         SubscribeRequest request2 = NettyPayload.reflect(json1, SubscribeRequest.class);
-        assertTrue("*test", request.getSubjects().equals(request2.getSubjects()));
+        assertTrue("*test", request.getSubject().equals(request2.getSubject()));
     }
 
     @Test

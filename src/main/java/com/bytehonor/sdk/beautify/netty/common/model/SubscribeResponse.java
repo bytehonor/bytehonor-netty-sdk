@@ -11,24 +11,24 @@ public class SubscribeResponse implements Serializable {
 
     private static final long serialVersionUID = 7625182470937923318L;
 
-    private String subjects;
+    private String subject;
 
     private Integer completed;
 
-    public static SubscribeResponse of(String subjects, Integer completed) {
-        Objects.requireNonNull(subjects, "subjects");
+    public static SubscribeResponse of(String subject, Integer completed) {
+        Objects.requireNonNull(subject, "subject");
         SubscribeResponse result = new SubscribeResponse();
-        result.setSubjects(subjects);
+        result.setSubject(subject);
         result.setCompleted(completed);
         return result;
     }
 
-    public String getSubjects() {
-        return subjects;
+    public String getSubject() {
+        return subject;
     }
 
-    public void setSubjects(String subjects) {
-        this.subjects = subjects;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public Integer getCompleted() {

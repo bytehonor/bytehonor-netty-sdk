@@ -1,15 +1,18 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
@@ -24,6 +27,8 @@ public final class NettyClientContanier {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientContanier.class);
 
+    private final Set<String> subjects;
+
     private NettyClient client;
 
     private NettyConfig config;
@@ -31,6 +36,7 @@ public final class NettyClientContanier {
     private NettyClientListener listener;
 
     private NettyClientContanier() {
+        this.subjects = new HashSet<String>();
     }
 
     /**
@@ -121,29 +127,39 @@ public final class NettyClientContanier {
         getInstance().client.send(payload);
     }
 
-    public static void subscribe(String subjects) {
-        if (subjects == null) {
-            return;
-        }
+    public static void subscribe() {
         if (isConnected() == false) {
             throw new NettyBeautifyException("subscribe should be after connected");
         }
-        getInstance().client.subscribe(subjects);
+        Set<String> subjects = getInstance().subjects;
+        if (CollectionUtils.isEmpty(subjects)) {
+            throw new NettyBeautifyException("subscribe subjects cannt be empty");
+        }
+        for (String subject : subjects) {
+            getInstance().client.subscribe(subject);
+        }
     }
 
-    public static void unsubscribe(String subjects) {
-        if (subjects == null) {
-            return;
-        }
+    public static void unsubscribe() {
         if (isConnected() == false) {
             throw new NettyBeautifyException("unsubscribe should be after connected");
         }
-        getInstance().client.unsubscribe(subjects);
+        Set<String> subjects = getInstance().subjects;
+        if (CollectionUtils.isEmpty(subjects)) {
+            LOG.warn("unsubscribe subjects already empty");
+            return;
+        }
+        for (String subject : subjects) {
+            getInstance().client.unsubscribe(subject);
+        }
+        getInstance().subjects.clear();
     }
 
     public static void addConsumer(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
         Objects.requireNonNull(consumer.subject(), "subject");
+
+        getInstance().subjects.add(consumer.subject());
         NettyConsumerFactory.add(consumer);
     }
 }

@@ -1,8 +1,5 @@
 package com.bytehonor.sdk.beautify.netty.common.handler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,34 +33,20 @@ public class NettySubscribeRequestHandler implements NettyHandler {
         }
 
         SubscribeRequest request = NettyPayload.reflect(message, SubscribeRequest.class);
-        if (request.getSubjects() == null) {
+        if (request.getSubject() == null) {
             LOG.warn("subscribe subject null");
             return;
         }
 
-        Set<String> subjects = toSet(request.getSubjects());
-        for (String subject : subjects) {
-            LOG.info("subscribe:{}, subject:{}", request.getSubscribed(), subject);
-            if (request.getSubscribed()) {
-                SubjectChannelCacheHolder.put(subject, id);
-            } else {
-                SubjectChannelCacheHolder.remove(subject, id);
-            }
+        LOG.info("subscribe:{}, subject:{}", request.getSubscribed(), request.getSubject());
+        if (request.getSubscribed()) {
+            SubjectChannelCacheHolder.put(request.getSubject(), id);
+        } else {
+            SubjectChannelCacheHolder.remove(request.getSubject(), id);
         }
 
-        SubscribeResponse result = SubscribeResponse.of(request.getSubjects(), subjects.size());
+        SubscribeResponse result = SubscribeResponse.of(request.getSubject(), 1);
         NettyMessageSender.subscribeResponse(channel, result);
     }
 
-    private Set<String> toSet(String value) {
-        Set<String> set = new HashSet<String>();
-        String[] arr = value.split(",");
-        for (String a : arr) {
-            if (a.length() < 2) {
-                continue;
-            }
-            set.add(a);
-        }
-        return set;
-    }
 }

@@ -101,18 +101,18 @@ public class NettyClient {
         NettyMessageSender.send(channel, payload);
     }
 
-    public void subscribe(String subjects) {
-        if (subjects == null) {
+    public void subscribe(String subject) {
+        if (subject == null) {
             return;
         }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(subjects));
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.yes(subject));
     }
 
-    public void unsubscribe(String subjects) {
-        if (subjects == null) {
+    public void unsubscribe(String subject) {
+        if (subject == null) {
             return;
         }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.of(subjects, false));
+        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
     }
 
     public void close() {
