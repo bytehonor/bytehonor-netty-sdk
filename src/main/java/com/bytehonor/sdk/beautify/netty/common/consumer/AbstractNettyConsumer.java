@@ -49,7 +49,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
         });
         thread.setName(getClass().getSimpleName());
         thread.start();
-        LOG.info("[Thread] {} start", thread.getName());
+        LOG.info("[Thread] {} start, queues:{}", thread.getName(), queues);
     }
 
     public final void add(T payload) {
