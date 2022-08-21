@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandler;
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandlerFactory;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
@@ -137,9 +137,9 @@ public final class NettyClientContanier {
         getInstance().client.unsubscribe(subjects);
     }
 
-    public static void addHandler(SubjectHandler handler) {
+    public static void addHandler(NettyConsumer handler) {
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(handler.subject(), "subject");
-        SubjectHandlerFactory.put(handler);
+        NettyConsumerFactory.put(handler);
     }
 }

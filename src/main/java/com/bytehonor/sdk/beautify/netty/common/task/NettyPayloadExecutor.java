@@ -5,15 +5,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandler;
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandlerFactory;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyPayloadExecutor {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadExecutor.class);
 
-    private final LinkedBlockingQueue<NettyPayload> queue = new LinkedBlockingQueue<NettyPayload>(10240);
+    private final LinkedBlockingQueue<String> queue;
 
     /**
      * 线程
@@ -21,13 +21,15 @@ public class NettyPayloadExecutor {
     private final Thread thread;
 
     private NettyPayloadExecutor() {
+        queue = new LinkedBlockingQueue<String>(10240);
+
         thread = new Thread(new NettyTask() {
 
             @Override
             public void runInSafe() {
                 while (true) {
                     try {
-                        process();
+                        doProcess();
                     } catch (Exception e) {
                         LOG.error("runInWhile error", e);
                     }
@@ -40,16 +42,20 @@ public class NettyPayloadExecutor {
         LOG.info("[Thread] {} start", thread.getName());
     }
 
-    private void process() throws InterruptedException {
+    private void doProcess() throws InterruptedException {
         // 从队列中取值,如果没有对象过期则队列一直等待，
-        NettyPayload payload = queue.take();
-        SubjectHandler handler = SubjectHandlerFactory.get(payload.getSubject());
-        if (handler == null) {
-            LOG.warn("no PayloadHandler! subject:{}", payload.getSubject());
+        String message = queue.take();
+        NettyPayload payload = NettyPayload.fromJson(message);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
+        }
+        NettyConsumer consumer = NettyConsumerFactory.get(payload.getSubject());
+        if (consumer == null) {
+            LOG.warn("no consumer! subject:{}", payload.getSubject());
             return;
         }
 
-        handler.handle(payload);
+        consumer.consume(payload);
     }
 
     private static class LazyHolder {
@@ -60,15 +66,15 @@ public class NettyPayloadExecutor {
         return LazyHolder.SINGLE;
     }
 
-    public static void add(NettyPayload payload) {
-        if (payload == null) {
-            LOG.warn("payload null");
+    public static void add(String message) {
+        if (message == null) {
+            LOG.warn("payload message null");
             return;
         }
         try {
-            self().queue.put(payload);
+            self().queue.put(message);
         } catch (Exception e) {
-            LOG.error("add NettyPayload error", e);
+            LOG.error("add payload message error", e);
         }
     }
 

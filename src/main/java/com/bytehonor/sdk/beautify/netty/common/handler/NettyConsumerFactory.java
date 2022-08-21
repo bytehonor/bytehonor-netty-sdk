@@ -6,11 +6,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SubjectHandlerFactory {
+public class NettyConsumerFactory {
 
-    private static final Map<String, SubjectHandler> MAP = new ConcurrentHashMap<String, SubjectHandler>();
+    private static final Map<String, NettyConsumer> MAP = new ConcurrentHashMap<String, NettyConsumer>();
 
-    public static Set<Entry<String, SubjectHandler>> entries() {
+    public static Set<Entry<String, NettyConsumer>> entries() {
         return MAP.entrySet();
     }
 
@@ -18,13 +18,13 @@ public class SubjectHandlerFactory {
         return MAP.keySet();
     }
 
-    public static void put(SubjectHandler handler) {
-        Objects.requireNonNull(handler, "handler");
+    public static void put(NettyConsumer consumer) {
+        Objects.requireNonNull(consumer, "consumer");
 
-        MAP.put(handler.subject(), handler);
+        MAP.put(consumer.subject(), consumer);
     }
 
-    public static SubjectHandler get(String subject) {
+    public static NettyConsumer get(String subject) {
         Objects.requireNonNull(subject, "subject");
 
         return MAP.get(subject);

@@ -15,9 +15,9 @@ import com.bytehonor.sdk.beautify.netty.common.cache.SubjectChannelCacheHolder;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 
-public class SubjectSubscribeLimiter {
+public class NettySubjectLimiter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SubjectSubscribeLimiter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettySubjectLimiter.class);
 
     private static final List<SubjectLimiter> LIST = new ArrayList<SubjectLimiter>();
 

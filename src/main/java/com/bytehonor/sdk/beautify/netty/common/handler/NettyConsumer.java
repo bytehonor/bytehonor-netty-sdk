@@ -2,9 +2,9 @@ package com.bytehonor.sdk.beautify.netty.common.handler;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
-public interface SubjectHandler {
+public interface NettyConsumer {
 
     public String subject();
 
-    public void handle(NettyPayload payload);
+    public void consume(NettyPayload payload);
 }

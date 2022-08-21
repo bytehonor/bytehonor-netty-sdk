@@ -5,10 +5,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandler;
-import com.bytehonor.sdk.beautify.netty.common.handler.SubjectHandlerFactory;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.limiter.SubjectLimiter;
-import com.bytehonor.sdk.beautify.netty.common.limiter.SubjectSubscribeLimiter;
+import com.bytehonor.sdk.beautify.netty.common.limiter.NettySubjectLimiter;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
@@ -60,18 +60,18 @@ public class NettyServerContanier {
         NettyScheduleTaskExecutor.scheduleAtFixedRate(NettyTaskBuilder.serverCheck(), 20L, config.getPeriodSeconds());
     }
 
-    public static void addHandler(SubjectHandler handler) {
-        Objects.requireNonNull(handler, "handler");
-        Objects.requireNonNull(handler.subject(), "subject");
-        SubjectHandlerFactory.put(handler);
+    public static void addConsumer(NettyConsumer consumer) {
+        Objects.requireNonNull(consumer, "consumer");
+        Objects.requireNonNull(consumer.subject(), "subject");
+        NettyConsumerFactory.put(consumer);
     }
 
     public static void addLimiter(String subject, int limit) {
         Objects.requireNonNull(subject, "subject");
-        SubjectSubscribeLimiter.add(SubjectLimiter.of(subject, limit));
+        NettySubjectLimiter.add(SubjectLimiter.of(subject, limit));
     }
 
     public static void limit() {
-        SubjectSubscribeLimiter.limits();
+        NettySubjectLimiter.limits();
     }
 }
