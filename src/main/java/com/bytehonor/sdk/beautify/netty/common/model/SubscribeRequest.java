@@ -3,6 +3,10 @@ package com.bytehonor.sdk.beautify.netty.common.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class SubscribeRequest implements Serializable {
 
     private static final long serialVersionUID = -4282705113537223742L;

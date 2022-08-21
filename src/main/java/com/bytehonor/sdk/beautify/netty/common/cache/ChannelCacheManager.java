@@ -5,6 +5,10 @@ import java.util.Objects;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class ChannelCacheManager {
 
     public static void add(Channel channel) {

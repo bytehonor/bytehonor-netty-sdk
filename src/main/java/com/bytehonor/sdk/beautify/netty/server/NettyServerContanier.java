@@ -5,9 +5,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.limiter.SubjectLimiter;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.limiter.NettySubjectLimiter;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerListener;
@@ -16,6 +16,10 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyScheduleTaskExecutor;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTaskBuilder;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyServerContanier {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerContanier.class);
@@ -63,7 +67,7 @@ public class NettyServerContanier {
     public static void addConsumer(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
         Objects.requireNonNull(consumer.subject(), "subject");
-        NettyConsumerFactory.put(consumer);
+        NettyConsumerFactory.add(consumer);
     }
 
     public static void addLimiter(String subject, int limit) {

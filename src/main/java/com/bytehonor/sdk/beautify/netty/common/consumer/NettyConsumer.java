@@ -1,7 +1,11 @@
-package com.bytehonor.sdk.beautify.netty.common.handler;
+package com.bytehonor.sdk.beautify.netty.common.consumer;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public interface NettyConsumer {
 
     public String subject();

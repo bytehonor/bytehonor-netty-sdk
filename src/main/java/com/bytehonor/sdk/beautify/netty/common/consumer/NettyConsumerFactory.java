@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.beautify.netty.common.handler;
+package com.bytehonor.sdk.beautify.netty.common.consumer;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -6,6 +6,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyConsumerFactory {
 
     private static final Map<String, NettyConsumer> MAP = new ConcurrentHashMap<String, NettyConsumer>();
@@ -18,7 +22,7 @@ public class NettyConsumerFactory {
         return MAP.keySet();
     }
 
-    public static void put(NettyConsumer consumer) {
+    public static void add(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
 
         MAP.put(consumer.subject(), consumer);

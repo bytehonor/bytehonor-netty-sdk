@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.beautify.netty.common.handler;
+package com.bytehonor.sdk.beautify.netty.common.consumer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
+/**
+ * @author lijianqiang
+ *
+ * @param <T>
+ */
 public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNettyConsumer.class);

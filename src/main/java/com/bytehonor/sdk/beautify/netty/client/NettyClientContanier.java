@@ -5,9 +5,9 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
@@ -16,6 +16,10 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyScheduleTaskExecutor;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTaskBuilder;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public final class NettyClientContanier {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientContanier.class);
@@ -137,9 +141,9 @@ public final class NettyClientContanier {
         getInstance().client.unsubscribe(subjects);
     }
 
-    public static void addHandler(NettyConsumer handler) {
-        Objects.requireNonNull(handler, "handler");
-        Objects.requireNonNull(handler.subject(), "subject");
-        NettyConsumerFactory.put(handler);
+    public static void addConsumer(NettyConsumer consumer) {
+        Objects.requireNonNull(consumer, "consumer");
+        Objects.requireNonNull(consumer.subject(), "subject");
+        NettyConsumerFactory.add(consumer);
     }
 }

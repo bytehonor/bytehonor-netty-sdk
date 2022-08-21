@@ -1,5 +1,9 @@
 package com.bytehonor.sdk.beautify.netty.common.constant;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyConstants {
 
     public static final int CAPACITY = 4096;

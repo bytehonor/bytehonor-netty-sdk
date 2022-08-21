@@ -16,6 +16,10 @@ import com.bytehonor.sdk.beautify.netty.server.NettyServerContanier;
 
 import io.netty.channel.ChannelId;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyServerCheckTask extends NettyTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServerCheckTask.class);

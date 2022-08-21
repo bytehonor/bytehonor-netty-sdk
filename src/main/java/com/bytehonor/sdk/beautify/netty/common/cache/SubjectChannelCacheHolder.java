@@ -7,6 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.channel.ChannelId;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class SubjectChannelCacheHolder {
 
     private static int CAPACITY = 1024;

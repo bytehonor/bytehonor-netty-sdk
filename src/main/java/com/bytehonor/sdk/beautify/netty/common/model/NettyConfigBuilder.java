@@ -1,5 +1,9 @@
 package com.bytehonor.sdk.beautify.netty.common.model;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyConfigBuilder {
 
     private NettyConfig config;

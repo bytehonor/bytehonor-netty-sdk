@@ -1,17 +1,20 @@
-package com.bytehonor.sdk.beautify.netty.common.task;
+package com.bytehonor.sdk.beautify.netty.common.consumer;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumer;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
-public class NettyPayloadExecutor {
+/**
+ * @author lijianqiang
+ *
+ */
+public class NettyConsumerExecutor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyPayloadExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyConsumerExecutor.class);
 
     private final LinkedBlockingQueue<String> queue;
 
@@ -20,7 +23,7 @@ public class NettyPayloadExecutor {
      */
     private final Thread thread;
 
-    private NettyPayloadExecutor() {
+    private NettyConsumerExecutor() {
         queue = new LinkedBlockingQueue<String>(10240);
 
         thread = new Thread(new NettyTask() {
@@ -37,7 +40,7 @@ public class NettyPayloadExecutor {
             }
 
         });
-        thread.setName(NettyPayloadExecutor.class.getSimpleName());
+        thread.setName(NettyConsumerExecutor.class.getSimpleName());
         thread.start();
         LOG.info("[Thread] {} start", thread.getName());
     }
@@ -59,10 +62,10 @@ public class NettyPayloadExecutor {
     }
 
     private static class LazyHolder {
-        private static final NettyPayloadExecutor SINGLE = new NettyPayloadExecutor();
+        private static final NettyConsumerExecutor SINGLE = new NettyConsumerExecutor();
     }
 
-    private static NettyPayloadExecutor self() {
+    private static NettyConsumerExecutor self() {
         return LazyHolder.SINGLE;
     }
 

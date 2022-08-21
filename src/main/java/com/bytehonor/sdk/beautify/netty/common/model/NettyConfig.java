@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyConfig implements Serializable {
 
     private static final long serialVersionUID = 1158507238071086040L;
