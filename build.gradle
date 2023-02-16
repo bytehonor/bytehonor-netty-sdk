@@ -1,33 +1,27 @@
 plugins {
 	id 'java-library'
+	id 'maven-publish'
 }
 
-apply from: 'repository.gradle'
 
 group = 'com.bytehonor.sdk'
-version = '1.1.9'
+version = '1.1.10'
 sourceCompatibility = 1.8
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
-configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
-	}
-}
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-    api('io.netty:netty-transport:4.1.84.Final')
-    api('io.netty:netty-handler:4.1.84.Final')
+    api('io.netty:netty-transport:4.1.87.Final')
+    api('io.netty:netty-handler:4.1.87.Final')
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.4')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.4.2')
     api('com.fasterxml.jackson.core:jackson-core:2.13.4')
-    api('org.springframework:spring-core:5.3.23')
+    api('org.springframework:spring-core:5.3.25')
     implementation('org.slf4j:slf4j-api:1.7.36')
     implementation('ch.qos.logback:logback-classic:1.2.11')
     testImplementation('junit:junit:4.13.2')
@@ -37,5 +31,28 @@ jar {
     manifest {
         attributes('Implementation-Title': project.name,
                    'Implementation-Version': project.version)
+    }
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            //指定要上传的maven私服仓库
+            url = "https://maven.huajietaojin.cn/repository/bytehonor/"
+            //认证用户和密码
+            credentials {
+                username 'bytehonor'
+                password 'permit'
+            }
+        }
     }
 }
