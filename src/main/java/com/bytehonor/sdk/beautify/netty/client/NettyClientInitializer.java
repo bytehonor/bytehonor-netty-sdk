@@ -18,13 +18,14 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
-    private String stamp;
-    
-    private NettyConfig config;
+    private final String stamp;
 
-    private NettyClientHandler handler;
+    private final NettyConfig config;
+
+    private final NettyClientHandler handler;
 
     public NettyClientInitializer(String stamp, NettyConfig config, NettyClientHandler listener) {
+        this.stamp = stamp;
         this.config = config;
         this.handler = listener;
     }

@@ -20,7 +20,6 @@ import io.netty.channel.Channel;
  * @author lijianqiang
  *
  */
-@Deprecated
 public class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);

@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
-import io.netty.channel.Channel;
-
 public class DefaultNettyServerHandler implements NettyServerHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyServerHandler.class);
@@ -14,13 +12,11 @@ public class DefaultNettyServerHandler implements NettyServerHandler {
     @Override
     public void onSucceed() {
         LOG.info("Server onSucceed");
-
     }
 
     @Override
     public void onFailed(Throwable error) {
         LOG.error("Server onFailed", error);
-
     }
 
     @Override
@@ -34,12 +30,12 @@ public class DefaultNettyServerHandler implements NettyServerHandler {
     }
 
     @Override
-    public void onDisconnected(Channel channel) {
-
+    public void onDisconnected(String stamp) {
+        LOG.error("Server onDisconnected stamp:{}", stamp);
     }
 
     @Override
-    public void onConnected(Channel channel) {
-
+    public void onConnected(String stamp) {
+        LOG.error("Server onConnected stamp:{}", stamp);
     }
 }

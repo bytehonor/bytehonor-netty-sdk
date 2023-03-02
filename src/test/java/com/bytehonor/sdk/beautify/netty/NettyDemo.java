@@ -4,8 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.client.NettyClient;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyClientSender;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.server.NettyServer;
@@ -15,7 +16,8 @@ public class NettyDemo {
     private static final Logger LOG = LoggerFactory.getLogger(NettyDemo.class);
 
     public static void main(String[] args) {
-        new NettyServer().start();
+
+        startServer();
 
         try {
             Thread.sleep(1000L * 5);
@@ -27,8 +29,8 @@ public class NettyDemo {
 
             @Override
             public void onOpen(String stamp) {
-                LOG.info("onOpen");
-                NettyClientSender.send(stamp, NettyPayload.build("hello world"));
+                LOG.info("onOpen stamp:{}", stamp);
+                NettyMessageSender.send(stamp, NettyPayload.build("hello server"));
             }
 
             @Override
@@ -45,7 +47,6 @@ public class NettyDemo {
             public void onMessage(NettyMessage message) {
                 LOG.info("onMessage text:{} stamp:{}", message.getText(), message.getStamp());
             }
-
         });
 
         try {
@@ -77,5 +78,43 @@ public class NettyDemo {
         } catch (InterruptedException e) {
             LOG.error("error", e);
         }
+    }
+
+    private static void startServer() {
+        new NettyServer(new NettyServerHandler() {
+
+            @Override
+            public void onSucceed() {
+                LOG.info("Server onSucceed");
+            }
+
+            @Override
+            public void onFailed(Throwable error) {
+                LOG.error("Server onFailed", error);
+            }
+
+            @Override
+            public void onTotal(int total) {
+                LOG.info("Server onTotal:{}", total);
+            }
+
+            @Override
+            public void onMessage(NettyMessage message) {
+                LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
+            }
+
+            @Override
+            public void onDisconnected(String stamp) {
+                LOG.error("Server onDisconnected stamp:{}", stamp);
+            }
+
+            @Override
+            public void onConnected(String stamp) {
+                LOG.error("Server onConnected stamp:{}", stamp);
+                NettyMessageSender.send(stamp, NettyPayload.build("hello client"));
+            }
+
+        }).start();
+
     }
 }

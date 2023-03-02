@@ -2,8 +2,6 @@ package com.bytehonor.sdk.beautify.netty.common.listener;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
-import io.netty.channel.Channel;
-
 public interface NettyServerHandler {
 
     public void onMessage(NettyMessage message);
@@ -14,8 +12,8 @@ public interface NettyServerHandler {
 
     public void onTotal(int total);
 
-    public void onDisconnected(Channel channel);
+    public void onDisconnected(String stamp);
 
-    public void onConnected(Channel channel);
+    public void onConnected(String stamp);
 
 }

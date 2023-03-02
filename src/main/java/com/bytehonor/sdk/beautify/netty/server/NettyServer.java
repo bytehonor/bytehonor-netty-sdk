@@ -1,5 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -42,11 +43,40 @@ public class NettyServer {
         this(new NettyServerConfig(), new DefaultNettyServerHandler());
     }
 
+    public NettyServer(NettyServerHandler handler) {
+        this(new NettyServerConfig(), handler);
+    }
+
     public NettyServer(NettyServerConfig config, NettyServerHandler handler) {
+        Objects.requireNonNull(config, "config");
+        Objects.requireNonNull(handler, "handler");
+
         this.config = config;
         this.handler = handler;
-        this.bootstrap = new ServerBootstrap();
+        this.bootstrap = init();
         this.thread = thread();
+    }
+
+    private ServerBootstrap init() {
+        // 服务器启动项
+        ServerBootstrap bootstrap = new ServerBootstrap();
+        // handler是针对bossGroup，childHandler是针对workerHandler
+        // 负责连接请求
+        EventLoopGroup bossGroup = new NioEventLoopGroup(config.getBossThreads());
+        // 负责事件响应
+        EventLoopGroup workerGroup = new NioEventLoopGroup(config.getWorkThreads());
+        bootstrap.group(bossGroup, workerGroup);
+        bootstrap.option(ChannelOption.SO_BACKLOG, NettyConstants.SO_BACKLOG); // 设置TCP缓冲区
+        bootstrap.option(ChannelOption.SO_RCVBUF, NettyConstants.SO_RCVBUF); // 接收客户端信息的最大长度
+        bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+        // 选择nioChannel
+        bootstrap.channel(NioServerSocketChannel.class);
+        // 日志处理 info级别
+        bootstrap.handler(new LoggingHandler(LogLevel.WARN));
+        // 添加自定义的初始化器
+        bootstrap.childHandler(new NettyServerInitializer(config, handler));
+
+        return bootstrap;
     }
 
     private Thread thread() {
@@ -68,26 +98,7 @@ public class NettyServer {
     private void doStart() {
         LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
 
-        // 负责连接请求
-        EventLoopGroup bossGroup = new NioEventLoopGroup(config.getBossThreads());
-        // 负责事件响应
-        EventLoopGroup workerGroup = new NioEventLoopGroup(config.getWorkThreads());
-
         try {
-            // 服务器启动项
-            // bootstrap = new ServerBootstrap();
-            // handler是针对bossGroup，childHandler是针对workerHandler
-            bootstrap.group(bossGroup, workerGroup);
-            bootstrap.option(ChannelOption.SO_BACKLOG, NettyConstants.SO_BACKLOG); // 设置TCP缓冲区
-            bootstrap.option(ChannelOption.SO_RCVBUF, NettyConstants.SO_RCVBUF); // 接收客户端信息的最大长度
-            bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-            // 选择nioChannel
-            bootstrap.channel(NioServerSocketChannel.class);
-            // 日志处理 info级别
-            bootstrap.handler(new LoggingHandler(LogLevel.WARN));
-            // 添加自定义的初始化器
-            bootstrap.childHandler(new NettyServerInitializer(config, handler));
-
             // 端口绑定
             ChannelFuture channelFuture = bootstrap.bind(config.getPort()).sync();
             LOG.info("Netty Server isSuccess:{}, idDone:{}", channelFuture.isSuccess(), channelFuture.isDone());

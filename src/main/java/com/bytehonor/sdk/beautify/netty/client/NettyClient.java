@@ -62,25 +62,25 @@ public class NettyClient {
     }
 
     public void start() {
-        LOG.info("Netty client start, host:{}, port:{}", config.getHost(), config.getPort());
+        LOG.info("Netty client start, stamp:{}, host:{}, port:{}", stamp, config.getHost(), config.getPort());
         // 发起异步连接请求，绑定连接端口和host信息
         try {
             final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();
-//            Channel channel = future.channel();
+            channel = future.channel();
             future.addListener(new ChannelFutureListener() {
 
                 @Override
                 public void operationComplete(ChannelFuture arg0) throws Exception {
                     if (future.isSuccess()) {
-                        LOG.info("Netty client start success");
+                        LOG.info("Netty client start success, stamp:{}", stamp);
                     } else {
-                        LOG.error("Netty client start failed, cause", future.cause());
+                        LOG.error("Netty client start failed, stamp:{}, cause", stamp, future.cause());
 //                        group.shutdownGracefully(); // 关闭线程组
                     }
                 }
             });
         } catch (Exception e) {
-            LOG.error("connect ({}:{}) error:{}", config.getHost(), config.getPort(), e.getMessage());
+            LOG.error("Netty client start error, stamp:{}, error", stamp, e);
             handler.onError(stamp, e);
         }
     }
@@ -115,11 +115,12 @@ public class NettyClient {
 //        }
 //        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
 //    }
-//
+
     public void close() {
-        LOG.info("stamp:{} close", stamp);
-        if (channel != null) {
-            channel.close();
+        if (channel == null) {
+            return;
         }
+        channel.close();
+        LOG.info("Netty client close, stamp:{}", stamp);
     }
 }

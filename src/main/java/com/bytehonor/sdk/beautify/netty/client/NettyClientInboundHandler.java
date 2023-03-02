@@ -1,5 +1,7 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +29,10 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     private final NettyClientHandler handler;
 
     public NettyClientInboundHandler(String stamp, NettyClientHandler handler) {
-        this.stamp = stamp != null ? stamp : "unknown";
+        Objects.requireNonNull(stamp, "stamp");
+        Objects.requireNonNull(handler, "handler");
+
+        this.stamp = stamp;
         this.handler = handler;
     }
 

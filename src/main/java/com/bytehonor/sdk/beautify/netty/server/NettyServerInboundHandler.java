@@ -39,22 +39,11 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
             // NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
-            onMessage(stamp(channel), (ByteBuf) msg);
+            onMessage(channel, (ByteBuf) msg);
         } else {
             LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.getClass().getSimpleName(),
                     channel.remoteAddress().toString(), channel.id().asLongText());
         }
-    }
-
-    private String stamp(Channel channel) {
-        return NettyStampGenerator.stamp(channel);
-    }
-
-    private void onMessage(String client, ByteBuf msg) {
-        byte[] bytes = NettyDataUtils.readBytes(msg);
-        NettyDataUtils.validate(bytes);
-        String text = NettyDataUtils.parseData(bytes);
-        handler.onMessage(NettyMessage.of(client, text));
     }
 
     /**
@@ -89,24 +78,36 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         onDisconnected(channel);
     }
 
+    private String stamp(Channel channel) {
+        return NettyStampGenerator.stamp(channel);
+    }
+
+    private void onMessage(Channel channel, ByteBuf msg) {
+        String stamp = stamp(channel);
+        byte[] bytes = NettyDataUtils.readBytes(msg);
+        NettyDataUtils.validate(bytes);
+        String text = NettyDataUtils.parseData(bytes);
+        handler.onMessage(NettyMessage.of(stamp, text));
+    }
+
     private void onDisconnected(Channel channel) {
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("onDisconnected remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        String stamp = stamp(channel);
+        LOG.info("onDisconnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
         ChannelCacheManager.remove(channel);
-//        ServerListenerHelper.onTotal(handler, ChannelCacheManager.size());
-        handler.onDisconnected(channel);
+        StampChannelHolder.remove(stamp);
+        handler.onDisconnected(stamp);
     }
 
     private void onConnected(Channel channel) {
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("onConnected remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        String stamp = stamp(channel);
+        LOG.info("onConnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
         ChannelCacheManager.add(channel);
-        StampChannelHolder.put(stamp(channel), channel);
-//        NettyMessageSender.whoisServer(channel, stamp);
-//        ServerListenerHelper.onTotal(handler, ChannelCacheManager.size());
-        handler.onConnected(channel);
+        StampChannelHolder.put(stamp, channel);
+        handler.onConnected(stamp);
     }
 
 }

@@ -31,43 +31,15 @@ public class StampChannelHolder {
         MAP.put(stamp, channel);
     }
 
-//    public static String getStamp(Channel channel) {
-//        String stamp = "";
-//        if (channel == null) {
-//            return stamp;
-//        }
-//
-//        for (Entry<String, Channel> item : MAP.entrySet()) {
-//            if (channel.equals(item.getValue())) {
-//                stamp = item.getKey();
-//                break;
-//            }
-//        }
-//        return stamp;
-//    }
-
     public static Channel getChannel(String stamp) {
-        if (stamp == null) {
-            return null;
-        }
+        Objects.requireNonNull(stamp, "stamp");
 
         return MAP.get(stamp);
     }
 
-//    public static void remove(Channel channel) {
-//        if (channel == null) {
-//            return;
-//        }
-//        String stamp = getStamp(channel);
-//        if (stamp != null) {
-//            MAP.remove(stamp);
-//        }
-//    }
-
     public static void remove(String stamp) {
-        if (stamp == null) {
-            return;
-        }
+        Objects.requireNonNull(stamp, "stamp");
+
         MAP.remove(stamp);
     }
 }
