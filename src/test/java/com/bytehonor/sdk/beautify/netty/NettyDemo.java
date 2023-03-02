@@ -105,12 +105,12 @@ public class NettyDemo {
 
             @Override
             public void onDisconnected(String stamp) {
-                LOG.error("Server onDisconnected stamp:{}", stamp);
+                LOG.warn("Server onDisconnected stamp:{}", stamp);
             }
 
             @Override
             public void onConnected(String stamp) {
-                LOG.error("Server onConnected stamp:{}", stamp);
+                LOG.info("Server onConnected stamp:{}", stamp);
                 NettyMessageSender.send(stamp, NettyPayload.build("hello client"));
             }
 

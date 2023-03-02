@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.client.NettyClientContanier;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.server.NettyServerContanier;
@@ -22,7 +22,7 @@ public class IdleTest {
 
     @Test
     public void test() {
-        NettyConfig server = new NettyConfig();
+        NettyClientConfig server = new NettyClientConfig();
         server.setAllIdleSeconds(20);
        // NettyServerContanier.start(server, new DefaultNettyServerHandler());
 
@@ -32,7 +32,7 @@ public class IdleTest {
             LOG.error("error", e);
         }
 
-        NettyConfig client = new NettyConfig();
+        NettyClientConfig client = new NettyClientConfig();
         client.setAllIdleSeconds(15);
 //        try {
 //            NettyClientContanier.connect(client, new NettyClientHandler() {

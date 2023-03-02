@@ -6,13 +6,13 @@ package com.bytehonor.sdk.beautify.netty.common.model;
  */
 public class NettyConfigBuilder {
 
-    private NettyConfig config;
+    private NettyClientConfig config;
 
     private NettyConfigBuilder() {
-        this.config = new NettyConfig();
+        this.config = new NettyClientConfig();
     }
 
-    public NettyConfig build() {
+    public NettyClientConfig build() {
         return config;
     }
 

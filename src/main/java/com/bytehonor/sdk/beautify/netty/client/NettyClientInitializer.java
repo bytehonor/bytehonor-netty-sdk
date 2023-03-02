@@ -1,16 +1,16 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import com.bytehonor.sdk.beautify.netty.common.core.NettyIdleStateChecker;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyLengthFrameDecoder;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * @author lijianqiang
@@ -20,11 +20,11 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private final String stamp;
 
-    private final NettyConfig config;
+    private final NettyClientConfig config;
 
     private final NettyClientHandler handler;
 
-    public NettyClientInitializer(String stamp, NettyConfig config, NettyClientHandler listener) {
+    public NettyClientInitializer(String stamp, NettyClientConfig config, NettyClientHandler listener) {
         this.stamp = stamp;
         this.config = config;
         this.handler = listener;
@@ -43,12 +43,12 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         // 自定义的空闲检测
-        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
-                config.getAllIdleSeconds()));
+//        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
+//                config.getAllIdleSeconds()));
+        pipeline.addLast(new NettyIdleStateChecker());
 
         // byte数组
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
-                config.getLengthFieldLength(), 0, 0));
+        pipeline.addLast(new NettyLengthFrameDecoder());
         pipeline.addLast(new NettyClientInboundHandler(stamp, handler));
 
         // 字符串

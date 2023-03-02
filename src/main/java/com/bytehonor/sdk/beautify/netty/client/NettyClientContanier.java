@@ -13,7 +13,7 @@ import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyScheduleTaskExecutor;

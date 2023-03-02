@@ -1,6 +1,7 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
-import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyIdleStateChecker;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyLengthFrameDecoder;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyServerConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
@@ -8,10 +9,8 @@ import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * @author lijianqiang
@@ -44,12 +43,12 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         // 自定义的空闲检测
-        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
-                config.getAllIdleSeconds()));
+//        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
+//                config.getAllIdleSeconds()));
+        pipeline.addLast(new NettyIdleStateChecker());
 
         // byte数组写法， 一些限定和编码解码器
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(NettyConstants.MAX_FRAME_LENGTH, NettyConstants.LENGTH_FIELD_OFFSET,
-                NettyConstants.LENGTH_FIELD_LENGTH, 0, 0));
+        pipeline.addLast(new NettyLengthFrameDecoder());
         pipeline.addLast(new NettyServerInboundHandler(handler));
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束

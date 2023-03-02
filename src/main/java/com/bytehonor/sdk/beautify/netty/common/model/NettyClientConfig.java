@@ -8,7 +8,7 @@ import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
  * @author lijianqiang
  *
  */
-public class NettyConfig implements Serializable {
+public class NettyClientConfig implements Serializable {
 
     private static final long serialVersionUID = 1158507238071086040L;
 
@@ -46,7 +46,7 @@ public class NettyConfig implements Serializable {
      */
     private long periodSeconds;
 
-    public NettyConfig() {
+    public NettyClientConfig() {
         this.host = "127.0.0.1";
         this.port = 85;
 //        this.whoiam = "unkwon";

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
@@ -27,7 +27,7 @@ public class NettyClient {
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
 
     private final String stamp;
-    private final NettyConfig config;
+    private final NettyClientConfig config;
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
     private Channel channel;
@@ -41,14 +41,14 @@ public class NettyClient {
         this(host, port, new DefaultNettyClientHandler());
     }
 
-    public NettyClient(NettyConfig config, NettyClientHandler handler) {
+    public NettyClient(NettyClientConfig config, NettyClientHandler handler) {
         this.stamp = NettyStampGenerator.stamp();
         this.config = config;
         this.handler = handler;
         this.bootstrap = init();
     }
 
-    public NettyClient(NettyConfig config) {
+    public NettyClient(NettyClientConfig config) {
         this(config, new DefaultNettyClientHandler());
     }
 
