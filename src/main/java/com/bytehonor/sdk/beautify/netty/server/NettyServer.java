@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerHandler;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyServerConfig;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
@@ -72,7 +70,7 @@ public class NettyServer {
         // 选择nioChannel
         bootstrap.channel(NioServerSocketChannel.class);
         // 日志处理 info级别
-        bootstrap.handler(new LoggingHandler(LogLevel.WARN));
+        bootstrap.handler(new LoggingHandler(LogLevel.INFO));
         // 添加自定义的初始化器
         bootstrap.childHandler(new NettyServerInitializer(config, handler));
 

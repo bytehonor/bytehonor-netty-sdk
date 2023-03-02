@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.beautify.netty.common.listener;
+package com.bytehonor.sdk.beautify.netty.server;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 

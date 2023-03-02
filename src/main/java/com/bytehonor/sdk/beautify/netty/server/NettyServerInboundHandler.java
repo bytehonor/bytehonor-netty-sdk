@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
@@ -37,12 +36,12 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 客户端上传消息
         Channel channel = ctx.channel();
+        String stamp = stamp(channel);
         if (msg instanceof ByteBuf) {
-            // NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
-            onMessage(channel, (ByteBuf) msg);
+            onMessage(stamp, (ByteBuf) msg);
         } else {
-            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.getClass().getSimpleName(),
-                    channel.remoteAddress().toString(), channel.id().asLongText());
+            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, stamp:{}", msg.getClass().getSimpleName(),
+                    channel.remoteAddress().toString(), stamp);
         }
     }
 
@@ -82,12 +81,16 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         return NettyStampGenerator.stamp(channel);
     }
 
-    private void onMessage(Channel channel, ByteBuf msg) {
-        String stamp = stamp(channel);
-        byte[] bytes = NettyDataUtils.readBytes(msg);
-        NettyDataUtils.validate(bytes);
-        String text = NettyDataUtils.parseData(bytes);
-        handler.onMessage(NettyMessage.of(stamp, text));
+    private void onMessage(String stamp, ByteBuf msg) {
+
+        try {
+            byte[] bytes = NettyDataUtils.readBytes(msg);
+            NettyDataUtils.validate(bytes);
+            String text = NettyDataUtils.parseData(bytes);
+            handler.onMessage(NettyMessage.of(stamp, text));
+        } catch (Exception e) {
+            LOG.error("onMessage stamp:{}, error", stamp, e);
+        }
     }
 
     private void onDisconnected(Channel channel) {

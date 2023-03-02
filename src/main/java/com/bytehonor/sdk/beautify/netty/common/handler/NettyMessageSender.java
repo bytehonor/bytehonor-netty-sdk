@@ -9,8 +9,6 @@ import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.SubscribeRequest;
-import com.bytehonor.sdk.beautify.netty.common.model.SubscribeResponse;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -37,45 +35,11 @@ public class NettyMessageSender {
         doSendFrame(stamp, NettyFrame.pong());
     }
 
-    public static void whoisClient(Channel channel, String whois) {
-        Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(whois, "whois");
-
-//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.WHOIS_CLIENT, whois);
-//        doSendBytes(channel, bytes);
-    }
-
-    public static void whoisServer(Channel channel, String whois) {
-        Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(whois, "whois");
-
-//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.WHOIS_SERVER, whois);
-//        doSendBytes(channel, bytes);
-    }
-
-    public static void subscribeResponse(Channel channel, SubscribeResponse response) {
-        Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(response, "response");
-
-        NettyPayload payload = NettyPayload.transfer(response);
-//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_RESPONSE, payload.toString());
-//        doSendBytes(channel, bytes);
-    }
-
-    public static void subscribeRequest(Channel channel, SubscribeRequest request) {
-        Objects.requireNonNull(channel, "channel");
-        Objects.requireNonNull(request, "request");
-
-        NettyPayload payload = NettyPayload.transfer(request);
-//        byte[] bytes = NettyDataUtils.build(NettyTypeEnum.SUBSCRIBE_REQUEST, payload.toString());
-//        doSendBytes(channel, bytes);
-    }
-
     public static void send(String stamp, NettyPayload payload) {
         Objects.requireNonNull(stamp, "stamp");
         Objects.requireNonNull(payload, "payload");
 
-        doSendFrame(stamp, NettyFrame.of(payload));
+        doSendFrame(stamp, NettyFrame.payload(payload));
     }
 
     private static void doSendFrame(String stamp, NettyFrame frame) {

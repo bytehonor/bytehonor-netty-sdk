@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
 public class NettyClientTest {
@@ -39,8 +38,8 @@ public class NettyClientTest {
             }
 
             @Override
-            public void onClosed(String msg) {
-                LOG.warn("onClosed:{}", msg);
+            public void onClosed(String stamp, String msg) {
+                LOG.warn("onClosed stamp:{}", stamp, msg);
             }
 
             @Override

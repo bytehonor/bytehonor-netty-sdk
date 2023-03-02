@@ -1,9 +1,7 @@
-package com.bytehonor.sdk.beautify.netty.common.listener;
+package com.bytehonor.sdk.beautify.netty.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class DefaultNettyClientHandler extends AbstractClientHandler {
 
@@ -15,8 +13,8 @@ public class DefaultNettyClientHandler extends AbstractClientHandler {
     }
 
     @Override
-    public void onClosed(String msg) {
-        LOG.warn("Client onClosed msg:{}", msg);
+    public void onClosed(String stamp, String msg) {
+        LOG.warn("Client onClosed stamp:{}, msg:{}", stamp, msg);
     }
 
     @Override
@@ -28,10 +26,5 @@ public class DefaultNettyClientHandler extends AbstractClientHandler {
 //    public void onMessage(NettyMessage message) {
 //        LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
 //    }
-
-    @Override
-    public void onPorcess(String stamp, NettyPayload payload) {
-        LOG.info("Client onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(), stamp);
-    }
 
 }

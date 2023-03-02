@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientContanierTest {

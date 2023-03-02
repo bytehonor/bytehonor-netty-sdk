@@ -20,6 +20,10 @@ public class NettyFrame implements Serializable {
 
     public static final String TRANSFER = "transfer";
 
+    public static final String SUBSCRIBE = "subscribe";
+
+    public static final String UNSUBSCRIBE = "unsubscribe";
+
     /**
      * ping, pong, transfer
      */
@@ -50,7 +54,7 @@ public class NettyFrame implements Serializable {
         return model;
     }
 
-    public static NettyFrame of(NettyPayload payload) {
+    public static NettyFrame payload(NettyPayload payload) {
         Objects.requireNonNull(payload, "payload");
 
         NettyFrame model = new NettyFrame();

@@ -2,7 +2,6 @@ package com.bytehonor.sdk.beautify.netty.client;
 
 import com.bytehonor.sdk.beautify.netty.common.core.NettyIdleStateChecker;
 import com.bytehonor.sdk.beautify.netty.common.core.NettyLengthFrameDecoder;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 

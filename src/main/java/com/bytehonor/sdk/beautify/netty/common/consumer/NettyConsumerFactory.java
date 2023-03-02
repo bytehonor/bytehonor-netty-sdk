@@ -1,10 +1,10 @@
 package com.bytehonor.sdk.beautify.netty.common.consumer;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lijianqiang
@@ -12,25 +12,29 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class NettyConsumerFactory {
 
-    private static final Map<String, NettyConsumer> MAP = new ConcurrentHashMap<String, NettyConsumer>();
+    private final Map<String, NettyConsumer> map;
 
-    public static Set<Entry<String, NettyConsumer>> entries() {
-        return MAP.entrySet();
+    public NettyConsumerFactory() {
+        this.map = new HashMap<String, NettyConsumer>();
     }
 
-    public static Set<String> subjects() {
-        return MAP.keySet();
+    public Set<Entry<String, NettyConsumer>> entries() {
+        return map.entrySet();
     }
 
-    public static void add(NettyConsumer consumer) {
+    public Set<String> subjects() {
+        return map.keySet();
+    }
+
+    public void add(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
 
-        MAP.put(consumer.subject(), consumer);
+        map.put(consumer.subject(), consumer);
     }
 
-    public static NettyConsumer get(String subject) {
+    public NettyConsumer get(String subject) {
         Objects.requireNonNull(subject, "subject");
 
-        return MAP.get(subject);
+        return map.get(subject);
     }
 }

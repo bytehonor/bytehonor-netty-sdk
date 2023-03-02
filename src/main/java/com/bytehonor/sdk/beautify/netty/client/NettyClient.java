@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;

@@ -3,11 +3,11 @@ package com.bytehonor.sdk.beautify.netty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.beautify.netty.client.AbstractClientHandler;
 import com.bytehonor.sdk.beautify.netty.client.NettyClient;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.AbstractClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.listener.AbstractServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
+import com.bytehonor.sdk.beautify.netty.server.AbstractServerHandler;
 import com.bytehonor.sdk.beautify.netty.server.NettyServer;
 
 public class NettyDemo {
@@ -33,18 +33,13 @@ public class NettyDemo {
             }
 
             @Override
-            public void onClosed(String msg) {
-                LOG.warn("Client onClosed:{}", msg);
+            public void onClosed(String stamp, String msg) {
+                LOG.warn("Client onClosed stamp:{}", stamp, msg);
             }
 
             @Override
             public void onError(String stamp, Throwable error) {
-                LOG.error("Client onError", error);
-            }
-
-            @Override
-            public void onPorcess(String stamp, NettyPayload payload) {
-                LOG.info("Client onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(), stamp);
+                LOG.error("Client onError stamp:{}, error", stamp, error);
             }
         });
 
@@ -107,12 +102,6 @@ public class NettyDemo {
             public void onConnected(String stamp) {
                 LOG.info("Server onConnected stamp:{}", stamp);
                 NettyMessageSender.send(stamp, NettyPayload.transfer("hello client"));
-            }
-
-            @Override
-            public void onPorcess(String stamp, NettyPayload payload) {
-                LOG.info("Server onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(),
-                        stamp);
             }
 
         }).start();

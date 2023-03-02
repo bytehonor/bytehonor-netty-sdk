@@ -1,9 +1,7 @@
-package com.bytehonor.sdk.beautify.netty.common.listener;
+package com.bytehonor.sdk.beautify.netty.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class DefaultNettyServerHandler extends AbstractServerHandler {
 
@@ -37,10 +35,5 @@ public class DefaultNettyServerHandler extends AbstractServerHandler {
     @Override
     public void onConnected(String stamp) {
         LOG.info("Server onConnected stamp:{}", stamp);
-    }
-
-    @Override
-    public void onPorcess(String stamp, NettyPayload payload) {
-        LOG.info("Server onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(), stamp);
     }
 }

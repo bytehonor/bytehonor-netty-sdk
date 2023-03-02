@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
@@ -50,10 +49,14 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void onMessage(ByteBuf msg) {
-        byte[] bytes = NettyDataUtils.readBytes(msg);
-        NettyDataUtils.validate(bytes);
-        String text = NettyDataUtils.parseData(bytes);
-        handler.onMessage(NettyMessage.of(stamp, text));
+        try {
+            byte[] bytes = NettyDataUtils.readBytes(msg);
+            NettyDataUtils.validate(bytes);
+            String text = NettyDataUtils.parseData(bytes);
+            handler.onMessage(NettyMessage.of(stamp, text));
+        } catch (Exception e) {
+            LOG.error("onMessage stamp:{}, error", stamp, e);
+        }
     }
 
     // 当连接建立好的使用调用
@@ -65,7 +68,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        onClosed(channel);
+        onClosed(channel, cause.getMessage());
         LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
                 channel.id().asLongText(), cause);
         ctx.close();
@@ -74,14 +77,14 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        onClosed(channel);
+        onClosed(channel, "");
         String remoteAddress = channel.remoteAddress().toString();
         LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
     }
 
-    private void onClosed(Channel channel) {
+    private void onClosed(Channel channel, String msg) {
         ChannelCacheManager.remove(channel);
-        handler.onClosed(stamp);
+        handler.onClosed(stamp, msg);
     }
 
     private void onOpen(Channel channel) {
