@@ -3,6 +3,10 @@ package com.bytehonor.sdk.beautify.netty.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class DefaultNettyClientHandler extends AbstractClientHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyClientHandler.class);

@@ -4,6 +4,10 @@ import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
 
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyLengthFrameDecoder extends LengthFieldBasedFrameDecoder {
 
     public NettyLengthFrameDecoder() {

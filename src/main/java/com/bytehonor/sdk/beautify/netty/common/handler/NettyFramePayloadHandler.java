@@ -8,6 +8,10 @@ import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyFramePayloadHandler implements NettyFrameHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyFramePayloadHandler.class);

@@ -2,6 +2,10 @@ package com.bytehonor.sdk.beautify.netty.server;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public interface NettyServerHandler {
 
     public void onSucceed();

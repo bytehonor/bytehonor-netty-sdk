@@ -4,6 +4,10 @@ import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
 
 import io.netty.handler.timeout.IdleStateHandler;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public class NettyIdleStateChecker extends IdleStateHandler {
 
     public NettyIdleStateChecker() {
