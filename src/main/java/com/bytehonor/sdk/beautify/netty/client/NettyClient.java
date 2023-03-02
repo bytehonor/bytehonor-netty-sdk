@@ -32,7 +32,7 @@ public class NettyClient {
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
     private final Thread thread;
-//    private Channel channel;
+    // private Channel channel;
 
     // 连接服务端的端口号地址和端口号
     public NettyClient(String host, int port, NettyClientHandler listener) {
@@ -109,7 +109,7 @@ public class NettyClient {
         // 发起异步连接请求，绑定连接端口和host信息
         try {
             final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();
-//            channel = future.channel();
+            // channel = future.channel();
             future.addListener(new ChannelFutureListener() {
 
                 @Override
@@ -118,7 +118,7 @@ public class NettyClient {
                         LOG.info("Netty client connect success, stamp:{}", stamp);
                     } else {
                         LOG.error("Netty client connect failed, stamp:{}, cause", stamp, future.cause());
-//                        group.shutdownGracefully(); // 关闭线程组
+                        // group.shutdownGracefully(); // 关闭线程组
                     }
                 }
             });

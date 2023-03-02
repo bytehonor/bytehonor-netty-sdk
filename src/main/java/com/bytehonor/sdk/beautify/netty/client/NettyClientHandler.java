@@ -2,6 +2,10 @@ package com.bytehonor.sdk.beautify.netty.client;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
+/**
+ * @author lijianqiang
+ *
+ */
 public interface NettyClientHandler {
 
     public void onOpen(String stamp);
