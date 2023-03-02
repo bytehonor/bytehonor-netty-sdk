@@ -62,7 +62,7 @@ public class NettyMessageHandler {
 
         });
 
-        thread.setName("NettyMessageHandler-" + AL.incrementAndGet());
+        thread.setName(NettyMessageHandler.class.getSimpleName() + "-" + AL.incrementAndGet());
         thread.start();
         LOG.info("[Thread] {} start, queues:{}", thread.getName(), queues);
     }
