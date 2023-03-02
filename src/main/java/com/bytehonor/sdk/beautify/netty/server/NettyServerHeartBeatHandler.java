@@ -3,7 +3,7 @@ package com.bytehonor.sdk.beautify.netty.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
@@ -33,14 +33,15 @@ public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
                 LOG.debug("state:{}", event.state().name());
             }
             if (event.state() == IdleState.ALL_IDLE) {
-                LOG.info("before close channel size:{}", ChannelCacheManager.size());
+                LOG.info("before close channel size:{}", ChannelCacheHolder.size());
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
                 String stamp = NettyStampGenerator.stamp(channel);
                 LOG.info("idle client stamp:{}", stamp);
+                ChannelCacheHolder.remove(channel);
                 StampChannelHolder.remove(stamp);
                 channel.close();
-                LOG.info("after close channel size:{}", ChannelCacheManager.size());
+                LOG.info("after close channel size:{}", ChannelCacheHolder.size());
             }
         }
     }

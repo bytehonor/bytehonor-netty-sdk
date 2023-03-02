@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
@@ -83,15 +83,16 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void onClosed(Channel channel, String msg) {
-        ChannelCacheManager.remove(channel);
+        ChannelCacheHolder.remove(channel);
+        StampChannelHolder.remove(stamp);
         handler.onClosed(stamp, msg);
     }
 
     private void onOpen(Channel channel) {
         LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
                 channel.id().asLongText());
+        ChannelCacheHolder.add(channel);
         StampChannelHolder.put(stamp, channel);
-        ChannelCacheManager.add(channel);
         handler.onOpen(stamp);
     }
 }

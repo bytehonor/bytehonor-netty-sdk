@@ -1,16 +1,10 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientContanierTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyClientContanierTest.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(NettyClientContanierTest.class);
 
     @Test
     public void test() {

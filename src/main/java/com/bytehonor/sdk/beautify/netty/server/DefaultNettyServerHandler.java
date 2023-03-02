@@ -17,11 +17,6 @@ public class DefaultNettyServerHandler extends AbstractServerHandler {
         LOG.error("Server onFailed", error);
     }
 
-    @Override
-    public void onTotal(int total) {
-        LOG.info("Server onTotal:{}", total);
-    }
-
 //    @Override
 //    public void onMessage(NettyMessage message) {
 //        LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());

@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
@@ -98,7 +98,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         String stamp = stamp(channel);
         LOG.info("onDisconnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
-        ChannelCacheManager.remove(channel);
+        ChannelCacheHolder.remove(channel);
         StampChannelHolder.remove(stamp);
         handler.onDisconnected(stamp);
     }
@@ -108,7 +108,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         String stamp = stamp(channel);
         LOG.info("onConnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
-        ChannelCacheManager.add(channel);
+        ChannelCacheHolder.add(channel);
         StampChannelHolder.put(stamp, channel);
         handler.onConnected(stamp);
     }

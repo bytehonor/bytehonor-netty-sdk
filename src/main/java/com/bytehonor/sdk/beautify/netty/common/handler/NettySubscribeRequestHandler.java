@@ -1,27 +1,24 @@
 package com.bytehonor.sdk.beautify.netty.common.handler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.bytehonor.sdk.beautify.netty.common.constant.NettyTypeEnum;
-
-import io.netty.channel.Channel;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 /**
  * @author lijianqiang
  *
  */
-public class NettySubscribeRequestHandler implements NettyHandler {
+public class NettySubscribeRequestHandler implements NettyFrameHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeRequestHandler.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(NettySubscribeRequestHandler.class);
 
     @Override
-    public int type() {
-        return NettyTypeEnum.SUBSCRIBE_REQUEST.getType();
+    public String method() {
+        return NettyFrame.SUBSCRIBE;
     }
 
     @Override
-    public void handle(Channel channel, String message) {
+    public void handle(String stamp, NettyPayload payload, NettyConsumerFactory factory) {
 //        final ChannelId id = channel.id();
 //        if (LOG.isDebugEnabled()) {
 //            LOG.debug("message:{}, channel:{}", message, id.asLongText());

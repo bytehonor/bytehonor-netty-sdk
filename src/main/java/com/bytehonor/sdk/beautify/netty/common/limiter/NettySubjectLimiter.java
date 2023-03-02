@@ -9,10 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
 import com.bytehonor.sdk.beautify.netty.common.cache.SubjectChannelCacheHolder;
 
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 
 public class NettySubjectLimiter {
@@ -65,16 +63,16 @@ public class NettySubjectLimiter {
         for (int i = 0; i < remove; i++) {
             targets.add(channels.get(i));
         }
-        for (ChannelId target : targets) {
-            try {
-                Channel last = ChannelCacheManager.getChannel(target);
-                if (last != null) {
-                    last.close();
-                }
-                SubjectChannelCacheHolder.remove(subject, target);
-            } catch (Exception e) {
-                LOG.error("error", e);
-            }
-        }
+//        for (ChannelId target : targets) {
+//            try {
+//                Channel last = ChannelCacheManager.getChannel(target);
+//                if (last != null) {
+//                    last.close();
+//                }
+//                SubjectChannelCacheHolder.remove(subject, target);
+//            } catch (Exception e) {
+//                LOG.error("error", e);
+//            }
+//        }
     }
 }

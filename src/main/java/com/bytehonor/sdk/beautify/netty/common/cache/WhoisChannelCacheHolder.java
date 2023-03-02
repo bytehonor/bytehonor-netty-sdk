@@ -12,6 +12,7 @@ import io.netty.channel.ChannelId;
  * @author lijianqiang
  *
  */
+@Deprecated
 public class WhoisChannelCacheHolder {
 
     private static final int CAP = NettyConstants.CAPACITY;

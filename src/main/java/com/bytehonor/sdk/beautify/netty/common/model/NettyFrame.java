@@ -18,14 +18,12 @@ public class NettyFrame implements Serializable {
 
     public static final String PONG = "pong";
 
-    public static final String TRANSFER = "transfer";
+    public static final String PAYLOAD = "payload";
 
     public static final String SUBSCRIBE = "subscribe";
 
-    public static final String UNSUBSCRIBE = "unsubscribe";
-
     /**
-     * ping, pong, transfer
+     * ping, pong, payload, subscribe
      */
     private String method;
 
@@ -58,7 +56,7 @@ public class NettyFrame implements Serializable {
         Objects.requireNonNull(payload, "payload");
 
         NettyFrame model = new NettyFrame();
-        model.setMethod(TRANSFER);
+        model.setMethod(PAYLOAD);
         model.setSubject(payload.getSubject());
         model.setBody(payload.getBody());
         return model;

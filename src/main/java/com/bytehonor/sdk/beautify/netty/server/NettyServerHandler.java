@@ -4,13 +4,11 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
 public interface NettyServerHandler {
 
-    public void onMessage(NettyMessage message);
-
     public void onSucceed();
 
     public void onFailed(Throwable error);
 
-    public void onTotal(int total);
+    public void onMessage(NettyMessage message);
 
     public void onDisconnected(String stamp);
 

@@ -9,6 +9,7 @@ import io.netty.channel.ChannelId;
  * @author lijianqiang
  *
  */
+@Deprecated
 public class ChannelCacheManager {
 
     public static void add(Channel channel) {
