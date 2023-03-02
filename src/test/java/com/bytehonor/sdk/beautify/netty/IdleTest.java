@@ -6,15 +6,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.client.NettyClientContanier;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.server.NettyServerContanier;
-
-import io.netty.channel.Channel;
 
 public class IdleTest {
 
@@ -23,7 +15,6 @@ public class IdleTest {
     @Test
     public void test() {
         NettyClientConfig server = new NettyClientConfig();
-        server.setAllIdleSeconds(20);
        // NettyServerContanier.start(server, new DefaultNettyServerHandler());
 
         try {
@@ -33,7 +24,6 @@ public class IdleTest {
         }
 
         NettyClientConfig client = new NettyClientConfig();
-        client.setAllIdleSeconds(15);
 //        try {
 //            NettyClientContanier.connect(client, new NettyClientHandler() {
 //

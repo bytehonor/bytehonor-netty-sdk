@@ -2,20 +2,12 @@ package com.bytehonor.sdk.beautify.netty.client;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-
-import io.netty.channel.Channel;
 
 public class NettyClientTest {
 
@@ -64,7 +56,7 @@ public class NettyClientTest {
 
         });
         try {
-            client.start();
+            client.run();
             Thread.sleep(15000L);
         } catch (Exception e) {
             LOG.error("error", e);

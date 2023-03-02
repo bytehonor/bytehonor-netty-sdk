@@ -1,16 +1,19 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import java.lang.Thread.State;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
@@ -30,7 +33,8 @@ public class NettyClient {
     private final NettyClientConfig config;
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
-    private Channel channel;
+    private final Thread thread;
+//    private Channel channel;
 
     // 连接服务端的端口号地址和端口号
     public NettyClient(String host, int port, NettyClientHandler listener) {
@@ -41,15 +45,51 @@ public class NettyClient {
         this(host, port, new DefaultNettyClientHandler());
     }
 
+    public NettyClient(NettyClientConfig config) {
+        this(config, new DefaultNettyClientHandler());
+    }
+
     public NettyClient(NettyClientConfig config, NettyClientHandler handler) {
         this.stamp = NettyStampGenerator.stamp();
         this.config = config;
         this.handler = handler;
         this.bootstrap = init();
+        this.thread = pingThread("Ping-" + stamp);
     }
 
-    public NettyClient(NettyClientConfig config) {
-        this(config, new DefaultNettyClientHandler());
+    private Thread pingThread(String name) {
+        final long delays = config.getPingDelayMills();
+        final long intervals = config.getPingIntervalMillis();
+        Thread thread = new Thread(new NettyTask() {
+
+            @Override
+            public void runInSafe() {
+                sleep(delays);
+                while (true) {
+                    try {
+                        ping();
+                    } catch (Exception e) {
+                        LOG.error("ping error", e);
+                        connect();
+                    }
+                    sleep(intervals);
+                }
+
+            }
+        });
+        thread.setName(name);
+        return thread;
+    }
+
+    private static void sleep(long millis) {
+        if (millis < 1L) {
+            return;
+        }
+        try {
+            Thread.sleep(millis);
+        } catch (Exception e) {
+            LOG.error("Thread.sleep error:{}", e.getMessage());
+        }
     }
 
     private Bootstrap init() {
@@ -61,27 +101,39 @@ public class NettyClient {
         return bootstrap;
     }
 
-    public void start() {
-        LOG.info("Netty client start, stamp:{}, host:{}, port:{}", stamp, config.getHost(), config.getPort());
+    public void run() {
+        connect();
+        keepAlive();
+    }
+
+    private void connect() {
+        LOG.info("Netty client connect, stamp:{}, host:{}, port:{}", stamp, config.getHost(), config.getPort());
         // 发起异步连接请求，绑定连接端口和host信息
         try {
             final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();
-            channel = future.channel();
+//            channel = future.channel();
             future.addListener(new ChannelFutureListener() {
 
                 @Override
                 public void operationComplete(ChannelFuture arg0) throws Exception {
                     if (future.isSuccess()) {
-                        LOG.info("Netty client start success, stamp:{}", stamp);
+                        LOG.info("Netty client connect success, stamp:{}", stamp);
                     } else {
-                        LOG.error("Netty client start failed, stamp:{}, cause", stamp, future.cause());
+                        LOG.error("Netty client connect failed, stamp:{}, cause", stamp, future.cause());
 //                        group.shutdownGracefully(); // 关闭线程组
                     }
                 }
             });
+
         } catch (Exception e) {
-            LOG.error("Netty client start error, stamp:{}, error", stamp, e);
+            LOG.error("Netty client connect error, stamp:{}, error", stamp, e);
             handler.onError(stamp, e);
+        }
+    }
+
+    private void keepAlive() {
+        if (State.NEW.equals(thread.getState())) {
+            thread.start();
         }
     }
 
@@ -116,11 +168,15 @@ public class NettyClient {
 //        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
 //    }
 
-    public void close() {
-        if (channel == null) {
-            return;
-        }
-        channel.close();
-        LOG.info("Netty client close, stamp:{}", stamp);
+//    public void close() {
+//        if (channel == null) {
+//            return;
+//        }
+//        channel.close();
+//        LOG.info("Netty client close, stamp:{}", stamp);
+//    }
+
+    private void ping() {
+        NettyMessageSender.send(stamp, null); //
     }
 }

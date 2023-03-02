@@ -40,18 +40,18 @@ public class NettyConfigBuilder {
         return this;
     }
 
-    public NettyConfigBuilder lengths(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
-        this.config.setMaxFrameLength(maxFrameLength);
-        this.config.setLengthFieldOffset(lengthFieldOffset);
-        this.config.setLengthFieldLength(lengthFieldLength);
-        return this;
-    }
-
-    public NettyConfigBuilder servers(int bossThreads, int workThreads) {
-        this.config.setBossThreads(bossThreads);
-        this.config.setWorkThreads(workThreads);
-        return this;
-    }
+//    public NettyConfigBuilder lengths(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
+//        this.config.setMaxFrameLength(maxFrameLength);
+//        this.config.setLengthFieldOffset(lengthFieldOffset);
+//        this.config.setLengthFieldLength(lengthFieldLength);
+//        return this;
+//    }
+//
+//    public NettyConfigBuilder servers(int bossThreads, int workThreads) {
+//        this.config.setBossThreads(bossThreads);
+//        this.config.setWorkThreads(workThreads);
+//        return this;
+//    }
 
     public NettyConfigBuilder clients(int clientThreads, int connectTimeoutMills) {
         this.config.setClientThreads(clientThreads);
@@ -59,11 +59,11 @@ public class NettyConfigBuilder {
         return this;
     }
 
-    public NettyConfigBuilder idles(int readIdleSeconds, int writIdleSeconds, int allIdleSeconds) {
-        this.config.setReadIdleSeconds(readIdleSeconds);
-        this.config.setWritIdleSeconds(writIdleSeconds);
-        this.config.setAllIdleSeconds(allIdleSeconds);
-        return this;
-    }
+//    public NettyConfigBuilder idles(int readIdleSeconds, int writIdleSeconds, int allIdleSeconds) {
+//        this.config.setReadIdleSeconds(readIdleSeconds);
+//        this.config.setWritIdleSeconds(writIdleSeconds);
+//        this.config.setAllIdleSeconds(allIdleSeconds);
+//        return this;
+//    }
 
 }

@@ -50,8 +50,8 @@ public class NettyDemo {
         });
 
         try {
-            LOG.info("client.start()");
-            client.start();
+            LOG.info("client.run()");
+            client.run();
         } catch (Exception e) {
             LOG.error("error", e);
         }
@@ -63,12 +63,8 @@ public class NettyDemo {
         }
 
         try {
-            LOG.info("client.close()");
-            client.close();
-            Thread.sleep(1000L * 15);
-
-            LOG.info("client.start()");
-            client.start();
+            LOG.info("client.run() again");
+            client.run();
         } catch (Exception e) {
             LOG.error("error", e);
         }

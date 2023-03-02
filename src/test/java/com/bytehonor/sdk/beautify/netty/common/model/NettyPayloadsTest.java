@@ -22,10 +22,10 @@ public class NettyPayloadsTest {
     public void test() throws ClassNotFoundException, JsonMappingException, JsonProcessingException {
 
         NettyClientConfig vo1 = new NettyClientConfig();
-        vo1.setBossThreads(11);
+        vo1.setClientThreads(11);
 
         NettyClientConfig vo2 = new NettyClientConfig();
-        vo2.setBossThreads(22);
+        vo2.setClientThreads(22);
 
         List<NettyClientConfig> list = new ArrayList<NettyClientConfig>();
         list.add(vo1);
@@ -50,7 +50,7 @@ public class NettyPayloadsTest {
         LOG.info("4:{}", NettyJsonUtils.toJson(list1));
 
         NettyClientConfig first = list1.get(0);
-        assertTrue("*test", vo1.getBossThreads() == first.getBossThreads());
+        assertTrue("*test", vo1.getClientThreads() == first.getClientThreads());
     }
 
     @Test
