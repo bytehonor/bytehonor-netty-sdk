@@ -13,7 +13,7 @@ public class NettyServerTest {
     @Test
     public void test() {
 
-        new NettyServer().start(9090);
+        new NettyServer().start();
 
         try {
             Thread.sleep(15000L);

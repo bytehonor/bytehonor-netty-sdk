@@ -1,16 +1,15 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.ServerListenerHelper;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyServerHandler;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyServerConfig;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -29,58 +28,54 @@ public class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);
 
-    /**
-     * 负责连接请求
-     */
-    private EventLoopGroup bossGroup;
+    private static final AtomicLong AL = new AtomicLong(0);
 
-    /**
-     * 负责事件响应
-     */
-    private EventLoopGroup workerGroup;
+    private final NettyServerConfig config;
 
-    private ServerBootstrap bootstrap;
+    private final NettyServerHandler handler;
 
-    private ChannelFuture channelFuture;
+    private final ServerBootstrap bootstrap;
 
-    private boolean init = false;
+    private final Thread thread;
 
     public NettyServer() {
-        init = false;
+        this(new NettyServerConfig(), new DefaultNettyServerHandler());
     }
 
-    public void start(int port) {
-        NettyConfig config = NettyConfigBuilder.server(port).build();
-        start(config, new DefaultNettyServerListener());
+    public NettyServer(NettyServerConfig config, NettyServerHandler handler) {
+        this.config = config;
+        this.handler = handler;
+        this.bootstrap = new ServerBootstrap();
+        this.thread = thread();
     }
 
-    public void start(NettyConfig config, NettyServerListener listener) {
-        bind(config, listener);
+    private Thread thread() {
+        Thread thread = new Thread(new NettyTask() {
+
+            @Override
+            public void runInSafe() {
+                doStart();
+            }
+        });
+        thread.setName(NettyServer.class.getSimpleName() + "-" + AL.incrementAndGet());
+        return thread;
     }
 
-    private void bind(NettyConfig config, NettyServerListener listener) {
-        Objects.requireNonNull(config, "config");
-        Objects.requireNonNull(listener, "listener");
+    public void start() {
+        thread.start();
+    }
 
-        if (init) {
-            return;
-        }
-
+    private void doStart() {
         LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
-        init = true;
 
         // 负责连接请求
-        bossGroup = new NioEventLoopGroup(config.getBossThreads());
+        EventLoopGroup bossGroup = new NioEventLoopGroup(config.getBossThreads());
         // 负责事件响应
-        workerGroup = new NioEventLoopGroup(config.getWorkThreads());
-        // 负责连接请求
-        // EventLoopGroup bossGroup = new NioEventLoopGroup(4);
-        // 负责事件响应
-        // EventLoopGroup workerGroup = new NioEventLoopGroup(8);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(config.getWorkThreads());
 
         try {
             // 服务器启动项
-            bootstrap = new ServerBootstrap();
+            // bootstrap = new ServerBootstrap();
             // handler是针对bossGroup，childHandler是针对workerHandler
             bootstrap.group(bossGroup, workerGroup);
             bootstrap.option(ChannelOption.SO_BACKLOG, NettyConstants.SO_BACKLOG); // 设置TCP缓冲区
@@ -89,22 +84,22 @@ public class NettyServer {
             // 选择nioChannel
             bootstrap.channel(NioServerSocketChannel.class);
             // 日志处理 info级别
-            bootstrap.handler(new LoggingHandler(LogLevel.INFO));
+            bootstrap.handler(new LoggingHandler(LogLevel.WARN));
             // 添加自定义的初始化器
-            bootstrap.childHandler(new NettyServerInitializer(config, listener));
+            bootstrap.childHandler(new NettyServerInitializer(config, handler));
 
             // 端口绑定
-            channelFuture = bootstrap.bind(config.getPort());
-            LOG.info("Netty Tcp start isSuccess:{}", channelFuture.isSuccess());
+            ChannelFuture channelFuture = bootstrap.bind(config.getPort()).sync();
+            LOG.info("Netty Server isSuccess:{}, idDone:{}", channelFuture.isSuccess(), channelFuture.isDone());
             // channelFuture = bootstrap.bind(port).sync();
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
-            ServerListenerHelper.onSucceed(listener);
+
+            handler.onSucceed();
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
-            ServerListenerHelper.onFailed(listener, e);
+            handler.onFailed(e);
         }
     }
-
 }

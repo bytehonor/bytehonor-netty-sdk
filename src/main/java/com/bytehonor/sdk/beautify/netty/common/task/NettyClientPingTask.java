@@ -15,12 +15,12 @@ public class NettyClientPingTask extends NettyTask {
 
     @Override
     public void runInSafe() {
-        try {
-            NettyClientContanier.ping();
-        } catch (Exception e) {
-            LOG.error("ping error:{}", e.getMessage());
-            NettyClientContanier.reconnect();
-        }
+//        try {
+//            NettyClientContanier.ping();
+//        } catch (Exception e) {
+//            LOG.error("ping error:{}", e.getMessage());
+//            NettyClientContanier.reconnect();
+//        }
     }
 
 }

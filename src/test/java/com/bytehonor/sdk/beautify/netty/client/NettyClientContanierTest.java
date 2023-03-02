@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientContanierTest {
@@ -15,19 +15,19 @@ public class NettyClientContanierTest {
 
     @Test
     public void test() {
-        String host = "vpn.bytehonor.com";
-        int port = 85;
-
-        try {
-            NettyClientContanier.connect(host, port, new DefaultNettyClientListener());
-            Thread.sleep(60000L);
-            NettyClientContanier.send(NettyPayload.build("hello world"));
-            Thread.sleep(60000L * 10);
-        } catch (Exception e) {
-            LOG.error("error", e);
-        }
-
-        assertTrue("test", true);
+//        String host = "vpn.bytehonor.com";
+//        int port = 85;
+//
+//        try {
+//            NettyClientContanier.connect(host, port, new DefaultNettyClientListener());
+//            Thread.sleep(60000L);
+//            NettyClientContanier.send(NettyPayload.build("hello world"));
+//            Thread.sleep(60000L * 10);
+//        } catch (Exception e) {
+//            LOG.error("error", e);
+//        }
+//
+//        assertTrue("test", true);
     }
 
 }

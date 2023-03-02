@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
-import com.bytehonor.sdk.beautify.netty.common.constant.NettyTypeEnum;
 
 import io.netty.buffer.ByteBuf;
 
@@ -21,10 +20,10 @@ public class NettyDataUtils {
 
     private static final String UTF_8 = "UTF-8";
 
-    public static byte[] build(NettyTypeEnum type, String data) {
+    public static byte[] build(String data) {
         Objects.requireNonNull(data, "data");
 
-        return doBuild(type.getType(), data.getBytes(Charset.forName(UTF_8)));
+        return doBuild(data.getBytes(Charset.forName(UTF_8)));
     }
 
     /**
@@ -33,24 +32,23 @@ public class NettyDataUtils {
      * @param data
      * @return
      */
-    private static byte[] doBuild(int type, byte[] data) {
+    private static byte[] doBuild(byte[] data) {
         Objects.requireNonNull(data, "data");
 
         int lengthData = data.length;
-        LOG.debug("type:{}, lengthData:{}", type, lengthData);
+        LOG.debug("lengthData:{}", lengthData);
         int total = totalSizeFromData(lengthData);
 
         byte[] bytes = new byte[total];
         bytes[0] = NettyConstants.HEAD;
-        bytes[1] = (byte) type;
         int lengthValue = lengthData + NettyConstants.CHECK_SIZE + NettyConstants.END_SIZE; // 数据长度，4byte，包含data+check+end
         byte lenBytes[] = NettyByteUtils.intToByte4(lengthValue);
-        bytes[2] = lenBytes[0];
-        bytes[3] = lenBytes[1];
-        bytes[4] = lenBytes[2];
-        bytes[5] = lenBytes[3];
+        bytes[1] = lenBytes[0];
+        bytes[2] = lenBytes[1];
+        bytes[3] = lenBytes[2];
+        bytes[4] = lenBytes[3];
         for (int i = 0; i < lengthData; i++) {
-            bytes[6 + i] = data[i];
+            bytes[5 + i] = data[i];
         }
 
         byte[] checks = buildCecheckBytes(bytes);
@@ -68,7 +66,7 @@ public class NettyDataUtils {
         Objects.requireNonNull(bytes, "bytes");
 
         int total = bytes.length;
-        // 校验方式：累加和，check = type + length + data
+        // 校验方式：累加和，check = length + data
         int lengthCheck = total - NettyConstants.HEAD_SIZE - NettyConstants.CHECK_SIZE - NettyConstants.END_SIZE;
         byte[] checks = new byte[lengthCheck];
         NettyByteUtils.copy(bytes, 1, lengthCheck, checks);
@@ -76,15 +74,15 @@ public class NettyDataUtils {
     }
 
     public static int totalSizeFromData(int lengthData) {
-        // 1 + 1 + 4 + length + 4 + 1
-        return NettyConstants.HEAD_SIZE + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthData
-                + NettyConstants.CHECK_SIZE + NettyConstants.END_SIZE;
+        // 1 + 4 + length + 4 + 1
+        return NettyConstants.HEAD_SIZE + NettyConstants.LENGTH_FIELD_LENGTH + lengthData + NettyConstants.CHECK_SIZE
+                + NettyConstants.END_SIZE;
     }
 
     public static int dataSizeFromTotal(int total) {
-        // 1 + 1 + 4 + length + 4 + 1
-        return total - NettyConstants.HEAD_SIZE - NettyConstants.TYPE_SIZE - NettyConstants.LENGTH_SIZE
-                - NettyConstants.CHECK_SIZE - NettyConstants.END_SIZE;
+        // 1 + 4 + length + 4 + 1
+        return total - NettyConstants.HEAD_SIZE - NettyConstants.LENGTH_FIELD_LENGTH - NettyConstants.CHECK_SIZE
+                - NettyConstants.END_SIZE;
     }
 
     public static byte[] readBytes(ByteBuf buf) {
@@ -117,7 +115,7 @@ public class NettyDataUtils {
 
         // 长度校验
         int lengthValue = parseLengthValue(bytes);
-        int totalSize = NettyConstants.HEAD_SIZE + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE + lengthValue;
+        int totalSize = NettyConstants.HEAD_SIZE + NettyConstants.LENGTH_FIELD_LENGTH + lengthValue;
         if (total != totalSize) {
             LOG.error("total:{} != totalSize:{}", total, totalSize);
             throw new RuntimeException("bytes total length not true");
@@ -138,8 +136,8 @@ public class NettyDataUtils {
     public static byte[] parseLengthBytes(byte[] bytes) {
         Objects.requireNonNull(bytes, "bytes");
 
-        byte[] copy = new byte[NettyConstants.LENGTH_SIZE];
-        NettyByteUtils.copy(bytes, NettyConstants.LENGTH_OFFSET, NettyConstants.LENGTH_SIZE, copy);
+        byte[] copy = new byte[NettyConstants.LENGTH_FIELD_LENGTH];
+        NettyByteUtils.copy(bytes, NettyConstants.LENGTH_FIELD_OFFSET, NettyConstants.LENGTH_FIELD_LENGTH, copy);
         return copy;
     }
 
@@ -166,7 +164,7 @@ public class NettyDataUtils {
         int total = bytes.length;
         int lengthData = dataSizeFromTotal(total);
         byte[] copy = new byte[lengthData];
-        int from = NettyConstants.HEAD_SIZE + NettyConstants.TYPE_SIZE + NettyConstants.LENGTH_SIZE;
+        int from = NettyConstants.HEAD_SIZE + NettyConstants.LENGTH_FIELD_LENGTH;
         NettyByteUtils.copy(bytes, from, lengthData, copy);
         return copy;
     }

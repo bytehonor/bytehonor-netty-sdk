@@ -1,18 +1,13 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListenerHelper;
-import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.DefaultNettyClientHandler;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.SubscribeRequest;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -31,40 +26,47 @@ public class NettyClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClient.class);
 
+    private final String stamp;
     private final NettyConfig config;
-    private final NettyClientListener listener;
-    private Bootstrap bootstrap;
+    private final NettyClientHandler handler;
+    private final Bootstrap bootstrap;
     private Channel channel;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, NettyClientListener listener) {
+    public NettyClient(String host, int port, NettyClientHandler listener) {
         this(NettyConfigBuilder.client(host, port).build(), listener);
     }
 
     public NettyClient(String host, int port) {
-        this(host, port, new DefaultNettyClientListener());
+        this(host, port, new DefaultNettyClientHandler());
     }
 
-    public NettyClient(NettyConfig config, NettyClientListener listener) {
+    public NettyClient(NettyConfig config, NettyClientHandler handler) {
+        this.stamp = NettyStampGenerator.stamp();
         this.config = config;
-        this.listener = listener != null ? listener : new DefaultNettyClientListener();
+        this.handler = handler;
+        this.bootstrap = init();
     }
 
     public NettyClient(NettyConfig config) {
-        this(config, new DefaultNettyClientListener());
+        this(config, new DefaultNettyClientHandler());
+    }
+
+    private Bootstrap init() {
+        Bootstrap bootstrap = new Bootstrap();
+        EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
+        bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
+        bootstrap.handler(new NettyClientInitializer(stamp, config, handler));
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeoutMills());
+        return bootstrap;
     }
 
     public void start() {
         LOG.info("Netty client start, host:{}, port:{}", config.getHost(), config.getPort());
-        final EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
-        bootstrap = new Bootstrap();
-        bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
-        bootstrap.handler(new NettyClientInitializer(config, listener));
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeoutMills());
         // 发起异步连接请求，绑定连接端口和host信息
-
         try {
             final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();
+//            Channel channel = future.channel();
             future.addListener(new ChannelFutureListener() {
 
                 @Override
@@ -73,49 +75,49 @@ public class NettyClient {
                         LOG.info("Netty client start success");
                     } else {
                         LOG.error("Netty client start failed, cause", future.cause());
-                        group.shutdownGracefully(); // 关闭线程组
+//                        group.shutdownGracefully(); // 关闭线程组
                     }
                 }
             });
-            this.channel = future.channel();
         } catch (Exception e) {
             LOG.error("connect ({}:{}) error:{}", config.getHost(), config.getPort(), e.getMessage());
-            ClientListenerHelper.onError(listener, e);
+            handler.onError(stamp, e);
         }
     }
 
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public void ping() {
-        NettyMessageSender.ping(channel);
-    }
-
-    public boolean isConnected() {
-        return channel.isActive();
-    }
-
-    public void send(NettyPayload payload) {
-        Objects.requireNonNull(payload, "payload");
-        NettyMessageSender.send(channel, payload);
-    }
-
-    public void subscribe(String subject) {
-        if (subject == null) {
-            return;
-        }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.yes(subject));
-    }
-
-    public void unsubscribe(String subject) {
-        if (subject == null) {
-            return;
-        }
-        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
-    }
-
+//    public Channel getChannel() {
+//        return channel;
+//    }
+//
+//    public void ping() {
+//        NettyMessageSender.ping(channel);
+//    }
+//
+//    public boolean isConnected() {
+//        return channel.isActive();
+//    }
+//
+//    public void send(NettyPayload payload) {
+//        Objects.requireNonNull(payload, "payload");
+////        NettyMessageSender.send(channel, payload);
+//    }
+//
+//    public void subscribe(String subject) {
+//        if (subject == null) {
+//            return;
+//        }
+//        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.yes(subject));
+//    }
+//
+//    public void unsubscribe(String subject) {
+//        if (subject == null) {
+//            return;
+//        }
+//        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
+//    }
+//
     public void close() {
+        LOG.info("stamp:{} close", stamp);
         if (channel != null) {
             channel.close();
         }

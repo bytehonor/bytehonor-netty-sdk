@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageReceiver;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
-import com.bytehonor.sdk.beautify.netty.common.listener.ClientListenerHelper;
+import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -22,13 +22,13 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientInboundHandler.class);
 
-    private final String whoiam;
+    private final String stamp;
 
-    private final NettyClientListener listener;
+    private final NettyClientHandler handler;
 
-    public NettyClientInboundHandler(String whoiam, NettyClientListener listener) {
-        this.whoiam = whoiam != null ? whoiam : "unknown";
-        this.listener = listener;
+    public NettyClientInboundHandler(String stamp, NettyClientHandler handler) {
+        this.stamp = stamp != null ? stamp : "unknown";
+        this.handler = handler;
     }
 
     @Override
@@ -36,7 +36,8 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         // 客户端上传消息
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
-            NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
+//            NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
+            onMessage((ByteBuf) msg);
         } else {
             String remoteAddress = channel.remoteAddress().toString();
             LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.toString(), remoteAddress,
@@ -44,13 +45,17 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    private void onMessage(ByteBuf msg) {
+        byte[] bytes = NettyDataUtils.readBytes(msg);
+        NettyDataUtils.validate(bytes);
+        String text = NettyDataUtils.parseData(bytes);
+        handler.onMessage(NettyMessage.of(stamp, text));
+    }
+
     // 当连接建立好的使用调用
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Channel channel = ctx.channel();
-        onOpen(channel);
-        LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
-                channel.id().asLongText());
+        onOpen(ctx.channel());
     }
 
     @Override
@@ -61,7 +66,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
                 channel.id().asLongText(), cause);
         ctx.close();
     }
-    
+
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
@@ -72,12 +77,14 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
 
     private void onClosed(Channel channel) {
         ChannelCacheManager.remove(channel);
-        ClientListenerHelper.onClosed(listener, "channel close");
+        handler.onClosed(stamp);
     }
 
     private void onOpen(Channel channel) {
+        LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
+                channel.id().asLongText());
+        StampChannelHolder.put(stamp, channel);
         ChannelCacheManager.add(channel);
-        NettyMessageSender.whoisClient(channel, whoiam);
-        ClientListenerHelper.onOpen(listener, channel);
+        handler.onOpen(stamp);
     }
 }

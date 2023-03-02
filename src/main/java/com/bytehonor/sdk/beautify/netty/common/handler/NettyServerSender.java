@@ -21,9 +21,9 @@ import io.netty.channel.Channel;
  *
  */
 @Deprecated
-public class NettyMessageSender {
+public class NettyServerSender {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyServerSender.class);
 
     private static final String PING = "ping";
 

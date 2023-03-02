@@ -12,6 +12,7 @@ import io.netty.channel.Channel;
  * @author lijianqiang
  *
  */
+@Deprecated
 public class NettyMessageReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);

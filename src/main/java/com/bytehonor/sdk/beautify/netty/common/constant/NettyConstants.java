@@ -26,11 +26,12 @@ public class NettyConstants {
 
     public static final int HEAD_SIZE = 1;
     public static final int END_SIZE = 1;
-    public static final int TYPE_SIZE = 1;
-    public static final int TYPE_DEFAULT = NettyTypeEnum.PUBLIC_PAYLOAD.getType();
-    public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节
-    public static final int LENGTH_SIZE = 4;
-    public static final int MAX_LENGTH = SO_RCVBUF - 32; // 最大长度减去一点
+    // public static final int TYPE_SIZE = 1;
+    // public static final int TYPE_DEFAULT = NettyTypeEnum.PUBLIC_PAYLOAD.getType();
+    // public static final int LENGTH_OFFSET = 1 + TYPE_SIZE; // 头字节
+    public static final int LENGTH_FIELD_OFFSET = HEAD_SIZE; // 头字节
+    public static final int LENGTH_FIELD_LENGTH = 4;
+    public static final int MAX_FRAME_LENGTH = SO_RCVBUF - 32; // 最大长度减去一点
     public static final int CHECK_SIZE = 4;
 
     /**

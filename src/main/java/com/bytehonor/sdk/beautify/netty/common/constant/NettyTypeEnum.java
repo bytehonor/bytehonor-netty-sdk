@@ -15,6 +15,7 @@ package com.bytehonor.sdk.beautify.netty.common.constant;
  * @author lijianqiang
  *
  */
+@Deprecated
 public enum NettyTypeEnum {
 
     UNDEFINED(0, "未定义"),

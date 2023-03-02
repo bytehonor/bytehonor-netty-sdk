@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 import io.netty.channel.Channel;
@@ -23,26 +24,26 @@ public class NettyClientTest {
     @Test
     public void test() {
         boolean isOk = true;
-        NettyClient client = new NettyClient("127.0.0.1", 85, new NettyClientListener() {
+        NettyClient client = new NettyClient("127.0.0.1", 85, new NettyClientHandler() {
 
             @Override
-            public void onOpen(Channel channel) {
+            public void onOpen(String stamp) {
                 LOG.info("onOpen");
-                NettyMessageSender.send(channel, NettyPayload.build("hello world"));
-
-                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-                final Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            NettyMessageSender.ping(channel);
-                        } catch (Exception e) {
-                            LOG.error("ping error:{}", e.getMessage());
-                        }
-                    }
-                };
+//                NettyMessageSender.send(channel, NettyPayload.build("hello world"));
+//
+//                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+//                final Runnable runnable = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            NettyMessageSender.ping(channel);
+//                        } catch (Exception e) {
+//                            LOG.error("ping error:{}", e.getMessage());
+//                        }
+//                    }
+//                };
                 // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-                service.scheduleAtFixedRate(runnable, 10, 50, TimeUnit.SECONDS);
+//                service.scheduleAtFixedRate(runnable, 10, 50, TimeUnit.SECONDS);
             }
 
             @Override
@@ -51,8 +52,14 @@ public class NettyClientTest {
             }
 
             @Override
-            public void onError(Throwable error) {
+            public void onError(String stamp, Throwable error) {
                 LOG.error("onError", error);
+            }
+
+            @Override
+            public void onMessage(NettyMessage of) {
+                // TODO Auto-generated method stub
+
             }
 
         });

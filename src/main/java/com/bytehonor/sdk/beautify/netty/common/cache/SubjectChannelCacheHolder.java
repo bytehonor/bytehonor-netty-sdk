@@ -18,7 +18,7 @@ public class SubjectChannelCacheHolder {
     /**
      * subject channel
      */
-    private static final ConcurrentHashMap<String, ChannelIdHolder> MAP = new ConcurrentHashMap<String, ChannelIdHolder>(
+    private static final ConcurrentHashMap<String, ChannelIdCacheHolder> MAP = new ConcurrentHashMap<String, ChannelIdCacheHolder>(
             CAPACITY);
 
     public static int size() {
@@ -29,7 +29,7 @@ public class SubjectChannelCacheHolder {
         if (isEmpty(subject) || channelId == null) {
             return false;
         }
-        ChannelIdHolder holder = MAP.get(subject);
+        ChannelIdCacheHolder holder = MAP.get(subject);
         if (holder == null) {
             return false;
         }
@@ -41,9 +41,9 @@ public class SubjectChannelCacheHolder {
             return;
         }
 
-        ChannelIdHolder holder = MAP.get(subject);
+        ChannelIdCacheHolder holder = MAP.get(subject);
         if (holder == null) {
-            holder = new ChannelIdHolder();
+            holder = new ChannelIdCacheHolder();
             MAP.put(subject, holder);
         }
         holder.add(channelId);
@@ -53,7 +53,7 @@ public class SubjectChannelCacheHolder {
         if (isEmpty(subject)) {
             return new HashSet<ChannelId>();
         }
-        ChannelIdHolder holder = MAP.get(subject);
+        ChannelIdCacheHolder holder = MAP.get(subject);
         if (holder == null) {
             return new HashSet<ChannelId>();
         }
@@ -65,7 +65,7 @@ public class SubjectChannelCacheHolder {
             return;
         }
 
-        ChannelIdHolder holder = MAP.get(subject);
+        ChannelIdCacheHolder holder = MAP.get(subject);
         if (holder == null) {
             return;
         }
@@ -76,7 +76,7 @@ public class SubjectChannelCacheHolder {
         return (str == null || str.isEmpty());
     }
 
-    public static Set<Entry<String, ChannelIdHolder>> entrySet() {
+    public static Set<Entry<String, ChannelIdCacheHolder>> entrySet() {
         return MAP.entrySet();
     }
 }

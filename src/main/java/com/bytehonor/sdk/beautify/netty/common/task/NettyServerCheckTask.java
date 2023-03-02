@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelIdHolder;
+import com.bytehonor.sdk.beautify.netty.common.cache.ChannelIdCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.SubjectChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.WhoisChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.server.NettyServerContanier;
@@ -29,11 +29,11 @@ public class NettyServerCheckTask extends NettyTask {
         LOG.info("channel size:{}, subscribe size:{}, whois size:{}", ChannelCacheHolder.size(),
                 SubjectChannelCacheHolder.size(), WhoisChannelCacheHolder.size());
 
-        Iterator<Entry<String, ChannelIdHolder>> its = SubjectChannelCacheHolder.entrySet().iterator();
+        Iterator<Entry<String, ChannelIdCacheHolder>> its = SubjectChannelCacheHolder.entrySet().iterator();
         while (its.hasNext()) {
-            Entry<String, ChannelIdHolder> item = its.next();
+            Entry<String, ChannelIdCacheHolder> item = its.next();
             String subject = item.getKey();
-            ChannelIdHolder holder = item.getValue();
+            ChannelIdCacheHolder holder = item.getValue();
             LOG.info("subject:{}, channels size:{}", subject, holder.size());
             if (holder.size() > 0) {
                 Set<ChannelId> channels = holder.values();
@@ -48,7 +48,7 @@ public class NettyServerCheckTask extends NettyTask {
         }
 
         // 限幅
-        NettyServerContanier.limit();
+//        NettyServerContanier.limit();
     }
 
 }

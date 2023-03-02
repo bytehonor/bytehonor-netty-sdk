@@ -1,6 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientListener;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
@@ -18,13 +18,15 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
+    private String stamp;
+    
     private NettyConfig config;
 
-    private NettyClientListener listener;
+    private NettyClientHandler handler;
 
-    public NettyClientInitializer(NettyConfig config, NettyClientListener listener) {
+    public NettyClientInitializer(String stamp, NettyConfig config, NettyClientHandler listener) {
         this.config = config;
-        this.listener = listener;
+        this.handler = listener;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
         // byte数组
         pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
                 config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyClientInboundHandler(config.getWhoiam(), listener));
+        pipeline.addLast(new NettyClientInboundHandler(stamp, handler));
 
         // 字符串
         // ByteBuf buf =

@@ -1,7 +1,8 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerListener;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfig;
+import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
+import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyServerConfig;
 import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
@@ -18,13 +19,13 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    private NettyConfig config;
+    private final NettyServerConfig config;
 
-    private NettyServerListener listener;
+    private final NettyServerHandler handler;
 
-    public NettyServerInitializer(NettyConfig config, NettyServerListener listener) {
+    public NettyServerInitializer(NettyServerConfig config, NettyServerHandler handler) {
         this.config = config;
-        this.listener = listener;
+        this.handler = handler;
     }
 
     // ch就可以对channel进行设置
@@ -47,9 +48,9 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
                 config.getAllIdleSeconds()));
 
         // byte数组写法， 一些限定和编码解码器
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(config.getMaxFrameLength(), config.getLengthFieldOffset(),
-                config.getLengthFieldLength(), 0, 0));
-        pipeline.addLast(new NettyServerInboundHandler(config.getWhoiam(), listener));
+        pipeline.addLast(new LengthFieldBasedFrameDecoder(NettyConstants.MAX_FRAME_LENGTH, NettyConstants.LENGTH_FIELD_OFFSET,
+                NettyConstants.LENGTH_FIELD_LENGTH, 0, 0));
+        pipeline.addLast(new NettyServerInboundHandler(handler));
 
         // 字符串写法， 处理客户端连续发送流导致粘包问题，客户端发送的信息需要END代表发生结束
         // ByteBuf buf =

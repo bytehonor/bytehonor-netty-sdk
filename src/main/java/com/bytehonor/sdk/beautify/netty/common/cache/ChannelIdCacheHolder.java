@@ -11,11 +11,11 @@ import io.netty.channel.ChannelId;
  * @author lijianqiang
  *
  */
-public class ChannelIdHolder {
+public class ChannelIdCacheHolder {
 
     private final ConcurrentHashMap<String, ChannelId> map;
 
-    public ChannelIdHolder() {
+    public ChannelIdCacheHolder() {
         this.map = new ConcurrentHashMap<String, ChannelId>();
     }
 
