@@ -48,7 +48,7 @@ public class NettyConsumerExecutor {
     private void doProcess() throws InterruptedException {
         // 从队列中取值,如果没有对象过期则队列一直等待，
         String message = queue.take();
-        NettyPayload payload = NettyPayload.fromJson(message);
+        NettyPayload payload = null;//NettyPayload.fromJson(message);
         if (LOG.isDebugEnabled()) {
             LOG.debug("subject:{}, body:{}", payload.getSubject(), payload.getBody());
         }

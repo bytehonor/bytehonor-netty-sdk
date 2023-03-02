@@ -25,7 +25,7 @@ public class NettyPingHandler implements NettyHandler {
         if (LOG.isDebugEnabled()) {
             LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
         }
-        NettyMessageSender.pong(channel);
+//        NettyMessageSender.pong(channel);
     }
 
 }

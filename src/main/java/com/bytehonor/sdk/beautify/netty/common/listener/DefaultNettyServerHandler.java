@@ -3,9 +3,9 @@ package com.bytehonor.sdk.beautify.netty.common.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
-public class DefaultNettyServerHandler implements NettyServerHandler {
+public class DefaultNettyServerHandler extends AbstractServerHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyServerHandler.class);
 
@@ -24,10 +24,10 @@ public class DefaultNettyServerHandler implements NettyServerHandler {
         LOG.info("Server onTotal:{}", total);
     }
 
-    @Override
-    public void onMessage(NettyMessage message) {
-        LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
-    }
+//    @Override
+//    public void onMessage(NettyMessage message) {
+//        LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
+//    }
 
     @Override
     public void onDisconnected(String stamp) {
@@ -37,5 +37,10 @@ public class DefaultNettyServerHandler implements NettyServerHandler {
     @Override
     public void onConnected(String stamp) {
         LOG.info("Server onConnected stamp:{}", stamp);
+    }
+
+    @Override
+    public void onPorcess(String stamp, NettyPayload payload) {
+        LOG.info("Server onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(), stamp);
     }
 }

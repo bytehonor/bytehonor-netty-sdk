@@ -41,7 +41,6 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         // 客户端上传消息
         Channel channel = ctx.channel();
         if (msg instanceof ByteBuf) {
-//            NettyMessageReceiver.receiveByteBuf(channel, (ByteBuf) msg);
             onMessage((ByteBuf) msg);
         } else {
             String remoteAddress = channel.remoteAddress().toString();

@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.client.NettyClient;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyClientHandler;
-import com.bytehonor.sdk.beautify.netty.common.listener.NettyServerHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.listener.AbstractClientHandler;
+import com.bytehonor.sdk.beautify.netty.common.listener.AbstractServerHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.server.NettyServer;
 
@@ -25,27 +24,27 @@ public class NettyDemo {
             LOG.error("error", e);
         }
 
-        NettyClient client = new NettyClient("127.0.0.1", 85, new NettyClientHandler() {
+        NettyClient client = new NettyClient("127.0.0.1", 85, new AbstractClientHandler() {
 
             @Override
             public void onOpen(String stamp) {
-                LOG.info("onOpen stamp:{}", stamp);
-                NettyMessageSender.send(stamp, NettyPayload.build("hello server"));
+                LOG.info("Client onOpen stamp:{}", stamp);
+                NettyMessageSender.send(stamp, NettyPayload.transfer("hello server"));
             }
 
             @Override
             public void onClosed(String msg) {
-                LOG.warn("onClosed:{}", msg);
+                LOG.warn("Client onClosed:{}", msg);
             }
 
             @Override
             public void onError(String stamp, Throwable error) {
-                LOG.error("onError", error);
+                LOG.error("Client onError", error);
             }
 
             @Override
-            public void onMessage(NettyMessage message) {
-                LOG.info("onMessage text:{} stamp:{}", message.getText(), message.getStamp());
+            public void onPorcess(String stamp, NettyPayload payload) {
+                LOG.info("Client onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(), stamp);
             }
         });
 
@@ -62,22 +61,22 @@ public class NettyDemo {
             LOG.error("error", e);
         }
 
-        try {
-            LOG.info("client.run() again");
-            client.run();
-        } catch (Exception e) {
-            LOG.error("error", e);
-        }
+//        try {
+//            LOG.info("client.run() again");
+//            client.run();
+//        } catch (Exception e) {
+//            LOG.error("error", e);
+//        }
 
         try {
-            Thread.sleep(1000L * 360);
+            Thread.sleep(1000L * 600);
         } catch (InterruptedException e) {
             LOG.error("error", e);
         }
     }
 
     private static void startServer() {
-        new NettyServer(new NettyServerHandler() {
+        new NettyServer(new AbstractServerHandler() {
 
             @Override
             public void onSucceed() {
@@ -94,10 +93,10 @@ public class NettyDemo {
                 LOG.info("Server onTotal:{}", total);
             }
 
-            @Override
-            public void onMessage(NettyMessage message) {
-                LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
-            }
+//            @Override
+//            public void onMessage(NettyMessage message) {
+//                LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
+//            }
 
             @Override
             public void onDisconnected(String stamp) {
@@ -107,7 +106,13 @@ public class NettyDemo {
             @Override
             public void onConnected(String stamp) {
                 LOG.info("Server onConnected stamp:{}", stamp);
-                NettyMessageSender.send(stamp, NettyPayload.build("hello client"));
+                NettyMessageSender.send(stamp, NettyPayload.transfer("hello client"));
+            }
+
+            @Override
+            public void onPorcess(String stamp, NettyPayload payload) {
+                LOG.info("Server onPorcess subject:{}, body:{}, stamp:{}", payload.getSubject(), payload.getBody(),
+                        stamp);
             }
 
         }).start();

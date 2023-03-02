@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
+import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -34,8 +36,9 @@ public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
                 LOG.info("before close channel size:{}", ChannelCacheManager.size());
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
-                String whois = ChannelCacheManager.getWhois(channel.id());
-                LOG.info("idle client whois:{}, channel:{}", whois, channel.id().asLongText());
+                String stamp = NettyStampGenerator.stamp(channel);
+                LOG.info("idle client stamp:{}", stamp);
+                StampChannelHolder.remove(stamp);
                 channel.close();
                 LOG.info("after close channel size:{}", ChannelCacheManager.size());
             }

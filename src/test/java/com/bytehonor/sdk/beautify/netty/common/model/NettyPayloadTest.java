@@ -22,22 +22,22 @@ public class NettyPayloadTest {
 
         LOG.info("1:{}", NettyJsonUtils.toJson(request));
 
-        NettyPayload pm1 = NettyPayload.build(request);
+        NettyPayload pm1 = NettyPayload.transfer(request);
 
         String json1 = pm1.toString();
-        NettyPayload pm2 = NettyPayload.fromJson(json1);
+        NettyPayload pm2 = NettyJsonUtils.fromJson(json1, NettyPayload.class);
 
         Class<?> cz = ClasszUtils.find(pm2.getSubject());
         LOG.info("2: subject:{}, name:{}, body:{}", pm2.getSubject(), cz.getName(), pm2.getBody());
 
-        SubscribeRequest request2 = NettyPayload.reflect(json1, SubscribeRequest.class);
+        SubscribeRequest request2 = pm2.reflect(SubscribeRequest.class);
         assertTrue("*test", request.getSubject().equals(request2.getSubject()));
     }
 
     @Test
     public void test2() {
         String text = "hello world";
-        NettyPayload np = NettyPayload.build(text);
+        NettyPayload np = NettyPayload.transfer(text);
         LOG.info("test2 json:{}", NettyJsonUtils.toJson(np));
 
         String src = np.reflect(String.class);
@@ -45,4 +45,6 @@ public class NettyPayloadTest {
 
         assertTrue("*test2", text.equals(src));
     }
+
+    
 }

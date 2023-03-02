@@ -28,8 +28,8 @@ public class NettySubscribeResponseHandler implements NettyHandler {
             LOG.debug("message:{}, channel:{}", message, channel.id().asLongText());
         }
 
-        SubscribeResponse response = NettyPayload.reflect(message, SubscribeResponse.class);
-        LOG.info("completed:{}, subject:{}", response.getCompleted(), response.getSubject());
+//        SubscribeResponse response = NettyPayload.reflect(message, SubscribeResponse.class);
+//        LOG.info("completed:{}, subject:{}", response.getCompleted(), response.getSubject());
     }
 
 }

@@ -3,8 +3,6 @@ package com.bytehonor.sdk.beautify.netty.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheManager;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -33,8 +31,7 @@ public class NettyClientHeartBeatHandler extends ChannelInboundHandlerAdapter {
             if (event.state() == IdleState.ALL_IDLE) {
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
-                String whois = ChannelCacheManager.getWhois(channel.id());
-                LOG.info("idle server whois:{}, channel:{}", whois, channel.id().asLongText());
+                LOG.info("idle server channel:{}", channel.id().asLongText());
             }
         }
     }

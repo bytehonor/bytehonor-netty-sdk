@@ -177,6 +177,6 @@ public class NettyClient {
 //    }
 
     private void ping() {
-        NettyMessageSender.send(stamp, null); //
+        NettyMessageSender.ping(stamp);
     }
 }

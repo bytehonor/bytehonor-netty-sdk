@@ -24,24 +24,21 @@ public class NettyPayload implements Serializable {
 
     private String body;
 
-    public static NettyPayload fromJson(String json) {
-        Objects.requireNonNull(json, "json");
-        return NettyJsonUtils.fromJson(json, NettyPayload.class);
+    public static NettyPayload of(String subject, String body) {
+        Objects.requireNonNull(subject, "subject");
+        NettyPayload model = new NettyPayload();
+        model.setSubject(subject);
+        model.setBody(body);
+        return model;
     }
 
-    public static <T extends Serializable> NettyPayload build(T obj) {
+    public static <T extends Serializable> NettyPayload transfer(T obj) {
         Objects.requireNonNull(obj, "obj");
 
         NettyPayload model = new NettyPayload();
         model.setSubject(obj.getClass().getName());
         model.setBody(NettyJsonUtils.toJson(obj));
         return model;
-    }
-
-    public static <T extends Serializable> T reflect(String json, Class<T> valueType) {
-        NettyPayload payload = fromJson(json);
-
-        return payload.reflect(valueType);
     }
 
     public <T> T reflect(Class<T> valueType) {
