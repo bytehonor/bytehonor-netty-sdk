@@ -5,9 +5,11 @@ import java.lang.Thread.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
+import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
 
@@ -32,7 +34,6 @@ public class NettyClient {
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
     private final Thread thread;
-    private boolean connected = false;
     // private Channel channel;
 
     // 连接服务端的端口号地址和端口号
@@ -63,7 +64,7 @@ public class NettyClient {
 
             @Override
             public void runInSafe() {
-                sleep(delays);
+                NettySleeper.sleep(delays);
                 while (true) {
                     try {
                         ping();
@@ -71,24 +72,13 @@ public class NettyClient {
                         LOG.error("ping error", e);
                         connect();
                     }
-                    sleep(intervals);
+                    NettySleeper.sleep(intervals);
                 }
 
             }
         });
         thread.setName(name);
         return thread;
-    }
-
-    private static void sleep(long millis) {
-        if (millis < 1L) {
-            return;
-        }
-        try {
-            Thread.sleep(millis);
-        } catch (Exception e) {
-            LOG.error("Thread.sleep error:{}", e.getMessage());
-        }
     }
 
     private Bootstrap init() {
@@ -105,7 +95,7 @@ public class NettyClient {
         keepAlive();
     }
 
-    private void connect() {
+    public void connect() {
         LOG.info("Netty client connect, stamp:{}, host:{}, port:{}", stamp, config.getHost(), config.getPort());
         // 发起异步连接请求，绑定连接端口和host信息
         try {
@@ -116,10 +106,8 @@ public class NettyClient {
                 @Override
                 public void operationComplete(ChannelFuture arg0) throws Exception {
                     if (arg0.isSuccess()) {
-                        setConnected(true);
                         LOG.info("Netty client connect success, stamp:{}", stamp);
                     } else {
-                        setConnected(false);
                         LOG.error("Netty client connect failed, stamp:{}, cause", stamp, future.cause());
                         // group.shutdownGracefully(); // 关闭线程组
                     }
@@ -178,11 +166,7 @@ public class NettyClient {
 //    }
 
     public boolean isConnected() {
-        return connected;
-    }
-
-    private void setConnected(boolean connected) {
-        this.connected = connected;
+        return StampChannelHolder.exist(stamp);
     }
 
     private void ping() {

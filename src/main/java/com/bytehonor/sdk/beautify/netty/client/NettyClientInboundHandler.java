@@ -69,8 +69,8 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
         onClosed(channel, cause.getMessage());
-        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
-                channel.id().asLongText(), cause);
+        String remoteAddress = channel.remoteAddress().toString();
+        LOG.error("exceptionCaught remoteAddress:{}, stamp:{}, error", remoteAddress, stamp, cause);
         ctx.close();
     }
 
@@ -79,7 +79,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         onClosed(channel, "");
         String remoteAddress = channel.remoteAddress().toString();
-        LOG.info("handlerRemoved remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        LOG.info("handlerRemoved remoteAddress:{}, stamp:{}", remoteAddress, stamp);
     }
 
     private void onClosed(Channel channel, String msg) {
@@ -89,8 +89,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void onOpen(Channel channel) {
-        LOG.info("channelActive remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
-                channel.id().asLongText());
+        LOG.info("channelActive remoteAddress:{}, stamp:{}", channel.remoteAddress().toString(), stamp);
         ChannelCacheHolder.add(channel);
         StampChannelHolder.put(stamp, channel);
         handler.onOpen(stamp);

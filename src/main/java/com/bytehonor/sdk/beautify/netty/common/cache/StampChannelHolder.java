@@ -42,4 +42,10 @@ public class StampChannelHolder {
 
         MAP.remove(stamp);
     }
+
+    public static boolean exist(String stamp) {
+        Objects.requireNonNull(stamp, "stamp");
+
+        return MAP.containsKey(stamp);
+    }
 }

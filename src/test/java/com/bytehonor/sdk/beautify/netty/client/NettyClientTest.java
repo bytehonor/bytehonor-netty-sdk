@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 
 public class NettyClientTest {
 
@@ -20,21 +21,6 @@ public class NettyClientTest {
             @Override
             public void onOpen(String stamp) {
                 LOG.info("onOpen");
-//                NettyMessageSender.send(channel, NettyPayload.build("hello world"));
-//
-//                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-//                final Runnable runnable = new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            NettyMessageSender.ping(channel);
-//                        } catch (Exception e) {
-//                            LOG.error("ping error:{}", e.getMessage());
-//                        }
-//                    }
-//                };
-                // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-//                service.scheduleAtFixedRate(runnable, 10, 50, TimeUnit.SECONDS);
             }
 
             @Override
@@ -48,15 +34,14 @@ public class NettyClientTest {
             }
 
             @Override
-            public void onMessage(NettyMessage of) {
-                // TODO Auto-generated method stub
-
+            public void onMessage(NettyMessage message) {
+                
             }
 
         });
         try {
             client.run();
-            Thread.sleep(15000L);
+            NettySleeper.sleep(15000L);
         } catch (Exception e) {
             LOG.error("error", e);
             isOk = false;

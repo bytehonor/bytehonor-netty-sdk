@@ -7,6 +7,7 @@ import com.bytehonor.sdk.beautify.netty.client.AbstractClientHandler;
 import com.bytehonor.sdk.beautify.netty.client.NettyClient;
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
+import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 import com.bytehonor.sdk.beautify.netty.server.AbstractServerHandler;
 import com.bytehonor.sdk.beautify.netty.server.NettyServer;
 
@@ -18,11 +19,7 @@ public class NettyDemo {
 
         startServer();
 
-        try {
-            Thread.sleep(1000L * 5);
-        } catch (InterruptedException e) {
-            LOG.error("error", e);
-        }
+        NettySleeper.sleep(1000L * 5);
 
         NettyClient client = new NettyClient("127.0.0.1", 85, new AbstractClientHandler() {
 
@@ -43,18 +40,10 @@ public class NettyDemo {
             }
         });
 
-        try {
-            LOG.info("client.run()");
-            client.run();
-        } catch (Exception e) {
-            LOG.error("error", e);
-        }
+        LOG.info("client.run()");
+        client.run();
 
-        try {
-            Thread.sleep(1000L * 15);
-        } catch (InterruptedException e) {
-            LOG.error("error", e);
-        }
+        NettySleeper.sleep(1000L * 15);
 
 //        try {
 //            LOG.info("client.run() again");
@@ -63,11 +52,7 @@ public class NettyDemo {
 //            LOG.error("error", e);
 //        }
 
-        try {
-            Thread.sleep(1000L * 600);
-        } catch (InterruptedException e) {
-            LOG.error("error", e);
-        }
+        NettySleeper.sleep(1000L * 600);
     }
 
     private static void startServer() {
