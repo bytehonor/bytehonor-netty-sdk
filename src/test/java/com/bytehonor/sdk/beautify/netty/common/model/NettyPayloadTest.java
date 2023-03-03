@@ -22,7 +22,7 @@ public class NettyPayloadTest {
 
         LOG.info("1:{}", NettyJsonUtils.toJson(request));
 
-        NettyPayload pm1 = NettyPayload.transfer(request);
+        NettyPayload pm1 = NettyPayload.of(request);
 
         String json1 = pm1.toString();
         NettyPayload pm2 = NettyJsonUtils.fromJson(json1, NettyPayload.class);
@@ -37,7 +37,7 @@ public class NettyPayloadTest {
     @Test
     public void test2() {
         String text = "hello world";
-        NettyPayload np = NettyPayload.transfer(text);
+        NettyPayload np = NettyPayload.of(text);
         LOG.info("test2 json:{}", NettyJsonUtils.toJson(np));
 
         String src = np.reflect(String.class);

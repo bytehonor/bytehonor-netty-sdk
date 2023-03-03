@@ -26,7 +26,7 @@ public class NettyDemo {
             @Override
             public void onOpen(String stamp) {
                 LOG.info("Client onOpen stamp:{}", stamp);
-                NettyMessageSender.send(stamp, NettyPayload.transfer("hello server"));
+                NettyMessageSender.send(stamp, NettyPayload.of("hello server"));
             }
 
             @Override
@@ -81,7 +81,7 @@ public class NettyDemo {
             @Override
             public void onConnected(String stamp) {
                 LOG.info("Server onConnected stamp:{}", stamp);
-                NettyMessageSender.send(stamp, NettyPayload.transfer("hello client"));
+                NettyMessageSender.send(stamp, NettyPayload.of("hello client"));
             }
 
         }).start();

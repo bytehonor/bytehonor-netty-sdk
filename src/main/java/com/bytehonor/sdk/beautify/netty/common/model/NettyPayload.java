@@ -32,7 +32,7 @@ public class NettyPayload implements Serializable {
         return model;
     }
 
-    public static <T extends Serializable> NettyPayload transfer(T obj) {
+    public static <T extends Serializable> NettyPayload of(T obj) {
         Objects.requireNonNull(obj, "obj");
 
         NettyPayload model = new NettyPayload();
