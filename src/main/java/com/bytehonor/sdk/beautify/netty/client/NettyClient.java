@@ -126,6 +126,9 @@ public class NettyClient {
         }
     }
 
+    public String getStamp() {
+        return stamp;
+    }
 //    public Channel getChannel() {
 //        return channel;
 //    }
