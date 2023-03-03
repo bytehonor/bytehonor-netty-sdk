@@ -50,17 +50,18 @@ public class NettyMessageSender {
         }
 
         if (channel.isActive() == false) {
-            LOG.debug("send bytes failed, channelId:{} is not active", channel.id().asLongText());
+            LOG.debug("send bytes failed, stamp:{} is not active", stamp);
             throw new NettyBeautifyException("channel is not active");
         }
 
         if (channel.isOpen() == false) {
-            LOG.debug("send bytes failed, channelId:{} is not open", channel.id().asLongText());
+            LOG.debug("send bytes failed, stamp:{} is not open", stamp);
             throw new NettyBeautifyException("channel is not open");
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send data:{}, channel:{}", NettyDataUtils.parseData(bytes), channel.id().asLongText());
+            // LOG.debug("send data:{}, channel:{}", NettyDataUtils.parseData(bytes), stamp);
+            LOG.debug("send method:{}, bytes:{}, channel:{}", frame.getMethod(), bytes.length, stamp);
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输

@@ -32,6 +32,7 @@ public class NettyClient {
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
     private final Thread thread;
+    private boolean connected = false;
     // private Channel channel;
 
     // 连接服务端的端口号地址和端口号
@@ -114,9 +115,11 @@ public class NettyClient {
 
                 @Override
                 public void operationComplete(ChannelFuture arg0) throws Exception {
-                    if (future.isSuccess()) {
+                    if (arg0.isSuccess()) {
+                        setConnected(true);
                         LOG.info("Netty client connect success, stamp:{}", stamp);
                     } else {
+                        setConnected(false);
                         LOG.error("Netty client connect failed, stamp:{}, cause", stamp, future.cause());
                         // group.shutdownGracefully(); // 关闭线程组
                     }
@@ -173,6 +176,14 @@ public class NettyClient {
 //        channel.close();
 //        LOG.info("Netty client close, stamp:{}", stamp);
 //    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    private void setConnected(boolean connected) {
+        this.connected = connected;
+    }
 
     private void ping() {
         NettyMessageSender.ping(stamp);

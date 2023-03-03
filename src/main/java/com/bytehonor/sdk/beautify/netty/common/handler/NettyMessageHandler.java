@@ -77,11 +77,11 @@ public class NettyMessageHandler {
 
     private void process(NettyMessage message) {
         String stamp = message.getStamp();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("process text:{}, stamp:{}", message.getText(), stamp);
-        }
-
         NettyFrame frame = NettyFrame.fromJson(message.getText());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("process method:{}, subject:{}, stamp:{}", frame.getMethod(), frame.getSubject(), stamp);
+        }
+        
         NettyFrameHandler handler = handlers.get(frame.getMethod());
         if (handler == null) {
             LOG.info("handler null, method:{}", frame.getMethod());
