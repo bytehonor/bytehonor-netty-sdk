@@ -11,7 +11,7 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -50,7 +50,7 @@ public class NettyClient {
     }
 
     public NettyClient(NettyClientConfig config, NettyClientHandler handler) {
-        this.stamp = NettyStampGenerator.stamp();
+        this.stamp = NettyChannelUtils.stamp();
         this.config = config;
         this.handler = handler;
         this.bootstrap = init();

@@ -1,6 +1,5 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import java.net.SocketAddress;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -69,7 +69,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        String remoteAddress = remoteAddress(channel);
+        String remoteAddress = NettyChannelUtils.remoteAddress(channel);
         LOG.error("exceptionCaught remoteAddress:{}, stamp:{}, error", remoteAddress, stamp, cause);
         onClosed(channel, cause.getMessage());
         ctx.close();
@@ -78,20 +78,9 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        String remoteAddress = remoteAddress(channel);
+        String remoteAddress = NettyChannelUtils.remoteAddress(channel);
         LOG.info("handlerRemoved remoteAddress:{}, stamp:{}", remoteAddress, stamp);
         onClosed(channel, "");
-    }
-
-    private String remoteAddress(Channel channel) {
-        if (channel == null) {
-            return "unknown";
-        }
-        SocketAddress remoteAddress = channel.remoteAddress();
-        if (remoteAddress == null) {
-            return "unknown";
-        }
-        return remoteAddress.toString();
     }
 
     private void onClosed(Channel channel, String msg) {

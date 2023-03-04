@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,7 +36,7 @@ public class NettyServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
                 LOG.info("before close channel size:{}", ChannelCacheHolder.size());
                 Channel channel = ctx.channel();
                 // 关闭无用的channel，以防资源浪费
-                String stamp = NettyStampGenerator.stamp(channel);
+                String stamp = NettyChannelUtils.stamp(channel);
                 LOG.info("idle client stamp:{}", stamp);
                 ChannelCacheHolder.remove(channel);
                 StampChannelHolder.remove(stamp);

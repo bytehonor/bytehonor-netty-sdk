@@ -9,7 +9,7 @@ import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyStampGenerator;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -36,12 +36,13 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 客户端上传消息
         Channel channel = ctx.channel();
-        String stamp = stamp(channel);
+        String stamp = NettyChannelUtils.stamp(channel);
         if (msg instanceof ByteBuf) {
             onMessage(stamp, (ByteBuf) msg);
         } else {
+            String remoteAddress = NettyChannelUtils.remoteAddress(channel);
             LOG.error("channelRead unknown msg:{}, remoteAddress:{}, stamp:{}", msg.getClass().getSimpleName(),
-                    channel.remoteAddress().toString(), stamp);
+                    remoteAddress, stamp);
         }
     }
 
@@ -54,10 +55,11 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         Channel channel = ctx.channel();
-        onDisconnected(channel);
+        String remoteAddress = NettyChannelUtils.remoteAddress(channel);
+        String stamp = NettyChannelUtils.stamp(channel);
+        LOG.error("exceptionCaught remoteAddress:{}, stamp:{}, error", remoteAddress, stamp, cause);
+        onDisconnected(channel, remoteAddress, stamp);
         ctx.close();
-        LOG.error("exceptionCaught remoteAddress:{}, channelId:{}, error", channel.remoteAddress().toString(),
-                channel.id().asLongText(), cause);
     }
 
     /**
@@ -66,19 +68,18 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        onConnected(channel);
-        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", channel.remoteAddress().toString(),
-                channel.id().asLongText());
+        String remoteAddress = NettyChannelUtils.remoteAddress(channel);
+        String stamp = NettyChannelUtils.stamp(channel);
+        LOG.info("handlerAdded remoteAddress:{}, channelId:{}", remoteAddress, channel.id().asLongText());
+        onConnected(channel, remoteAddress, stamp);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         Channel channel = ctx.channel();
-        onDisconnected(channel);
-    }
-
-    private String stamp(Channel channel) {
-        return NettyStampGenerator.stamp(channel);
+        String remoteAddress = NettyChannelUtils.remoteAddress(channel);
+        String stamp = NettyChannelUtils.stamp(channel);
+        onDisconnected(channel, remoteAddress, stamp);
     }
 
     private void onMessage(String stamp, ByteBuf msg) {
@@ -93,9 +94,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void onDisconnected(Channel channel) {
-        String remoteAddress = channel.remoteAddress().toString();
-        String stamp = stamp(channel);
+    private void onDisconnected(Channel channel, String remoteAddress, String stamp) {
         LOG.info("onDisconnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
         ChannelCacheHolder.remove(channel);
@@ -103,9 +102,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         handler.onDisconnected(stamp);
     }
 
-    private void onConnected(Channel channel) {
-        String remoteAddress = channel.remoteAddress().toString();
-        String stamp = stamp(channel);
+    private void onConnected(Channel channel, String remoteAddress, String stamp) {
         LOG.info("onConnected remoteAddress:{}, stamp:{}", remoteAddress, stamp);
 
         ChannelCacheHolder.add(channel);
