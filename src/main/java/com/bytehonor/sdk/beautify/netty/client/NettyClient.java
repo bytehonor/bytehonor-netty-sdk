@@ -129,36 +129,6 @@ public class NettyClient {
     public String getStamp() {
         return stamp;
     }
-//    public Channel getChannel() {
-//        return channel;
-//    }
-//
-//    public void ping() {
-//        NettyMessageSender.ping(channel);
-//    }
-//
-//    public boolean isConnected() {
-//        return channel.isActive();
-//    }
-//
-//    public void send(NettyPayload payload) {
-//        Objects.requireNonNull(payload, "payload");
-////        NettyMessageSender.send(channel, payload);
-//    }
-//
-//    public void subscribe(String subject) {
-//        if (subject == null) {
-//            return;
-//        }
-//        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.yes(subject));
-//    }
-//
-//    public void unsubscribe(String subject) {
-//        if (subject == null) {
-//            return;
-//        }
-//        NettyMessageSender.subscribeRequest(channel, SubscribeRequest.no(subject));
-//    }
 
 //    public void close() {
 //        if (channel == null) {
