@@ -1,5 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import java.net.SocketAddress;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -86,7 +87,11 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         if (channel == null) {
             return "unknown";
         }
-        return channel.remoteAddress().toString();
+        SocketAddress remoteAddress = channel.remoteAddress();
+        if (remoteAddress == null) {
+            return "unknown";
+        }
+        return remoteAddress.toString();
     }
 
     private void onClosed(Channel channel, String msg) {
