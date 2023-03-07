@@ -39,7 +39,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
                         T payload = queue.take();
-                        doConsume(payload);
+                        process(payload);
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
                     }
@@ -76,6 +76,6 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
 
     public abstract Class<T> target();
 
-    public abstract void doConsume(T payload);
+    public abstract void process(T payload);
 
 }
