@@ -16,28 +16,9 @@ public class NettyServerCheckTask extends NettyTask {
 
     @Override
     public void runInSafe() {
-        LOG.info("channel size:{}, stamp size:{}", ChannelCacheHolder.size(), StampChannelHolder.size());
-
-//        Iterator<Entry<String, ChannelIdCacheHolder>> its = SubjectChannelCacheHolder.entrySet().iterator();
-//        while (its.hasNext()) {
-//            Entry<String, ChannelIdCacheHolder> item = its.next();
-//            String subject = item.getKey();
-//            ChannelIdCacheHolder holder = item.getValue();
-//            LOG.info("subject:{}, channels size:{}", subject, holder.size());
-//            if (holder.size() > 0) {
-//                Set<ChannelId> channels = holder.values();
-//                for (ChannelId channel : channels) {
-//                    if (ChannelCacheManager.exists(channel)) {
-//                        continue;
-//                    }
-//                    LOG.warn("remove subject:{}, channel:{}", subject, channel.asLongText());
-//                    holder.remove(channel);
-//                }
-//            }
-//        }
-
-        // 限幅
-//        NettyServerContanier.limit();
+        int channelSize = ChannelCacheHolder.size();
+        int stampSize = StampChannelHolder.size();
+        LOG.info("channel size:{}, stamp size:{}", channelSize, stampSize);
     }
 
 }

@@ -25,22 +25,9 @@ public class NettyServerConfig implements Serializable {
     private int writIdleSeconds;
     private int allIdleSeconds;
 
-    // length
-//    private int maxFrameLength;
-//    private int lengthFieldOffset;
-//    private int lengthFieldLength;
-
     // Threads
     private int bossThreads;
     private int workThreads;
-//    private int clientThreads;
-//
-//    private int connectTimeoutMills;
-
-    /**
-     * 服务端检查任务周期
-     */
-    private long periodSeconds;
 
     public NettyServerConfig() {
         this.port = 85;
@@ -50,14 +37,14 @@ public class NettyServerConfig implements Serializable {
         this.readIdleSeconds = NettyConstants.READ_IDLE_TIMEOUT_SECONDS;
         this.writIdleSeconds = NettyConstants.WRITE_IDLE_TIMEOUT_SECONDS;
         this.allIdleSeconds = NettyConstants.ALL_IDLE_TIMEOUT_SECONDS;
-//        this.maxFrameLength = NettyConstants.MAX_LENGTH;
-//        this.lengthFieldOffset = NettyConstants.LENGTH_OFFSET;
-//        this.lengthFieldLength = NettyConstants.LENGTH_SIZE;
         this.bossThreads = NettyConstants.BOSS_THREADS;
         this.workThreads = NettyConstants.WORD_THREADS;
-//        this.clientThreads = NettyConstants.CLIENT_THREADS;
-//        this.connectTimeoutMills = NettyConstants.CONNECT_TIMEOUT_MILLIS;
-        this.periodSeconds = 100L;
+    }
+
+    public static NettyServerConfig of(int port) {
+        NettyServerConfig model = new NettyServerConfig();
+        model.setPort(port);
+        return model;
     }
 
     public int getPort() {
@@ -130,14 +117,6 @@ public class NettyServerConfig implements Serializable {
 
     public void setWorkThreads(int workThreads) {
         this.workThreads = workThreads;
-    }
-
-    public long getPeriodSeconds() {
-        return periodSeconds;
-    }
-
-    public void setPeriodSeconds(long periodSeconds) {
-        this.periodSeconds = periodSeconds;
     }
 
 }

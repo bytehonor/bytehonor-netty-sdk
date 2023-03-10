@@ -1,5 +1,7 @@
 package com.bytehonor.sdk.beautify.netty.common.cache;
 
+import java.util.stream.Stream;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
@@ -22,10 +24,10 @@ public class ChannelCacheHolder {
 //    public static Stream<Channel> parallelStream() {
 //        return CHANNELS.parallelStream();
 //    }
-//
-//    public static Stream<Channel> stream() {
-//        return CHANNELS.stream();
-//    }
+
+    public static Stream<Channel> stream() {
+        return CHANNELS.stream();
+    }
 
     public static void add(Channel channel) {
         if (channel == null) {
