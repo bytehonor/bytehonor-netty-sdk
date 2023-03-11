@@ -10,5 +10,5 @@ public interface NettyConsumer {
 
     public String subject();
 
-    public void consume(NettyPayload payload);
+    public void consume(String stamp, NettyPayload payload);
 }

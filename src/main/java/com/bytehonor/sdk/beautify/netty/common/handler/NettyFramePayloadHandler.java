@@ -28,7 +28,7 @@ public class NettyFramePayloadHandler implements NettyFrameHandler {
             LOG.warn("consumer null, subject:{}, stamp:{}", payload.getSubject(), stamp);
             return;
         }
-        consumer.consume(payload);
+        consumer.consume(stamp, payload);
     }
 
 }
