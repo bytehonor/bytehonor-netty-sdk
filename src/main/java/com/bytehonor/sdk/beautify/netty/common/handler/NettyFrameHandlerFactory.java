@@ -16,8 +16,6 @@ public class NettyFrameHandlerFactory {
         add(new NettyFramePingHandler());
         add(new NettyFramePongHandler());
         add(new NettyFramePayloadHandler());
-        add(new NettySubscribeRequestHandler());
-        add(new NettySubscribeResponseHandler());
     }
 
     public void add(NettyFrameHandler handler) {

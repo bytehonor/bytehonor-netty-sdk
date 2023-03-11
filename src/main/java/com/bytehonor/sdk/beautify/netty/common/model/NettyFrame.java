@@ -20,10 +20,8 @@ public class NettyFrame implements Serializable {
 
     public static final String PAYLOAD = "payload";
 
-    public static final String SUBSCRIBE = "subscribe";
-
     /**
-     * ping, pong, payload, subscribe
+     * ping, pong, payload
      */
     private String method;
 
