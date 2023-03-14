@@ -25,10 +25,16 @@ public class NettyFramePayloadHandler implements NettyFrameHandler {
     public void handle(String stamp, NettyPayload payload, NettyConsumerFactory factory) {
         NettyConsumer consumer = factory.get(payload.getSubject());
         if (consumer == null) {
-            LOG.warn("consumer null, subject:{}, stamp:{}", payload.getSubject(), stamp);
+            LOG.warn("consumer null, subject:{}, body:{}, stamp:{}", payload.getSubject(), substring(payload.getBody()), stamp);
             return;
         }
         consumer.consume(stamp, payload);
     }
 
+    private String substring(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        return text.length() > 100 ? text.substring(100) : text;
+    }
 }
