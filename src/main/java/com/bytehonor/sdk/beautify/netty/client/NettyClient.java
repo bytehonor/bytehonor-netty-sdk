@@ -130,14 +130,6 @@ public class NettyClient {
         return stamp;
     }
 
-//    public void close() {
-//        if (channel == null) {
-//            return;
-//        }
-//        channel.close();
-//        LOG.info("Netty client close, stamp:{}", stamp);
-//    }
-
     public boolean isConnected() {
         return StampChannelHolder.exist(stamp);
     }

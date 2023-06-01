@@ -1,13 +1,13 @@
 package com.bytehonor.sdk.beautify.netty.common.model;
 
-public class NettyMessage {
+public class NettyReceiveMission {
 
     private String stamp;
 
     private String text;
 
-    public static NettyMessage of(String stamp, String text) {
-        NettyMessage model = new NettyMessage();
+    public static NettyReceiveMission of(String stamp, String text) {
+        NettyReceiveMission model = new NettyReceiveMission();
         model.setStamp(stamp);
         model.setText(text);
         return model;

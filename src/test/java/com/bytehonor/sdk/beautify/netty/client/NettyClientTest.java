@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientTest {
@@ -31,8 +30,8 @@ public class NettyClientTest {
             }
 
             @Override
-            public void onMessage(NettyMessage message) {
-
+            public void onMessage(String stamp, String text) {
+                LOG.info("onMessage, stamp:{}, text:{}", stamp, text);
             }
 
         });

@@ -1,13 +1,12 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageHandler;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageReceiver;
 
 /**
  * @author lijianqiang
  *
  */
-public abstract class AbstractClientHandler extends NettyMessageHandler implements NettyClientHandler {
+public abstract class AbstractClientHandler extends NettyMessageReceiver implements NettyClientHandler {
 
     public AbstractClientHandler() {
         this(20480);
@@ -18,7 +17,7 @@ public abstract class AbstractClientHandler extends NettyMessageHandler implemen
     }
 
     @Override
-    public final void onMessage(NettyMessage message) {
-        addMessage(message);
+    public final void onMessage(String stamp, String text) {
+        addMessage(stamp, text);
     }
 }

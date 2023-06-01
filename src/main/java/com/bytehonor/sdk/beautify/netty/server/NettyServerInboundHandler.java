@@ -7,9 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -88,7 +87,7 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
             byte[] bytes = NettyDataUtils.readBytes(msg);
             NettyDataUtils.validate(bytes);
             String text = NettyDataUtils.parseData(bytes);
-            handler.onMessage(NettyMessage.of(stamp, text));
+            handler.onMessage(stamp, text);
         } catch (Exception e) {
             LOG.error("onMessage stamp:{}, error", stamp, e);
         }

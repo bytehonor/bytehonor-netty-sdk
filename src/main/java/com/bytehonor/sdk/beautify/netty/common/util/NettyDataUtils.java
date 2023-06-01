@@ -35,19 +35,18 @@ public class NettyDataUtils {
     private static byte[] doBuild(byte[] data) {
         Objects.requireNonNull(data, "data");
 
-        int lengthData = data.length;
-        LOG.debug("lengthData:{}", lengthData);
-        int total = totalSizeFromData(lengthData);
+        int dataLength = data.length;
+        int total = totalSizeFromData(dataLength);
 
         byte[] bytes = new byte[total];
         bytes[0] = NettyConstants.HEAD;
-        int lengthValue = lengthData + NettyConstants.CHECK_SIZE + NettyConstants.END_SIZE; // 数据长度，4byte，包含data+check+end
-        byte lenBytes[] = NettyByteUtils.intToByte4(lengthValue);
+        int dataLengthValue = dataLength + NettyConstants.CHECK_SIZE + NettyConstants.END_SIZE; // 数据长度，4byte，包含data+check+end
+        byte lenBytes[] = NettyByteUtils.intToByte4(dataLengthValue);
         bytes[1] = lenBytes[0];
         bytes[2] = lenBytes[1];
         bytes[3] = lenBytes[2];
         bytes[4] = lenBytes[3];
-        for (int i = 0; i < lengthData; i++) {
+        for (int i = 0; i < dataLength; i++) {
             bytes[5 + i] = data[i];
         }
 

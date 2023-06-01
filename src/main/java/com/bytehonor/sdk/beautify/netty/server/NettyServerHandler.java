@@ -1,7 +1,5 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
-import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
-
 /**
  * @author lijianqiang
  *
@@ -12,7 +10,7 @@ public interface NettyServerHandler {
 
     public void onFailed(Throwable error);
 
-    public void onMessage(NettyMessage message);
+    public void onMessage(String stamp, String text);
 
     public void onDisconnected(String stamp);
 
