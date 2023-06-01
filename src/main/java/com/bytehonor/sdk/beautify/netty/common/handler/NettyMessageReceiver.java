@@ -94,13 +94,13 @@ public class NettyMessageReceiver {
         handler.handle(stamp, payload, consumers);
     }
 
-    public final void addMessage(String stamp, String text) {
-        if (stamp == null || text == null) {
-            LOG.warn("stamp or text null");
+    public final void addMission(NettyReceiveMission mission) {
+        if (mission == null) {
+            LOG.warn("mission null");
             return;
         }
         try {
-            queue.put(NettyReceiveMission.of(stamp, text));
+            queue.put(mission);
         } catch (Exception e) {
             LOG.error("addMessage error", e);
         }
