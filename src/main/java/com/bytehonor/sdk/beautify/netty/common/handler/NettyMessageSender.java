@@ -62,7 +62,7 @@ public final class NettyMessageSender {
         LOG.info("[Thread] {} start", thread.getName());
     }
 
-    private void add(String stamp, NettyFrame frame) {
+    private void doAdd(String stamp, NettyFrame frame) {
         this.queue.add(NettySendMission.of(stamp, frame));
     }
 
@@ -77,20 +77,29 @@ public final class NettyMessageSender {
     public static void ping(String stamp) {
         Objects.requireNonNull(stamp, "stamp");
 
-        self().add(stamp, NettyFrame.ping());
+        // 不能放队列里, 抛异常上层捕获不到则无法重连
+        doSendFrame(stamp, NettyFrame.ping());
     }
 
     public static void pong(String stamp) {
         Objects.requireNonNull(stamp, "stamp");
 
-        self().add(stamp, NettyFrame.pong());
+        // 不能放队列里
+        doSendFrame(stamp, NettyFrame.pong());
     }
 
     public static void send(String stamp, NettyPayload payload) {
         Objects.requireNonNull(stamp, "stamp");
         Objects.requireNonNull(payload, "payload");
 
-        self().add(stamp, NettyFrame.payload(payload));
+        doSendFrame(stamp, NettyFrame.payload(payload));
+    }
+
+    public static void add(String stamp, NettyPayload payload) {
+        Objects.requireNonNull(stamp, "stamp");
+        Objects.requireNonNull(payload, "payload");
+
+        self().doAdd(stamp, NettyFrame.payload(payload));
     }
 
     private static void doSendFrame(String stamp, NettyFrame frame) {
