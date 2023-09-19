@@ -16,9 +16,9 @@ repositories {
 }
 
 dependencies {
-    api('io.netty:netty-transport:4.1.92.Final')
-    api('io.netty:netty-handler:4.1.92.Final')
-    api('org.springframework:spring-core:5.3.27')
+    api('io.netty:netty-transport:4.1.97.Final')
+    api('io.netty:netty-handler:4.1.97.Final')
+    api('org.springframework:spring-core:5.3.29')
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.5')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.5')
     api('com.fasterxml.jackson.core:jackson-core:2.13.5')
