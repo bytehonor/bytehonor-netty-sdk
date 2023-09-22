@@ -103,7 +103,6 @@ public final class NettyMessageSender {
     }
 
     private static void doSendFrame(String stamp, NettyFrame frame) {
-        byte[] bytes = NettyDataUtils.build(frame.toString());
         Channel channel = StampChannelHolder.get(stamp);
         if (channel == null) {
             throw new NettyBeautifyException("channel not exist, stamp:" + stamp);
@@ -119,6 +118,7 @@ public final class NettyMessageSender {
             throw new NettyBeautifyException("channel is not open");
         }
 
+        byte[] bytes = NettyDataUtils.build(frame.toString());
         if (LOG.isDebugEnabled()) {
             LOG.debug("send method:{}, bytes:{}, channel:{}", frame.getMethod(), bytes.length, stamp);
         }
