@@ -10,7 +10,7 @@ import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.NettySendMission;
+import com.bytehonor.sdk.beautify.netty.common.model.NettySendPack;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
@@ -31,14 +31,14 @@ public final class NettyMessageSender {
     /**
      * 队列
      */
-    private final LinkedBlockingQueue<NettySendMission> queue;
+    private final LinkedBlockingQueue<NettySendPack> queue;
     /**
      * 线程
      */
     private final Thread thread;
 
     private NettyMessageSender() {
-        queue = new LinkedBlockingQueue<NettySendMission>(40960);
+        queue = new LinkedBlockingQueue<NettySendPack>(51200);
 
         thread = new Thread(new NettyTask() {
 
@@ -47,8 +47,8 @@ public final class NettyMessageSender {
                 while (true) {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettySendMission mission = queue.take();
-                        doSendFrame(mission.getStamp(), mission.getFrame());
+                        NettySendPack pack = queue.take();
+                        doSendFrame(pack.getStamp(), pack.getFrame());
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
                     }
@@ -63,7 +63,7 @@ public final class NettyMessageSender {
     }
 
     private void doAdd(String stamp, NettyFrame frame) {
-        this.queue.add(NettySendMission.of(stamp, frame));
+        this.queue.add(NettySendPack.of(stamp, frame));
     }
 
     private static class LazyHolder {
@@ -120,7 +120,7 @@ public final class NettyMessageSender {
 
         byte[] bytes = NettyDataUtils.build(frame.toString());
         if (LOG.isDebugEnabled()) {
-            LOG.debug("send method:{}, bytes:{}, channel:{}", frame.getMethod(), bytes.length, stamp);
+            LOG.debug("send method:{}, bytes:{}, stamp:{}", frame.getMethod(), bytes.length, stamp);
         }
 
         ByteBuf buf = Unpooled.buffer();// netty需要用ByteBuf传输

@@ -1,13 +1,17 @@
 package com.bytehonor.sdk.beautify.netty.common.model;
 
-public class NettyReceiveMission {
+import java.io.Serializable;
+
+public class NettyReceivePack implements Serializable {
+
+    private static final long serialVersionUID = 8180230166940765694L;
 
     private String stamp;
 
     private String text;
 
-    public static NettyReceiveMission of(String stamp, String text) {
-        NettyReceiveMission model = new NettyReceiveMission();
+    public static NettyReceivePack of(String stamp, String text) {
+        NettyReceivePack model = new NettyReceivePack();
         model.setStamp(stamp);
         model.setText(text);
         return model;

@@ -1,5 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.common.handler;
 
+import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -10,7 +11,7 @@ import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyReceiveMission;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyReceivePack;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
@@ -32,20 +33,20 @@ public class NettyMessageReceiver {
     /**
      * 队列
      */
-    private final LinkedBlockingQueue<NettyReceiveMission> queue;
+    private final LinkedBlockingQueue<NettyReceivePack> queue;
     /**
      * 线程
      */
     private final Thread thread;
 
     public NettyMessageReceiver() {
-        this(40960);
+        this(51200);
     }
 
     public NettyMessageReceiver(int queues) {
         handlers = new NettyFrameHandlerFactory();
         consumers = new NettyConsumerFactory();
-        queue = new LinkedBlockingQueue<NettyReceiveMission>(queues);
+        queue = new LinkedBlockingQueue<NettyReceivePack>(queues);
 
         thread = new Thread(new NettyTask() {
 
@@ -54,8 +55,8 @@ public class NettyMessageReceiver {
                 while (true) {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettyReceiveMission mission = queue.take();
-                        process(mission);
+                        NettyReceivePack pack = queue.take();
+                        process(pack);
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
                     }
@@ -70,16 +71,18 @@ public class NettyMessageReceiver {
     }
 
     public final void addHandler(NettyFrameHandler handler) {
+        Objects.requireNonNull(handler, "handler");
         this.handlers.add(handler);
     }
 
     public final void addConsumer(NettyConsumer consumer) {
+        Objects.requireNonNull(consumer, "consumer");
         this.consumers.add(consumer);
     }
 
-    private void process(NettyReceiveMission mission) {
-        String stamp = mission.getStamp();
-        NettyFrame frame = NettyFrame.fromJson(mission.getText());
+    private void process(NettyReceivePack pack) {
+        String stamp = pack.getStamp();
+        NettyFrame frame = NettyFrame.fromJson(pack.getText());
         if (LOG.isDebugEnabled()) {
             LOG.debug("process method:{}, subject:{}, stamp:{}", frame.getMethod(), frame.getSubject(), stamp);
         }
@@ -94,15 +97,15 @@ public class NettyMessageReceiver {
         handler.handle(stamp, payload, consumers);
     }
 
-    public final void addMission(NettyReceiveMission mission) {
-        if (mission == null) {
-            LOG.warn("mission null");
+    public final void addPack(NettyReceivePack pack) {
+        if (pack == null) {
+            LOG.warn("pack null");
             return;
         }
         try {
-            queue.put(mission);
+            queue.put(pack);
         } catch (Exception e) {
-            LOG.error("addMessage error", e);
+            LOG.error("addPack error", e);
         }
     }
 }
