@@ -51,11 +51,11 @@ public class NettyServer {
 
         this.config = config;
         this.handler = handler;
-        this.bootstrap = init();
-        this.thread = thread();
+        this.bootstrap = makeBootstrap();
+        this.thread = makeThread();
     }
 
-    private ServerBootstrap init() {
+    private ServerBootstrap makeBootstrap() {
         // 服务器启动项
         ServerBootstrap bootstrap = new ServerBootstrap();
         // handler是针对bossGroup，childHandler是针对workerHandler
@@ -77,7 +77,7 @@ public class NettyServer {
         return bootstrap;
     }
 
-    private Thread thread() {
+    private Thread makeThread() {
         Thread thread = new Thread(new NettyTask() {
 
             @Override

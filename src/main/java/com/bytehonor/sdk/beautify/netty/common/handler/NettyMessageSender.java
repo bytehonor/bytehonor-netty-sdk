@@ -104,7 +104,7 @@ public final class NettyMessageSender {
 
     private static void doSendFrame(String stamp, NettyFrame frame) {
         byte[] bytes = NettyDataUtils.build(frame.toString());
-        Channel channel = StampChannelHolder.getChannel(stamp);
+        Channel channel = StampChannelHolder.get(stamp);
         if (channel == null) {
             throw new NettyBeautifyException("channel not exist, stamp:" + stamp);
         }

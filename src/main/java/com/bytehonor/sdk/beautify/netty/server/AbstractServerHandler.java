@@ -10,7 +10,7 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyReceiveMission;
 public abstract class AbstractServerHandler extends NettyMessageReceiver implements NettyServerHandler {
 
     public AbstractServerHandler() {
-        this(40960);
+        super();
     }
 
     public AbstractServerHandler(int queues) {

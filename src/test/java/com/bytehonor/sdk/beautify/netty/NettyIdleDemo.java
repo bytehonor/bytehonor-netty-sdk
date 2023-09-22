@@ -24,10 +24,10 @@ public class NettyIdleDemo {
 
         NettySleeper.sleep(1000L * 15);
 
-        LOG.info("1. client.isConnected():{}", client.isConnected());
+        LOG.info("1. client.isConnected():{}", client.connected());
 
         NettySleeper.sleep(1000L * 120);
 
-        LOG.info("2. client.isConnected():{}", client.isConnected());
+        LOG.info("2. client.isConnected():{}", client.connected());
     }
 }

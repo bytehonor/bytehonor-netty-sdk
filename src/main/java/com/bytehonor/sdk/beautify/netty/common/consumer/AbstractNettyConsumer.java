@@ -26,7 +26,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
     private final Thread thread;
 
     public AbstractNettyConsumer() {
-        this(10240);
+        this(20480);
     }
 
     public AbstractNettyConsumer(int queues) {

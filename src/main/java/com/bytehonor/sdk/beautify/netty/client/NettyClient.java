@@ -34,7 +34,6 @@ public class NettyClient {
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
     private final Thread thread;
-    // private Channel channel;
 
     // 连接服务端的端口号地址和端口号
     public NettyClient(String host, int port, NettyClientHandler listener) {
@@ -53,11 +52,11 @@ public class NettyClient {
         this.stamp = NettyChannelUtils.stamp();
         this.config = config;
         this.handler = handler;
-        this.bootstrap = init();
-        this.thread = pingThread("Ping-" + stamp);
+        this.bootstrap = makeBootstrap();
+        this.thread = makePingThread("Ping-" + stamp);
     }
 
-    private Thread pingThread(String name) {
+    private Thread makePingThread(String name) {
         final long delays = config.getPingDelayMills();
         final long intervals = config.getPingIntervalMillis();
         Thread thread = new Thread(new NettyTask() {
@@ -81,7 +80,7 @@ public class NettyClient {
         return thread;
     }
 
-    private Bootstrap init() {
+    private Bootstrap makeBootstrap() {
         Bootstrap bootstrap = new Bootstrap();
         EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
@@ -130,8 +129,8 @@ public class NettyClient {
         return stamp;
     }
 
-    public boolean isConnected() {
-        return StampChannelHolder.exist(stamp);
+    public boolean connected() {
+        return StampChannelHolder.has(stamp);
     }
 
     private void ping() {

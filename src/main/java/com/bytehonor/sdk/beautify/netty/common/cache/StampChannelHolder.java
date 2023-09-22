@@ -31,7 +31,7 @@ public class StampChannelHolder {
         MAP.put(stamp, channel);
     }
 
-    public static Channel getChannel(String stamp) {
+    public static Channel get(String stamp) {
         Objects.requireNonNull(stamp, "stamp");
 
         return MAP.get(stamp);
@@ -43,7 +43,7 @@ public class StampChannelHolder {
         MAP.remove(stamp);
     }
 
-    public static boolean exist(String stamp) {
+    public static boolean has(String stamp) {
         Objects.requireNonNull(stamp, "stamp");
 
         return MAP.containsKey(stamp);
