@@ -18,12 +18,12 @@ repositories {
 dependencies {
     api('io.netty:netty-transport:4.1.97.Final')
     api('io.netty:netty-handler:4.1.97.Final')
-    api('org.springframework:spring-core:5.3.29')
+    api('org.springframework:spring-core:5.3.30')
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.5')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.5')
     api('com.fasterxml.jackson.core:jackson-core:2.13.5')
-    implementation('org.slf4j:slf4j-api:1.7.36')
-    implementation('ch.qos.logback:logback-classic:1.2.12')
+    implementation('org.slf4j:slf4j-api:2.0.9')
+    implementation('ch.qos.logback:logback-classic:1.4.11')
     testImplementation('junit:junit:4.13.2')
 }
 
