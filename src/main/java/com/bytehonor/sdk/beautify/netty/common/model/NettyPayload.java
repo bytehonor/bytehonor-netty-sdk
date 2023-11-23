@@ -6,10 +6,6 @@ import java.util.Objects;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyJsonUtils;
 
 /**
- * 20220124
- * 
- * 20220514, body只能是String或json
- * 
  * @author lijianqiang
  *
  */
@@ -26,6 +22,8 @@ public class NettyPayload implements Serializable {
 
     public static NettyPayload of(String subject, String body) {
         Objects.requireNonNull(subject, "subject");
+        Objects.requireNonNull(body, "body");
+
         NettyPayload model = new NettyPayload();
         model.setSubject(subject);
         model.setBody(body);
@@ -35,14 +33,12 @@ public class NettyPayload implements Serializable {
     public static <T extends Serializable> NettyPayload of(T obj) {
         Objects.requireNonNull(obj, "obj");
 
-        NettyPayload model = new NettyPayload();
-        model.setSubject(obj.getClass().getName());
-        model.setBody(NettyJsonUtils.toJson(obj));
-        return model;
+        return of(obj.getClass().getName(), NettyJsonUtils.toJson(obj));
     }
 
     public <T> T reflect(Class<T> valueType) {
         Objects.requireNonNull(valueType, "valueType");
+
         if (subject.equals(valueType.getName()) == false) {
             throw new RuntimeException("Class not match: " + subject);
         }
