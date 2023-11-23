@@ -20,7 +20,7 @@ public class NettyPayload implements Serializable {
 
     private String body;
 
-    private static NettyPayload of(String subject, String body) {
+    public static NettyPayload of(String subject, String body) {
         Objects.requireNonNull(subject, "subject");
         Objects.requireNonNull(body, "body");
 
