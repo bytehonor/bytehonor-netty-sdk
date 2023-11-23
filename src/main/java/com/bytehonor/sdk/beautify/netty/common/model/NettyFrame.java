@@ -84,6 +84,13 @@ public class NettyFrame implements Serializable {
         this.body = body;
     }
 
+    public String beautifyBody() {
+        if (body == null || body.isEmpty()) {
+            return "";
+        }
+        return body.length() > 100 ? body.substring(100) : body;
+    }
+
     @Override
     public String toString() {
         return NettyJsonUtils.toJson(this);

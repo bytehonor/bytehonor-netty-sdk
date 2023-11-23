@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyFramePack;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyFrameMessage;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
@@ -26,14 +26,12 @@ public class NettyMessageReceiver {
 
     private static final AtomicLong AL = new AtomicLong(0);
 
-    private final NettyFrameHandlerFactory handlers;
-
     private final NettyConsumerFactory consumers;
 
     /**
      * 队列
      */
-    private final LinkedBlockingQueue<NettyFrameMessage> queue;
+    private final LinkedBlockingQueue<NettyMessage> queue;
     /**
      * 线程
      */
@@ -44,9 +42,8 @@ public class NettyMessageReceiver {
     }
 
     public NettyMessageReceiver(int queues) {
-        handlers = new NettyFrameHandlerFactory();
         consumers = new NettyConsumerFactory();
-        queue = new LinkedBlockingQueue<NettyFrameMessage>(queues);
+        queue = new LinkedBlockingQueue<NettyMessage>(queues);
 
         thread = new Thread(new NettyTask() {
 
@@ -55,7 +52,7 @@ public class NettyMessageReceiver {
                 while (true) {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettyFrameMessage message = queue.take();
+                        NettyMessage message = queue.take();
                         process(message);
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
@@ -70,33 +67,58 @@ public class NettyMessageReceiver {
         LOG.info("[Thread] {} start, queues:{}", thread.getName(), queues);
     }
 
-    public final void addHandler(NettyFrameHandler handler) {
-        Objects.requireNonNull(handler, "handler");
-        this.handlers.add(handler);
-    }
-
     public final void addConsumer(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
         this.consumers.add(consumer);
     }
 
-    private void process(NettyFrameMessage message) {
+    private void process(NettyMessage message) {
         String stamp = message.getStamp();
         NettyFrame frame = NettyFrame.fromJson(message.getText());
         if (LOG.isDebugEnabled()) {
             LOG.debug("process method:{}, subject:{}, stamp:{}", frame.getMethod(), frame.getSubject(), stamp);
         }
 
-        NettyFrameHandler handler = handlers.get(frame.getMethod());
-        if (handler == null) {
-            LOG.info("handler null, method:{}", frame.getMethod());
+        final String method = frame.getMethod();
+        if (method == null) {
+            LOG.error("method null, message:{}", message.getText());
             return;
         }
 
-        handler.handle(NettyFramePack.of(stamp, frame), consumers);
+        switch (method) {
+        case NettyFrame.PING:
+            doPing(stamp);
+            break;
+        case NettyFrame.PONG:
+            doPong(stamp);
+            break;
+        case NettyFrame.PAYLOAD:
+            doPayload(stamp, frame);
+            break;
+        default:
+            LOG.warn("unkonwn method:{}", method);
+            break;
+        }
     }
 
-    public final void addMessage(NettyFrameMessage message) {
+    private void doPayload(String stamp, NettyFrame frame) {
+        NettyConsumer consumer = consumers.get(frame.getSubject());
+        if (consumer == null) {
+            LOG.warn("consumer null, subject:{}, body:{}, stamp:{}", frame.getSubject(), frame.beautifyBody(), stamp);
+            return;
+        }
+        consumer.consume(stamp, NettyPayload.of(frame.getSubject(), frame.getBody()));
+    }
+
+    private void doPong(String stamp) {
+        LOG.debug("stamp:{}", stamp);
+    }
+
+    private void doPing(String stamp) {
+        NettyMessageSender.pong(stamp);
+    }
+
+    public final void addMessage(NettyMessage message) {
         if (message == null) {
             LOG.warn("message null");
             return;
