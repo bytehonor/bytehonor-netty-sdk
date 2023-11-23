@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyFramePack;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 /**
@@ -22,13 +23,16 @@ public class NettyFramePayloadHandler implements NettyFrameHandler {
     }
 
     @Override
-    public void handle(String stamp, NettyPayload payload, NettyConsumerFactory factory) {
-        NettyConsumer consumer = factory.get(payload.getSubject());
+    public void handle(NettyFramePack pack, NettyConsumerFactory factory) {
+        String stamp = pack.getStamp();
+        NettyFrame frame = pack.getFrame();
+        NettyConsumer consumer = factory.get(frame.getSubject());
         if (consumer == null) {
-            LOG.warn("consumer null, subject:{}, body:{}, stamp:{}", payload.getSubject(), substring(payload.getBody()), stamp);
+            LOG.warn("consumer null, subject:{}, body:{}, stamp:{}", frame.getSubject(), substring(frame.getBody()),
+                    frame);
             return;
         }
-        consumer.consume(stamp, payload);
+        consumer.consume(stamp, NettyPayload.of(frame.getSubject(), frame.getBody()));
     }
 
     private String substring(String text) {

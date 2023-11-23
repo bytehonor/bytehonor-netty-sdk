@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyReceivePack;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyFramePack;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyFrameMessage;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
@@ -33,7 +33,7 @@ public class NettyMessageReceiver {
     /**
      * 队列
      */
-    private final LinkedBlockingQueue<NettyReceivePack> queue;
+    private final LinkedBlockingQueue<NettyFrameMessage> queue;
     /**
      * 线程
      */
@@ -46,7 +46,7 @@ public class NettyMessageReceiver {
     public NettyMessageReceiver(int queues) {
         handlers = new NettyFrameHandlerFactory();
         consumers = new NettyConsumerFactory();
-        queue = new LinkedBlockingQueue<NettyReceivePack>(queues);
+        queue = new LinkedBlockingQueue<NettyFrameMessage>(queues);
 
         thread = new Thread(new NettyTask() {
 
@@ -55,8 +55,8 @@ public class NettyMessageReceiver {
                 while (true) {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettyReceivePack pack = queue.take();
-                        process(pack);
+                        NettyFrameMessage message = queue.take();
+                        process(message);
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
                     }
@@ -80,9 +80,9 @@ public class NettyMessageReceiver {
         this.consumers.add(consumer);
     }
 
-    private void process(NettyReceivePack pack) {
-        String stamp = pack.getStamp();
-        NettyFrame frame = NettyFrame.fromJson(pack.getText());
+    private void process(NettyFrameMessage message) {
+        String stamp = message.getStamp();
+        NettyFrame frame = NettyFrame.fromJson(message.getText());
         if (LOG.isDebugEnabled()) {
             LOG.debug("process method:{}, subject:{}, stamp:{}", frame.getMethod(), frame.getSubject(), stamp);
         }
@@ -93,19 +93,18 @@ public class NettyMessageReceiver {
             return;
         }
 
-        NettyPayload payload = NettyPayload.of(frame.getSubject(), frame.getBody());
-        handler.handle(stamp, payload, consumers);
+        handler.handle(NettyFramePack.of(stamp, frame), consumers);
     }
 
-    public final void addPack(NettyReceivePack pack) {
-        if (pack == null) {
-            LOG.warn("pack null");
+    public final void addMessage(NettyFrameMessage message) {
+        if (message == null) {
+            LOG.warn("message null");
             return;
         }
         try {
-            queue.put(pack);
+            queue.put(message);
         } catch (Exception e) {
-            LOG.error("addPack error", e);
+            LOG.error("addMessage error", e);
         }
     }
 }

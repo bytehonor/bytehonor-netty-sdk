@@ -2,7 +2,7 @@ package com.bytehonor.sdk.beautify.netty.common.model;
 
 import java.io.Serializable;
 
-public class NettyReceivePack implements Serializable {
+public class NettyFrameMessage implements Serializable {
 
     private static final long serialVersionUID = 8180230166940765694L;
 
@@ -10,8 +10,8 @@ public class NettyReceivePack implements Serializable {
 
     private String text;
 
-    public static NettyReceivePack of(String stamp, String text) {
-        NettyReceivePack model = new NettyReceivePack();
+    public static NettyFrameMessage of(String stamp, String text) {
+        NettyFrameMessage model = new NettyFrameMessage();
         model.setStamp(stamp);
         model.setText(text);
         return model;

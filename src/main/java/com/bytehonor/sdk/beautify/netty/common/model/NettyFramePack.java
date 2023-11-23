@@ -7,6 +7,7 @@ public class NettyFramePack implements Serializable {
     private static final long serialVersionUID = -7687487738922929399L;
 
     private String stamp;
+
     private NettyFrame frame;
 
     public static NettyFramePack of(String stamp, NettyFrame frame) {
