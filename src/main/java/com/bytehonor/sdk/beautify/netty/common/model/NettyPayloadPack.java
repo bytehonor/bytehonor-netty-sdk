@@ -2,16 +2,16 @@ package com.bytehonor.sdk.beautify.netty.common.model;
 
 import java.io.Serializable;
 
-public class NettyPayloadMission implements Serializable {
+public class NettyPayloadPack implements Serializable {
 
-    private static final long serialVersionUID = -5231704884769543147L;
+    private static final long serialVersionUID = 172171646624412675L;
 
     private String stamp;
 
     private NettyPayload payload;
 
-    public static NettyPayloadMission of(String stamp, NettyPayload payload) {
-        NettyPayloadMission model = new NettyPayloadMission();
+    public static NettyPayloadPack of(String stamp, NettyPayload payload) {
+        NettyPayloadPack model = new NettyPayloadPack();
         model.setStamp(stamp);
         model.setPayload(payload);
         return model;

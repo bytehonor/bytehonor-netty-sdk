@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyPayloadMission;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyPayloadPack;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
@@ -18,7 +18,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractNettyConsumer.class);
 
-    private final LinkedBlockingQueue<NettyPayloadMission> queue;
+    private final LinkedBlockingQueue<NettyPayloadPack> queue;
 
     /**
      * 线程
@@ -30,7 +30,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
     }
 
     public AbstractNettyConsumer(int queues) {
-        queue = new LinkedBlockingQueue<NettyPayloadMission>(queues);
+        queue = new LinkedBlockingQueue<NettyPayloadPack>(queues);
 
         thread = new Thread(new NettyTask() {
 
@@ -39,8 +39,8 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
                 while (true) {
                     try {
                         // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettyPayloadMission mission = queue.take();
-                        doMission(mission);
+                        NettyPayloadPack pack = queue.take();
+                        doMission(pack);
                     } catch (Exception e) {
                         LOG.error("runInSafe error", e);
                     }
@@ -53,19 +53,19 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
         LOG.info("[Thread] {} start, queues:{}", thread.getName(), queues);
     }
 
-    private void doPut(NettyPayloadMission mission) {
-        if (mission == null || mission.getPayload() == null) {
-            LOG.warn("mission or paylaod null");
+    private void doAdd(NettyPayloadPack pack) {
+        if (pack == null || pack.getPayload() == null) {
+            LOG.warn("pack or paylaod null");
             return;
         }
         try {
-            queue.put(mission);
+            queue.put(pack);
         } catch (Exception e) {
-            LOG.error("add mission error", e);
+            LOG.error("add pack error", e);
         }
     }
 
-    private void doMission(NettyPayloadMission mission) {
+    private void doMission(NettyPayloadPack mission) {
         process(mission.getStamp(), mission.getPayload().reflect(target()));
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
 
     @Override
     public final void consume(String stamp, NettyPayload payload) {
-        doPut(NettyPayloadMission.of(stamp, payload));
+        doAdd(NettyPayloadPack.of(stamp, payload));
     }
 
     public abstract Class<T> target();
