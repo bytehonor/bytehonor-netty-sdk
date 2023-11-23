@@ -65,8 +65,8 @@ public abstract class AbstractNettyConsumer<T> implements NettyConsumer {
         }
     }
 
-    private void doMission(NettyPayloadPack mission) {
-        process(mission.getStamp(), mission.getPayload().reflect(target()));
+    private void doMission(NettyPayloadPack pack) {
+        process(pack.getStamp(), pack.getPayload().reflect(target()));
     }
 
     @Override
