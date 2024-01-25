@@ -5,7 +5,7 @@ plugins {
 
 
 group = 'com.bytehonor.sdk'
-version = '1.2.24'
+version = '1.2.25'
 sourceCompatibility = 1.8
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
@@ -16,9 +16,9 @@ repositories {
 }
 
 dependencies {
-    api('io.netty:netty-transport:4.1.97.Final')
-    api('io.netty:netty-handler:4.1.97.Final')
-    api('org.springframework:spring-core:5.3.30')
+    api('io.netty:netty-transport:4.1.101.Final')
+    api('io.netty:netty-handler:4.1.101.Final')
+    api('org.springframework:spring-core:5.3.31')
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.5')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.5')
     api('com.fasterxml.jackson.core:jackson-core:2.13.5')
