@@ -3,21 +3,23 @@ plugins {
     id 'maven-publish'
 }
 
-
 group = 'com.bytehonor.sdk'
-version = '1.2.25'
-sourceCompatibility = 1.8
+version = '1.2.26'
 
 [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 
+java {
+    sourceCompatibility = 1.8
+    withSourcesJar()
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    api('io.netty:netty-transport:4.1.101.Final')
-    api('io.netty:netty-handler:4.1.101.Final')
+    api('io.netty:netty-transport:4.1.107.Final')
+    api('io.netty:netty-handler:4.1.107.Final')
     api('org.springframework:spring-core:5.3.31')
     api('com.fasterxml.jackson.core:jackson-annotations:2.13.5')
     api('com.fasterxml.jackson.core:jackson-databind:2.13.5')
@@ -32,10 +34,6 @@ jar {
         attributes('Implementation-Title': project.name,
                    'Implementation-Version': project.version)
     }
-}
-
-java {
-    withSourcesJar()
 }
 
 publishing {
