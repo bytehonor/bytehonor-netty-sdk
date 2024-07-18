@@ -1,16 +1,14 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
-import java.lang.Thread.State;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
-import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyTaskScheduler;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.bootstrap.Bootstrap;
@@ -33,11 +31,10 @@ public class NettyClient {
     private final NettyClientConfig config;
     private final NettyClientHandler handler;
     private final Bootstrap bootstrap;
-    private final Thread thread;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, NettyClientHandler listener) {
-        this(NettyConfigBuilder.client(host, port).build(), listener);
+    public NettyClient(String host, int port, NettyClientHandler handler) {
+        this(NettyConfigBuilder.client(host, port).build(), handler);
     }
 
     public NettyClient(String host, int port) {
@@ -53,31 +50,6 @@ public class NettyClient {
         this.config = config;
         this.handler = handler;
         this.bootstrap = makeBootstrap();
-        this.thread = makePingThread("Ping-" + stamp);
-    }
-
-    private Thread makePingThread(String name) {
-        final long delays = config.getPingDelayMills();
-        final long intervals = config.getPingIntervalMillis();
-        Thread thread = new Thread(new NettyTask() {
-
-            @Override
-            public void runInSafe() {
-                NettySleeper.sleep(delays);
-                while (true) {
-                    try {
-                        ping();
-                    } catch (Exception e) {
-                        LOG.error("ping error", e);
-                        connect();
-                    }
-                    NettySleeper.sleep(intervals);
-                }
-
-            }
-        });
-        thread.setName(name);
-        return thread;
     }
 
     private Bootstrap makeBootstrap() {
@@ -112,7 +84,6 @@ public class NettyClient {
                     }
                 }
             });
-
         } catch (Exception e) {
             LOG.error("Netty client connect error, stamp:{}, error", stamp, e);
             handler.onError(stamp, e);
@@ -120,16 +91,25 @@ public class NettyClient {
     }
 
     private void keepAlive() {
-        if (State.NEW.equals(thread.getState())) {
-            thread.start();
-        }
+        NettyTaskScheduler.schedule(new NettyTask() {
+
+            @Override
+            public void runInSafe() {
+                try {
+                    ping();
+                } catch (Exception e) {
+                    LOG.error("ping error", e);
+                    connect();
+                }
+            }
+        }, config.getPingDelayMills(), config.getPingIntervalMillis());
     }
 
     public String getStamp() {
         return stamp;
     }
 
-    public boolean connected() {
+    public boolean isConnected() {
         return StampChannelHolder.has(stamp);
     }
 

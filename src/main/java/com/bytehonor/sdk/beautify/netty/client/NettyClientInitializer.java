@@ -23,10 +23,10 @@ public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
 
     private final NettyClientHandler handler;
 
-    public NettyClientInitializer(String stamp, NettyClientConfig config, NettyClientHandler listener) {
+    public NettyClientInitializer(String stamp, NettyClientConfig config, NettyClientHandler handler) {
         this.stamp = stamp;
         this.config = config;
-        this.handler = listener;
+        this.handler = handler;
     }
 
     @Override

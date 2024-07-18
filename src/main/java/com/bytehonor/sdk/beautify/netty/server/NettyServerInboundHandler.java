@@ -82,7 +82,6 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void onMessage(String stamp, ByteBuf msg) {
-
         try {
             byte[] bytes = NettyDataUtils.readBytes(msg);
             NettyDataUtils.validate(bytes);

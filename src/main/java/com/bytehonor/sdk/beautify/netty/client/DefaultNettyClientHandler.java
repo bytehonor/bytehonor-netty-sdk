@@ -26,9 +26,4 @@ public class DefaultNettyClientHandler extends AbstractClientHandler {
         LOG.error("Client onError error", error);
     }
 
-//    @Override
-//    public void onMessage(NettyMessage message) {
-//        LOG.info("Server onMessage text:{}, stamp:{}", message.getText(), message.getStamp());
-//    }
-
 }

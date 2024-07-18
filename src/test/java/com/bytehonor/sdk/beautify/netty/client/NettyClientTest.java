@@ -3,7 +3,7 @@ package com.bytehonor.sdk.beautify.netty.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 
 public class NettyClientTest {

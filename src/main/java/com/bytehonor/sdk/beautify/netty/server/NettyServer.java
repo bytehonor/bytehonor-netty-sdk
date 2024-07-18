@@ -105,7 +105,7 @@ public class NettyServer {
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
             // channelFuture.channel().closeFuture().sync();
 
-            handler.onSucceed();
+            handler.onStarted();
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
             handler.onFailed(e);

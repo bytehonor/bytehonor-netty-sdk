@@ -6,7 +6,7 @@ package com.bytehonor.sdk.beautify.netty.server;
  */
 public interface NettyServerHandler {
 
-    public void onSucceed();
+    public void onStarted();
 
     public void onFailed(Throwable error);
 

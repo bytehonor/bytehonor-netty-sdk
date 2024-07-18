@@ -12,8 +12,8 @@ public class DefaultNettyServerHandler extends AbstractServerHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultNettyServerHandler.class);
 
     @Override
-    public void onSucceed() {
-        LOG.info("Server onSucceed");
+    public void onStarted() {
+        LOG.info("Server onStarted");
     }
 
     @Override

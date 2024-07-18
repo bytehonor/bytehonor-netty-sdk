@@ -8,12 +8,15 @@ public class NettyMessage implements Serializable {
 
     private String stamp;
 
-    private String text;
+    /**
+     * NettyFrame
+     */
+    private String frame;
 
-    public static NettyMessage of(String stamp, String text) {
+    public static NettyMessage of(String stamp, String frame) {
         NettyMessage model = new NettyMessage();
         model.setStamp(stamp);
-        model.setText(text);
+        model.setFrame(frame);
         return model;
     }
 
@@ -25,12 +28,12 @@ public class NettyMessage implements Serializable {
         this.stamp = stamp;
     }
 
-    public String getText() {
-        return text;
+    public String getFrame() {
+        return frame;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setFrame(String frame) {
+        this.frame = frame;
     }
 
 }

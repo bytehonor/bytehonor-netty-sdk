@@ -1,6 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageReceiver;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageReceiver;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
 /**
@@ -11,10 +11,6 @@ public abstract class AbstractServerHandler extends NettyMessageReceiver impleme
 
     public AbstractServerHandler() {
         super();
-    }
-
-    public AbstractServerHandler(int queues) {
-        super(queues);
     }
 
     @Override

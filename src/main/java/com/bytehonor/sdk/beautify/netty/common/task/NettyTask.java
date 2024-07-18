@@ -13,9 +13,6 @@ public abstract class NettyTask implements Runnable {
 
     @Override
     public final void run() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("{} run", this.getClass().getSimpleName());
-        }
         try {
             runInSafe();
         } catch (Exception e) {

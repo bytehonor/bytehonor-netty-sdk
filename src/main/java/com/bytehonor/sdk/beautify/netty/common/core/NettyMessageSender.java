@@ -1,7 +1,8 @@
-package com.bytehonor.sdk.beautify.netty.common.handler;
+package com.bytehonor.sdk.beautify.netty.common.core;
 
 import java.util.Objects;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,7 @@ import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyFramePack;
-import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
+import com.bytehonor.sdk.beautify.netty.common.task.NettySendTask;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -19,7 +19,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 
 /**
- * 独立线程，且单例
+ * 直接发送 和 单线程缓冲发送
  * 
  * @author lijianqiang
  *
@@ -28,42 +28,10 @@ public final class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
 
-    /**
-     * 队列
-     */
-    private final LinkedBlockingQueue<NettyFramePack> queue;
-    /**
-     * 线程
-     */
-    private final Thread thread;
+    private final ExecutorService service;
 
     private NettyMessageSender() {
-        queue = new LinkedBlockingQueue<NettyFramePack>(51200);
-
-        thread = new Thread(new NettyTask() {
-
-            @Override
-            public void runInSafe() {
-                while (true) {
-                    try {
-                        // 从队列中取值,如果没有对象过期则队列一直等待，
-                        NettyFramePack pack = queue.take();
-                        doSendFrame(pack.getStamp(), pack.getFrame());
-                    } catch (Exception e) {
-                        LOG.error("runInSafe error", e);
-                    }
-                }
-            }
-
-        });
-
-        thread.setName(NettyMessageSender.class.getSimpleName());
-        thread.start();
-        LOG.info("[Thread] {} start", thread.getName());
-    }
-
-    private void doAdd(String stamp, NettyFrame frame) {
-        this.queue.add(NettyFramePack.of(stamp, frame));
+        this.service = Executors.newFixedThreadPool(1);
     }
 
     private static class LazyHolder {
@@ -99,7 +67,11 @@ public final class NettyMessageSender {
         Objects.requireNonNull(stamp, "stamp");
         Objects.requireNonNull(payload, "payload");
 
-        self().doAdd(stamp, NettyFrame.payload(payload));
+        self().doAddTask(stamp, payload);
+    }
+
+    private void doAddTask(String stamp, NettyPayload payload) {
+        service.execute(NettySendTask.of(stamp, payload));
     }
 
     private static void doSendFrame(String stamp, NettyFrame frame) {

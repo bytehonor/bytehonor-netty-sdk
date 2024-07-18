@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.client.AbstractClientHandler;
 import com.bytehonor.sdk.beautify.netty.client.NettyClient;
-import com.bytehonor.sdk.beautify.netty.common.handler.NettyMessageSender;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 import com.bytehonor.sdk.beautify.netty.server.AbstractServerHandler;
@@ -59,8 +59,8 @@ public class NettyDemo {
         new NettyServer(new AbstractServerHandler() {
 
             @Override
-            public void onSucceed() {
-                LOG.info("Server onSucceed");
+            public void onStarted() {
+                LOG.info("Server onStarted");
             }
 
             @Override
