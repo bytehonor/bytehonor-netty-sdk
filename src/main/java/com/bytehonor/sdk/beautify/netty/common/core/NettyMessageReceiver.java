@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerGetter;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyMessageTask;
 
@@ -17,7 +16,7 @@ import com.bytehonor.sdk.beautify.netty.common.task.NettyMessageTask;
  * @author lijianqiang
  *
  */
-public class NettyMessageReceiver implements NettyConsumerGetter {
+public class NettyMessageReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);
 
@@ -37,12 +36,7 @@ public class NettyMessageReceiver implements NettyConsumerGetter {
             LOG.warn("message null");
             return;
         }
-        NettyMessagePoolExecutor.add(NettyMessageTask.of(message, this));
-    }
-
-    @Override
-    public final NettyConsumer get(String subject) {
-        return factory.get(subject);
+        NettyMessagePoolExecutor.add(NettyMessageTask.of(message, factory));
     }
 
 }

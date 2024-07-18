@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerGetter;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
@@ -13,7 +13,7 @@ public class NettyMessageProcessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageProcessor.class);
 
-    public static void process(final NettyMessage message, final NettyConsumerGetter getter) {
+    public static void process(final NettyMessage message, final NettyConsumerFactory factory) {
         String stamp = message.getStamp();
         NettyFrame frame = NettyFrame.fromJson(message.getFrame());
         if (LOG.isDebugEnabled()) {
@@ -34,7 +34,7 @@ public class NettyMessageProcessor {
             doPong(stamp);
             break;
         case NettyFrame.PAYLOAD:
-            doPayload(stamp, frame, getter);
+            doPayload(stamp, frame, factory);
             break;
         default:
             LOG.warn("unkonwn method:{}", method);
@@ -42,12 +42,8 @@ public class NettyMessageProcessor {
         }
     }
 
-    private static void doPayload(String stamp, NettyFrame frame, NettyConsumerGetter getter) {
-        if (getter == null) {
-            LOG.warn("getter null, subject:{}, body:{}, stamp:{}", frame.getSubject(), frame.beautifyBody(), stamp);
-            return;
-        }
-        NettyConsumer consumer = getter.get(frame.getSubject());
+    private static void doPayload(String stamp, NettyFrame frame, NettyConsumerFactory factory) {
+        NettyConsumer consumer = factory.get(frame.getSubject());
         if (consumer == null) {
             LOG.warn("consumer null, subject:{}, body:{}, stamp:{}", frame.getSubject(), frame.beautifyBody(), stamp);
             return;

@@ -1,6 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.common.task;
 
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerGetter;
+import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageProcessor;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
@@ -8,19 +8,19 @@ public class NettyMessageTask extends NettyTask {
 
     private final NettyMessage message;
 
-    private final NettyConsumerGetter getter;
+    private final NettyConsumerFactory factory;
 
-    public NettyMessageTask(NettyMessage message, NettyConsumerGetter getter) {
+    public NettyMessageTask(NettyMessage message, NettyConsumerFactory factory) {
         this.message = message;
-        this.getter = getter;
+        this.factory = factory;
     }
 
-    public static NettyMessageTask of(NettyMessage message, NettyConsumerGetter getter) {
-        return new NettyMessageTask(message, getter);
+    public static NettyMessageTask of(NettyMessage message, NettyConsumerFactory factory) {
+        return new NettyMessageTask(message, factory);
     }
 
     @Override
     public void runInSafe() {
-        NettyMessageProcessor.process(message, getter);
+        NettyMessageProcessor.process(message, factory);
     }
 }
