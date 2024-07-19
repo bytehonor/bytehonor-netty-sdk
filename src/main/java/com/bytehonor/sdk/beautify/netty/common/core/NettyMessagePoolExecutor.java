@@ -4,6 +4,8 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
@@ -11,11 +13,13 @@ import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
  */
 public class NettyMessagePoolExecutor {
 
+    private static final String NAMED = "netty-message-thread-";
+
     private final ExecutorService service;
 
     private NettyMessagePoolExecutor() {
         int nThreads = Runtime.getRuntime().availableProcessors();
-        this.service = Executors.newFixedThreadPool(nThreads + 1);
+        this.service = Executors.newFixedThreadPool(nThreads + 1, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {

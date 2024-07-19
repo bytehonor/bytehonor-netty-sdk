@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.exception.NettyBeautifyException;
@@ -28,10 +29,12 @@ public final class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
 
+    private static final String NAMED = "netty-message-send-";
+
     private final ExecutorService service;
 
     private NettyMessageSender() {
-        this.service = Executors.newFixedThreadPool(1);
+        this.service = Executors.newFixedThreadPool(1, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {
