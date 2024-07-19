@@ -9,7 +9,7 @@ import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
- * 多线程收
+ * 多线程
  */
 public class NettyMessagePoolExecutor {
 
@@ -19,7 +19,7 @@ public class NettyMessagePoolExecutor {
 
     private NettyMessagePoolExecutor() {
         int nThreads = Runtime.getRuntime().availableProcessors();
-        this.service = Executors.newFixedThreadPool(nThreads + 1, new CustomizableThreadFactory(NAMED));
+        this.service = Executors.newFixedThreadPool(nThreads, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {

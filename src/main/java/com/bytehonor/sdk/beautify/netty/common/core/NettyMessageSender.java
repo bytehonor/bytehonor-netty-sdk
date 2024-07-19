@@ -29,7 +29,7 @@ public final class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
 
-    private static final String NAMED = "netty-message-send-";
+    private static final String NAMED = "netty-send-thread-";
 
     private final ExecutorService service;
 
@@ -70,11 +70,7 @@ public final class NettyMessageSender {
         Objects.requireNonNull(stamp, "stamp");
         Objects.requireNonNull(payload, "payload");
 
-        self().doAddTask(stamp, payload);
-    }
-
-    private void doAddTask(String stamp, NettyPayload payload) {
-        service.execute(NettySendTask.of(stamp, payload));
+        self().service.execute(NettySendTask.of(stamp, payload));
     }
 
     private static void doSendFrame(String stamp, NettyFrame frame) {

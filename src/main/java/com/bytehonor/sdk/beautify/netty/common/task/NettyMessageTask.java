@@ -1,26 +1,28 @@
 package com.bytehonor.sdk.beautify.netty.common.task;
 
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
-import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageProcessor;
+import java.util.Objects;
+
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageHandler;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 
 public class NettyMessageTask extends NettyTask {
 
     private final NettyMessage message;
 
-    private final NettyConsumerFactory factory;
+    private final NettyMessageHandler handler;
 
-    public NettyMessageTask(NettyMessage message, NettyConsumerFactory factory) {
+    public NettyMessageTask(NettyMessage message, NettyMessageHandler handler) {
+        Objects.requireNonNull(handler, "handler");
         this.message = message;
-        this.factory = factory;
+        this.handler = handler;
     }
 
-    public static NettyMessageTask of(NettyMessage message, NettyConsumerFactory factory) {
-        return new NettyMessageTask(message, factory);
+    public static NettyMessageTask of(NettyMessage message, NettyMessageHandler handler) {
+        return new NettyMessageTask(message, handler);
     }
 
     @Override
     public void runInSafe() {
-        NettyMessageProcessor.process(message, factory);
+        handler.handle(message);
     }
 }
