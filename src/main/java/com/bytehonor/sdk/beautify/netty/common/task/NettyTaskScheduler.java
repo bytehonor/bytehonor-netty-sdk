@@ -5,13 +5,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
+
 public class NettyTaskScheduler {
+
+    private static final String NAMED = "netty-schedule-thread-";
 
     private final ScheduledExecutorService service;
 
     private NettyTaskScheduler() {
         int nThreads = Runtime.getRuntime().availableProcessors();
-        this.service = Executors.newScheduledThreadPool(nThreads);
+        this.service = Executors.newScheduledThreadPool(nThreads, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {
