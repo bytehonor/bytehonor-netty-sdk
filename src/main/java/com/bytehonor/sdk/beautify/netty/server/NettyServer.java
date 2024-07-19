@@ -1,7 +1,7 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,9 @@ public class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);
 
-    private static final AtomicLong AL = new AtomicLong(0);
+    private static final AtomicInteger AI = new AtomicInteger(0);
 
-    private final NettyServerConfig config;
+    private final int port;
 
     private final NettyServerHandler handler;
 
@@ -49,13 +49,13 @@ public class NettyServer {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(handler, "handler");
 
-        this.config = config;
+        this.port = config.getPort();
         this.handler = handler;
-        this.bootstrap = makeBootstrap();
+        this.bootstrap = makeBootstrap(config);
         this.thread = makeThread();
     }
 
-    private ServerBootstrap makeBootstrap() {
+    private ServerBootstrap makeBootstrap(NettyServerConfig config) {
         // 服务器启动项
         ServerBootstrap bootstrap = new ServerBootstrap();
         // handler是针对bossGroup，childHandler是针对workerHandler
@@ -72,7 +72,7 @@ public class NettyServer {
         // 日志处理 info级别
         bootstrap.handler(new LoggingHandler(LogLevel.INFO));
         // 添加自定义的初始化器
-        bootstrap.childHandler(new NettyServerInitializer(config, handler));
+        bootstrap.childHandler(new NettyServerInitializer(handler));
 
         return bootstrap;
     }
@@ -85,7 +85,7 @@ public class NettyServer {
                 doStart();
             }
         });
-        thread.setName(NettyServer.class.getSimpleName() + "-" + AL.incrementAndGet());
+        thread.setName(NettyServer.class.getSimpleName() + "-" + AI.incrementAndGet());
         return thread;
     }
 
@@ -94,11 +94,11 @@ public class NettyServer {
     }
 
     private void doStart() {
-        LOG.info("Netty server start, port:{}, ssl:{}", config.getPort(), config.isSsl());
+        LOG.info("Netty server start, port:{}", port);
 
         try {
             // 端口绑定
-            ChannelFuture channelFuture = bootstrap.bind(config.getPort()).sync();
+            ChannelFuture channelFuture = bootstrap.bind(port).sync();
             LOG.info("Netty Server isSuccess:{}, idDone:{}", channelFuture.isSuccess(), channelFuture.isDone());
             // channelFuture = bootstrap.bind(port).sync();
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。

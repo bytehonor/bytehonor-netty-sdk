@@ -2,29 +2,44 @@ package com.bytehonor.sdk.beautify.netty.client;
 
 import com.bytehonor.sdk.beautify.netty.common.core.NettyIdleStateChecker;
 import com.bytehonor.sdk.beautify.netty.common.core.NettyLengthFrameDecoder;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
+import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 
 /**
  * @author lijianqiang
  *
  */
-public class NettyClientInitializer extends ChannelInitializer<SocketChannel> {
+public class NettyClientSslInitializer extends ChannelInitializer<SocketChannel> {
 
     private final String stamp;
 
+    private final NettyClientConfig config;
+
     private final NettyClientHandler handler;
 
-    public NettyClientInitializer(String stamp, NettyClientHandler handler) {
+    public NettyClientSslInitializer(String stamp, NettyClientConfig config, NettyClientHandler handler) {
         this.stamp = stamp;
+        this.config = config;
         this.handler = handler;
     }
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+        if (config.isSsl()) {
+            if (config.isSslEngine()) {
+                pipeline.addFirst("ssl", new SslHandler(NettySslUtils.clientSsl(config.getSslPassword())));
+            } else {
+                SslContext sslContext = NettySslUtils.client(config.getSslPassword());
+                pipeline.addFirst("ssl", sslContext.newHandler(ch.alloc()));
+            }
+        }
 
         // 自定义的空闲检测
 //        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),

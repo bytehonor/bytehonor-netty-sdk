@@ -2,20 +2,27 @@ package com.bytehonor.sdk.beautify.netty.server;
 
 import com.bytehonor.sdk.beautify.netty.common.core.NettyIdleStateChecker;
 import com.bytehonor.sdk.beautify.netty.common.core.NettyLengthFrameDecoder;
+import com.bytehonor.sdk.beautify.netty.common.model.NettyServerConfig;
+import com.bytehonor.sdk.beautify.netty.common.util.NettySslUtils;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 
 /**
  * @author lijianqiang
  *
  */
-public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
+public class NettyServerSslInitializer extends ChannelInitializer<SocketChannel> {
+
+    private final NettyServerConfig config;
 
     private final NettyServerHandler handler;
 
-    public NettyServerInitializer(NettyServerHandler handler) {
+    public NettyServerSslInitializer(NettyServerConfig config, NettyServerHandler handler) {
+        this.config = config;
         this.handler = handler;
     }
 
@@ -25,6 +32,14 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // ChannelPipeline类是ChannelHandler实例对象的链表，用于处理或截获通道的接收和发送数据
         ChannelPipeline pipeline = ch.pipeline();
         // 也可以选择将处理器加到pipeLine的那个位置
+        if (config.isSsl()) {
+            if (config.isSslEngine()) {
+                pipeline.addFirst("ssl", new SslHandler(NettySslUtils.serverSsl(config.getSslPassword())));
+            } else {
+                SslContext sslContext = NettySslUtils.server(config.getSslPassword());
+                pipeline.addFirst("ssl", sslContext.newHandler(ch.alloc()));
+            }
+        }
 
         // 自定义的空闲检测
 //        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),

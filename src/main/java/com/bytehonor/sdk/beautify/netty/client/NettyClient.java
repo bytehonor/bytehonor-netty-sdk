@@ -56,7 +56,7 @@ public class NettyClient {
         Bootstrap bootstrap = new Bootstrap();
         EventLoopGroup group = new NioEventLoopGroup(config.getClientThreads());
         bootstrap.group(group).channel(NioSocketChannel.class); // 使用NioSocketChannel来作为连接用的channel类
-        bootstrap.handler(new NettyClientInitializer(stamp, config, handler));
+        bootstrap.handler(new NettyClientInitializer(stamp, handler));
         bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, config.getConnectTimeoutMills());
         return bootstrap;
     }
