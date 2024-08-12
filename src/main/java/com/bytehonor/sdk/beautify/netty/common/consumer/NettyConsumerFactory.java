@@ -6,11 +6,16 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author lijianqiang
  *
  */
 public class NettyConsumerFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NettyConsumerFactory.class);
 
     private final Map<String, NettyConsumer> map;
 
@@ -29,7 +34,9 @@ public class NettyConsumerFactory {
     public void add(NettyConsumer consumer) {
         Objects.requireNonNull(consumer, "consumer");
 
-        map.put(consumer.subject(), consumer);
+        String subject = consumer.subject();
+        LOG.info("subject:{}", subject);
+        map.put(subject, consumer);
     }
 
     public NettyConsumer get(String subject) {
