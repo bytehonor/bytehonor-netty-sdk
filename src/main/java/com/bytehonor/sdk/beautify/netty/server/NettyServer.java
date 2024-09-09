@@ -23,7 +23,7 @@ import io.netty.handler.logging.LoggingHandler;
  * @author lijianqiang
  *
  */
-public class NettyServer {
+public final class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);
 
@@ -43,6 +43,10 @@ public class NettyServer {
 
     public NettyServer(NettyServerHandler handler) {
         this(new NettyServerConfig(), handler);
+    }
+
+    public NettyServer(int port, NettyServerHandler handler) {
+        this(NettyServerConfig.of(port), handler);
     }
 
     public NettyServer(NettyServerConfig config, NettyServerHandler handler) {
@@ -99,7 +103,7 @@ public class NettyServer {
         try {
             // 端口绑定
             ChannelFuture channelFuture = bootstrap.bind(port).sync();
-            LOG.info("Netty Server isSuccess:{}, idDone:{}", channelFuture.isSuccess(), channelFuture.isDone());
+            LOG.info("Netty Server success:{}, done:{}", channelFuture.isSuccess(), channelFuture.isDone());
             // channelFuture = bootstrap.bind(port).sync();
             // 该方法进行阻塞,等待服务端链路关闭之后继续执行。
             // 这种模式一般都是使用Netty模块主动向服务端发送请求，然后最后结束才使用
