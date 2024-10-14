@@ -11,7 +11,7 @@ import io.netty.channel.Channel;
  */
 public class NettyChannelUtils {
 
-    private static final String PREFIX = "fixed-stamp-";
+    private static final String PREFIX = "netty-stamp-";
 
     private static final AtomicLong AL = new AtomicLong(0);
 
