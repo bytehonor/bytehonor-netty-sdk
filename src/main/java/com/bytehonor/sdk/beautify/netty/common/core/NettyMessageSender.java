@@ -29,7 +29,7 @@ public final class NettyMessageSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageSender.class);
 
-    private static final String NAMED = "netty-send-thread-";
+    private static final String NAMED = "netty-message-sender-";
 
     private final ExecutorService service;
 
