@@ -1,13 +1,9 @@
 package com.bytehonor.sdk.beautify.netty.common.core;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
 import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
@@ -26,23 +22,10 @@ public class NettyMessageReceiver implements NettyMessageHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);
 
-    private static final AtomicInteger AI = new AtomicInteger(0);
-
-    private static final String NAMED = "netty-message-receiver-%s-";
-
-    private final ExecutorService service;
-
     private final NettyConsumerFactory factory;
 
     public NettyMessageReceiver() {
-        int nThreads = Runtime.getRuntime().availableProcessors();
-        String name = String.format(NAMED, AI.incrementAndGet());
-        this.service = Executors.newFixedThreadPool(nThreads, new CustomizableThreadFactory(name));
         this.factory = new NettyConsumerFactory();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(String.format(NAMED, AI.incrementAndGet()));
     }
 
     public final void addConsumer(NettyConsumer consumer) {
@@ -55,7 +38,7 @@ public class NettyMessageReceiver implements NettyMessageHandler {
             LOG.warn("message null");
             return;
         }
-        service.execute(NettyMessageTask.of(message, this));
+        NettyMessagePoolExecutor.add(NettyMessageTask.of(message, this));
     }
 
     @Override
