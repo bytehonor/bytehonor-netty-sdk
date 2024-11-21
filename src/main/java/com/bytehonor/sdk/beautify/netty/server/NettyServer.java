@@ -89,7 +89,7 @@ public final class NettyServer {
                 doStart();
             }
         });
-        thread.setName(NettyServer.class.getSimpleName() + "-" + AI.incrementAndGet());
+        thread.setName("netty-server-" + AI.incrementAndGet());
         return thread;
     }
 
