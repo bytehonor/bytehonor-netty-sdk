@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.beautify.netty.common.consumer;
+package com.bytehonor.sdk.beautify.netty.common.core;
 
 import java.util.HashMap;
 import java.util.Map;

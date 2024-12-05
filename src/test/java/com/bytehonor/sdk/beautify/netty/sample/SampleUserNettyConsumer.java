@@ -3,7 +3,7 @@ package com.bytehonor.sdk.beautify.netty.sample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.consumer.AbstractNettyConsumer;
+import com.bytehonor.sdk.beautify.netty.common.core.AbstractNettyConsumer;
 
 public class SampleUserNettyConsumer extends AbstractNettyConsumer<SampleUser> {
 

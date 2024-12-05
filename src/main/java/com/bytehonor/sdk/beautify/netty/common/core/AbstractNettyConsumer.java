@@ -1,4 +1,4 @@
-package com.bytehonor.sdk.beautify.netty.common.consumer;
+package com.bytehonor.sdk.beautify.netty.common.core;
 
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
 

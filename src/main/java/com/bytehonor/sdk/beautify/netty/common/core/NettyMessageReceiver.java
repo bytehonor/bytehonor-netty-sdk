@@ -5,12 +5,10 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumer;
-import com.bytehonor.sdk.beautify.netty.common.consumer.NettyConsumerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.task.NettyMessageTask;
+import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
  * 放入线程池处理
@@ -18,7 +16,7 @@ import com.bytehonor.sdk.beautify.netty.common.task.NettyMessageTask;
  * @author lijianqiang
  *
  */
-public class NettyMessageReceiver implements NettyMessageHandler {
+public class NettyMessageReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);
 
@@ -33,16 +31,22 @@ public class NettyMessageReceiver implements NettyMessageHandler {
         this.factory.add(consumer);
     }
 
-    public final void addMessage(NettyMessage message) {
+    public final void addMessage(final NettyMessage message) {
         if (message == null) {
             LOG.warn("message null");
             return;
         }
-        NettyMessagePoolExecutor.add(NettyMessageTask.of(message, this));
+        NettyMessagePoolExecutor.add(new NettyTask() {
+
+            @Override
+            public void runInSafe() {
+                handle(message);
+            }
+
+        });
     }
 
-    @Override
-    public final void handle(NettyMessage message) {
+    private void handle(NettyMessage message) {
         final String stamp = message.getStamp();
         final NettyFrame frame = NettyFrame.fromJson(message.getFrame());
         if (LOG.isDebugEnabled()) {
@@ -63,7 +67,7 @@ public class NettyMessageReceiver implements NettyMessageHandler {
             doPong(stamp);
             break;
         case NettyFrame.PAYLOAD:
-            doProcess(stamp, frame);
+            doPayload(stamp, frame);
             break;
         default:
             LOG.warn("unkonwn method:{}", method);
@@ -75,7 +79,7 @@ public class NettyMessageReceiver implements NettyMessageHandler {
         LOG.debug("stamp:{}", stamp);
     }
 
-    private void doProcess(String stamp, NettyFrame frame) {
+    private void doPayload(String stamp, NettyFrame frame) {
         String subject = frame.getSubject();
         NettyConsumer consumer = factory.get(subject);
         if (consumer == null) {
