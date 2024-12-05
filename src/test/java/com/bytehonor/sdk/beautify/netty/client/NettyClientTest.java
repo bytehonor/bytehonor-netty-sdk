@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
+import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 
 public class NettyClientTest {
 
@@ -38,6 +39,7 @@ public class NettyClientTest {
         LOG.info("run");
         client.run();
 
+        NettySleeper.sleep(1000L * 600);
     }
 
 }

@@ -16,7 +16,7 @@ import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
  * @author lijianqiang
  *
  */
-public class NettyMessageReceiver {
+public final class NettyMessageReceiver {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyMessageReceiver.class);
 
