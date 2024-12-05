@@ -36,6 +36,7 @@ public class NettyMessageReceiver {
             LOG.warn("message null");
             return;
         }
+
         NettyMessagePoolExecutor.add(new NettyTask() {
 
             @Override
@@ -48,14 +49,14 @@ public class NettyMessageReceiver {
 
     private void handle(NettyMessage message) {
         final String stamp = message.getStamp();
-        final NettyFrame frame = NettyFrame.fromJson(message.getFrame());
+        final NettyFrame frame = NettyFrame.fromJson(message.getText());
         if (LOG.isDebugEnabled()) {
             LOG.debug("process method:{}, subject:{}, stamp:{}", frame.getMethod(), frame.getSubject(), stamp);
         }
 
         final String method = frame.getMethod();
         if (method == null) {
-            LOG.error("method null, message:{}", message.getFrame());
+            LOG.error("method null, message:{}", message.getText());
             return;
         }
 

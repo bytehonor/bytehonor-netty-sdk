@@ -15,11 +15,11 @@ public class NettyMessagePoolExecutor {
 
     private static final String NAMED = "netty-message-thread-";
 
-    private final ExecutorService service;
+    private final ExecutorService executor;
 
     private NettyMessagePoolExecutor() {
         int nThreads = Runtime.getRuntime().availableProcessors();
-        this.service = Executors.newFixedThreadPool(nThreads, new CustomizableThreadFactory(NAMED));
+        this.executor = Executors.newFixedThreadPool(nThreads, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {
@@ -31,7 +31,7 @@ public class NettyMessagePoolExecutor {
     }
 
     private void execute(NettyTask task) {
-        service.execute(task);
+        executor.execute(task);
     }
 
     /**

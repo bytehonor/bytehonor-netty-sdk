@@ -7,10 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyInboundPoolExecutor;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -38,25 +37,11 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 客户端上传消息
-        Channel channel = ctx.channel();
-        if (msg instanceof ByteBuf) {
-            onMessage((ByteBuf) msg);
-        } else {
-            String remoteAddress = channel.remoteAddress().toString();
-            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, channelId:{}", msg.toString(), remoteAddress,
-                    channel.id().asLongText());
-        }
+        onMessage(stamp, msg);
     }
 
-    private void onMessage(ByteBuf msg) {
-        try {
-            byte[] bytes = NettyDataUtils.readBytes(msg);
-            NettyDataUtils.validate(bytes);
-            String text = NettyDataUtils.parseData(bytes);
-            handler.onMessage(stamp, text);
-        } catch (Exception e) {
-            LOG.error("onMessage stamp:{}, error", stamp, e);
-        }
+    private void onMessage(String stamp, Object msg) {
+        NettyInboundPoolExecutor.onMessage(stamp, msg, handler::onMessage);
     }
 
     // 当连接建立好的使用调用

@@ -11,12 +11,12 @@ public class NettyMessage implements Serializable {
     /**
      * NettyFrame
      */
-    private String frame;
+    private String text;
 
-    public static NettyMessage of(String stamp, String frame) {
+    public static NettyMessage of(String stamp, String text) {
         NettyMessage model = new NettyMessage();
         model.setStamp(stamp);
-        model.setFrame(frame);
+        model.setText(text);
         return model;
     }
 
@@ -28,12 +28,12 @@ public class NettyMessage implements Serializable {
         this.stamp = stamp;
     }
 
-    public String getFrame() {
-        return frame;
+    public String getText() {
+        return text;
     }
 
-    public void setFrame(String frame) {
-        this.frame = frame;
+    public void setText(String text) {
+        this.text = text;
     }
 
 }

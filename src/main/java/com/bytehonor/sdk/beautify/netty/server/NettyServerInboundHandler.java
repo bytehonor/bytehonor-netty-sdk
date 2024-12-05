@@ -7,10 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyInboundPoolExecutor;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
-import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -36,13 +35,11 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         // 客户端上传消息
         Channel channel = ctx.channel();
         String stamp = NettyChannelUtils.stamp(channel);
-        if (msg instanceof ByteBuf) {
-            onMessage(stamp, (ByteBuf) msg);
-        } else {
-            String remoteAddress = NettyChannelUtils.remoteAddress(channel);
-            LOG.error("channelRead unknown msg:{}, remoteAddress:{}, stamp:{}", msg.getClass().getSimpleName(),
-                    remoteAddress, stamp);
-        }
+        onMessage(stamp, msg);
+    }
+
+    private void onMessage(String stamp, Object msg) {
+        NettyInboundPoolExecutor.onMessage(stamp, msg, handler::onMessage);
     }
 
     /**
@@ -79,17 +76,6 @@ public class NettyServerInboundHandler extends ChannelInboundHandlerAdapter {
         String remoteAddress = NettyChannelUtils.remoteAddress(channel);
         String stamp = NettyChannelUtils.stamp(channel);
         onDisconnected(channel, remoteAddress, stamp);
-    }
-
-    private void onMessage(String stamp, ByteBuf msg) {
-        try {
-            byte[] bytes = NettyDataUtils.readBytes(msg);
-            NettyDataUtils.validate(bytes);
-            String text = NettyDataUtils.parseData(bytes);
-            handler.onMessage(stamp, text);
-        } catch (Exception e) {
-            LOG.error("onMessage stamp:{}, error", stamp, e);
-        }
     }
 
     private void onDisconnected(Channel channel, String remoteAddress, String stamp) {
