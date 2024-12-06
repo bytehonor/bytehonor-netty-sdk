@@ -11,6 +11,7 @@ import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyDataUtils;
 
 import io.netty.buffer.ByteBuf;
@@ -76,20 +77,16 @@ public class NettyInboundPoolExecutor {
             consumer.accept(stamp, text);
         } else {
             Channel channel = StampChannelHolder.get(stamp);
-            LOG.error("doProcess unknown msg:{}, stamp:{}, channel:{}", doRemarkMsg(msg), stamp,
-                    doRemarkChannel(channel));
+            LOG.error("doProcess unknown msg:{}, stamp:{}, {}", doRemarkMsg(msg), stamp, doRemarkChannel(channel));
         }
     }
 
     private static String doRemarkChannel(Channel channel) {
-        if (channel == null) {
-            return "null";
-        }
         StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append("remoteAddress:").append(channel.remoteAddress().toString()).append(", channelId:")
-                .append(channel.id().asLongText());
-        sb.append(")");
+        sb.append("remoteAddress:").append(NettyChannelUtils.remoteAddress(channel));
+        if (channel != null) {
+            sb.append(", channelId:").append(channel.id().asLongText());
+        }
         return sb.toString();
     }
 

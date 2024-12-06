@@ -46,7 +46,7 @@ public class NettyClient {
     }
 
     public NettyClient(NettyClientConfig config, NettyClientHandler handler) {
-        this.stamp = NettyChannelUtils.stamp();
+        this.stamp = NettyChannelUtils.stamp(config.getHost(), config.getPort());
         this.config = config;
         this.handler = handler;
         this.bootstrap = makeBootstrap();
@@ -67,7 +67,7 @@ public class NettyClient {
     }
 
     public void connect() {
-        LOG.info("Netty client connect, stamp:{}, host:{}, port:{}", stamp, config.getHost(), config.getPort());
+        LOG.info("Netty client connect, stamp:{}", stamp);
         // 发起异步连接请求，绑定连接端口和host信息
         try {
             final ChannelFuture future = bootstrap.connect(config.getHost(), config.getPort()).sync();

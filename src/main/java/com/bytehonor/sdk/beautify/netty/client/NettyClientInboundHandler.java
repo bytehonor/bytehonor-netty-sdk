@@ -64,7 +64,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         String remoteAddress = NettyChannelUtils.remoteAddress(channel);
         LOG.info("handlerRemoved remoteAddress:{}, stamp:{}", remoteAddress, stamp);
-        onClosed(channel, "");
+        onClosed(channel, "handlerRemoved");
     }
 
     private void onClosed(Channel channel, String msg) {

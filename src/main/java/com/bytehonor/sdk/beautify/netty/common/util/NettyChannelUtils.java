@@ -1,7 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.common.util;
 
 import java.net.SocketAddress;
-import java.util.concurrent.atomic.AtomicLong;
 
 import io.netty.channel.Channel;
 
@@ -13,14 +12,12 @@ public class NettyChannelUtils {
 
     private static final String PREFIX = "netty-stamp-";
 
-    private static final AtomicLong AL = new AtomicLong(0);
-
     public static String stamp(Channel channel) {
         return channel.id().asLongText();
     }
 
-    public static String stamp() {
-        return new StringBuilder().append(PREFIX).append(AL.incrementAndGet()).toString();
+    public static String stamp(String host, int port) {
+        return new StringBuilder().append(PREFIX).append(host).append(":").append(port).toString();
     }
 
     public static String remoteAddress(Channel channel) {

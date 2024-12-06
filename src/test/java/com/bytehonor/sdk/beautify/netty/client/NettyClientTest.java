@@ -22,7 +22,7 @@ public class NettyClientTest {
 
             @Override
             public void onClosed(String stamp, String msg) {
-                LOG.warn("onClosed stamp:{}", stamp, msg);
+                LOG.warn("onClosed stamp:{}, msg:{}", stamp, msg);
             }
 
             @Override

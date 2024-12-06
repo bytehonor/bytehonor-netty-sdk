@@ -3,6 +3,7 @@ package com.bytehonor.sdk.beautify.netty.common.model;
 import java.io.Serializable;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyEnvUtils;
 
 /**
  * @author lijianqiang
@@ -30,6 +31,7 @@ public class NettyServerConfig implements Serializable {
     private int workThreads;
 
     public NettyServerConfig() {
+        int nThreads = NettyEnvUtils.halfThreads();
         this.port = 85;
         this.ssl = false;
         this.sslEngine = false;
@@ -37,8 +39,8 @@ public class NettyServerConfig implements Serializable {
         this.readIdleSeconds = NettyConstants.READ_IDLE_TIMEOUT_SECONDS;
         this.writIdleSeconds = NettyConstants.WRITE_IDLE_TIMEOUT_SECONDS;
         this.allIdleSeconds = NettyConstants.ALL_IDLE_TIMEOUT_SECONDS;
-        this.bossThreads = NettyConstants.BOSS_THREADS;
-        this.workThreads = NettyConstants.WORD_THREADS;
+        this.bossThreads = nThreads;
+        this.workThreads = nThreads;
     }
 
     public static NettyServerConfig of(int port) {

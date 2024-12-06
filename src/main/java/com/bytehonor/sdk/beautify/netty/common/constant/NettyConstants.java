@@ -45,12 +45,6 @@ public class NettyConstants {
     public static final int WRITE_IDLE_TIMEOUT_SECONDS = 0;
     public static final int ALL_IDLE_TIMEOUT_SECONDS = 60;
 
-    public static final int BOSS_THREADS = 2;
-
-    public static final int WORD_THREADS = 4;
-
-    public static final int CLIENT_THREADS = 2;
-
     public static final int CONNECT_TIMEOUT_MILLIS = 5000;
 
     public static final String SSL_PASSWORD = "bytehonor";

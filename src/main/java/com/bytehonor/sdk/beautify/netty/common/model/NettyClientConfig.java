@@ -3,6 +3,7 @@ package com.bytehonor.sdk.beautify.netty.common.model;
 import java.io.Serializable;
 
 import com.bytehonor.sdk.beautify.netty.common.constant.NettyConstants;
+import com.bytehonor.sdk.beautify.netty.common.util.NettyEnvUtils;
 
 /**
  * @author lijianqiang
@@ -36,7 +37,7 @@ public class NettyClientConfig implements Serializable {
         this.ssl = false;
         this.sslEngine = false;
         this.sslPassword = NettyConstants.SSL_PASSWORD;
-        this.clientThreads = NettyConstants.CLIENT_THREADS;
+        this.clientThreads = NettyEnvUtils.halfThreads();
         this.connectTimeoutMills = NettyConstants.CONNECT_TIMEOUT_MILLIS;
         this.pingDelayMills = 1000L * 15;
         this.pingIntervalMillis = 1000L * 45;

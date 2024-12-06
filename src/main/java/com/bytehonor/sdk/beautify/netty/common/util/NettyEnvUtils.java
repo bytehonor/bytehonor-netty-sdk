@@ -14,6 +14,14 @@ public class NettyEnvUtils {
 
     private static String LOCAL_IP = "";
 
+    public static int halfThreads() {
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        if (nThreads > 2) {
+            nThreads = nThreads / 2;
+        }
+        return nThreads;
+    }
+
     public static String whoiam(int port) {
         return whoiam(localIp(), port);
     }

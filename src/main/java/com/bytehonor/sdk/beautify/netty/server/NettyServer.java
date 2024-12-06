@@ -1,7 +1,6 @@
 package com.bytehonor.sdk.beautify.netty.server;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,6 @@ import io.netty.handler.logging.LoggingHandler;
 public final class NettyServer {
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyServer.class);
-
-    private static final AtomicInteger AI = new AtomicInteger(0);
 
     private final int port;
 
@@ -89,7 +86,7 @@ public final class NettyServer {
                 doStart();
             }
         });
-        thread.setName("netty-server-" + AI.incrementAndGet());
+        thread.setName("netty-server-" + port);
         return thread;
     }
 
