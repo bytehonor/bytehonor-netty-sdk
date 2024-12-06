@@ -6,7 +6,7 @@ package com.bytehonor.sdk.beautify.netty.common.constant;
  */
 public class NettyConstants {
 
-    public static final int CAPACITY = 4096;
+    public static final int CAPACITY = 40960;
 
     /**
      * 设置TCP缓冲区
