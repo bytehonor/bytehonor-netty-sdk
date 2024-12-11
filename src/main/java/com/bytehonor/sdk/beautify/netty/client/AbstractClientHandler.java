@@ -10,7 +10,7 @@ import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
  */
 public abstract class AbstractClientHandler implements NettyClientHandler {
 
-    private NettyMessageReceiver receiver;
+    private final NettyMessageReceiver receiver;
 
     public AbstractClientHandler() {
         this.receiver = new NettyMessageReceiver();
@@ -18,7 +18,7 @@ public abstract class AbstractClientHandler implements NettyClientHandler {
 
     @Override
     public final void onMessage(String stamp, String text) {
-        receiver.addMessage(NettyMessage.of(stamp, text));
+        this.receiver.addMessage(NettyMessage.of(stamp, text));
     }
 
     public final void addConsumer(NettyConsumer consumer) {
