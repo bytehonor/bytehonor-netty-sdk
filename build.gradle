@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.bytehonor.sdk'
-version = '1.3.15'
+version = '1.3.16'
 
 java {
     sourceCompatibility = 17
@@ -16,13 +16,13 @@ repositories {
 }
 
 dependencies {
-    api('io.netty:netty-transport:4.1.115.Final')
-    api('io.netty:netty-handler:4.1.115.Final')
-    api('org.springframework:spring-core:6.1.15')
-    api('org.springframework:spring-context:6.1.15')
-    api('com.fasterxml.jackson.core:jackson-annotations:2.17.3')
-    api('com.fasterxml.jackson.core:jackson-databind:2.17.3')
-    api('com.fasterxml.jackson.core:jackson-core:2.17.3')
+    api('io.netty:netty-transport:4.1.116.Final')
+    api('io.netty:netty-handler:4.1.116.Final')
+    api('org.springframework:spring-core:6.2.1')
+    api('org.springframework:spring-context:6.2.1')
+    api('com.fasterxml.jackson.core:jackson-annotations:2.18.2')
+    api('com.fasterxml.jackson.core:jackson-databind:2.18.2')
+    api('com.fasterxml.jackson.core:jackson-core:2.18.2')
     implementation('org.slf4j:slf4j-api:2.0.16')
     implementation('ch.qos.logback:logback-classic:1.5.12')
     testImplementation('junit:junit:4.13.2')
