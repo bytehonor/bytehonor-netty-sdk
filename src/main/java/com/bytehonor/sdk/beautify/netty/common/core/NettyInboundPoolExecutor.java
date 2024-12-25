@@ -77,23 +77,9 @@ public class NettyInboundPoolExecutor {
             consumer.accept(stamp, text);
         } else {
             Channel channel = StampChannelHolder.get(stamp);
-            LOG.error("doProcess unknown msg:{}, stamp:{}, {}", doRemarkMsg(msg), stamp, doRemarkChannel(channel));
+            LOG.error("doProcess unknown msg:{}, stamp:{}, {}", NettyChannelUtils.remarkMsg(msg), stamp,
+                    NettyChannelUtils.remarkChannel(channel));
         }
     }
 
-    private static String doRemarkChannel(Channel channel) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("remoteAddress:").append(NettyChannelUtils.remoteAddress(channel));
-        if (channel != null) {
-            sb.append(", channelId:").append(channel.id().asLongText());
-        }
-        return sb.toString();
-    }
-
-    private static String doRemarkMsg(Object msg) {
-        if (msg == null) {
-            return "null";
-        }
-        return msg.toString();
-    }
 }

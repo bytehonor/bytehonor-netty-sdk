@@ -30,4 +30,20 @@ public class NettyChannelUtils {
         }
         return remoteAddress.toString();
     }
+
+    public static String remarkChannel(Channel channel) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("remoteAddress:").append(remoteAddress(channel));
+        if (channel != null) {
+            sb.append(", channelId:").append(channel.id().asLongText());
+        }
+        return sb.toString();
+    }
+
+    public static String remarkMsg(Object msg) {
+        if (msg == null) {
+            return "null";
+        }
+        return msg.toString();
+    }
 }

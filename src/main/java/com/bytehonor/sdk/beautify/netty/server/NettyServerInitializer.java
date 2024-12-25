@@ -27,7 +27,7 @@ public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
         // 也可以选择将处理器加到pipeLine的那个位置
 
         // 自定义的空闲检测
-//        pipeline.addLast(new IdleStateHandler(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
+//        pipeline.addLast(new NettyIdleStateChecker(config.getReadIdleSeconds(), config.getWritIdleSeconds(),
 //                config.getAllIdleSeconds()));
         pipeline.addLast(new NettyIdleStateChecker());
 
