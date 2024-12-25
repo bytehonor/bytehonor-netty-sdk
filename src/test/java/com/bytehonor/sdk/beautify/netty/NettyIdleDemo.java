@@ -12,13 +12,13 @@ public class NettyIdleDemo {
     private static final Logger LOG = LoggerFactory.getLogger(NettyIdleDemo.class);
 
     public static void main(String[] args) {
-        NettyServer server = new NettyServer();
+        NettyServer server = NettyServer.builder(85).build();
         server.start();
         LOG.info("server.start()");
 
         NettySleeper.sleep(1000L * 5);
 
-        NettyClient client = new NettyClient("127.0.0.1", 85);
+        NettyClient client = NettyClient.builder("127.0.0.1", 85).build();
         client.connect();
         LOG.info("client.connect()");
 

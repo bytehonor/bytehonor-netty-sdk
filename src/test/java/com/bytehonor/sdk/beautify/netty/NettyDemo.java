@@ -21,7 +21,7 @@ public class NettyDemo {
 
         NettySleeper.sleep(1000L * 5);
 
-        NettyClient client = new NettyClient("127.0.0.1", 85, new AbstractClientHandler() {
+        NettyClient client = NettyClient.builder("127.0.0.1", 85).handler(new AbstractClientHandler() {
 
             @Override
             public void onOpen(String stamp) {
@@ -38,7 +38,7 @@ public class NettyDemo {
             public void onError(String stamp, Throwable error) {
                 LOG.error("Client onError stamp:{}, error", stamp, error);
             }
-        });
+        }).build();
 
         LOG.info("client.run()");
         client.run();
@@ -56,7 +56,7 @@ public class NettyDemo {
     }
 
     private static void startServer() {
-        new NettyServer(new AbstractServerHandler() {
+        NettyServer server = NettyServer.builder(85).handler(new AbstractServerHandler() {
 
             @Override
             public void onStarted() {
@@ -84,7 +84,8 @@ public class NettyDemo {
                 NettyMessageSender.send(stamp, NettyPayload.of("hello client"));
             }
 
-        }).start();
+        }).build();
+        server.start();
 
     }
 }

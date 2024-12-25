@@ -43,6 +43,13 @@ public class NettyClientConfig implements Serializable {
         this.pingIntervalMillis = 1000L * 45;
     }
 
+    public static NettyClientConfig of(String host, int port) {
+        NettyClientConfig config = new NettyClientConfig();
+        config.setHost(host);
+        config.setPort(port);
+        return config;
+    }
+
     public String getHost() {
         return host;
     }

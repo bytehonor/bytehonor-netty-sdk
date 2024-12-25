@@ -8,12 +8,13 @@ import com.bytehonor.sdk.beautify.netty.common.task.NettySleeper;
 
 public class NettyServerTest {
 
-    // private static final Logger LOG = LoggerFactory.getLogger(NettyServerTest.class);
+    // private static final Logger LOG =
+    // LoggerFactory.getLogger(NettyServerTest.class);
 
     @Test
     public void test() {
 
-        new NettyServer().start();
+        NettyServer.builder(85).build().start();
 
         NettySleeper.sleep(15000L);
 

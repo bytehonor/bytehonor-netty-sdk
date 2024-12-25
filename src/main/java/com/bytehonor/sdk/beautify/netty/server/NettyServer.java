@@ -34,19 +34,7 @@ public final class NettyServer {
 
     private final Thread thread;
 
-    public NettyServer() {
-        this(new NettyServerConfig(), new DefaultNettyServerHandler());
-    }
-
-    public NettyServer(NettyServerHandler handler) {
-        this(new NettyServerConfig(), handler);
-    }
-
-    public NettyServer(int port, NettyServerHandler handler) {
-        this(NettyServerConfig.of(port), handler);
-    }
-
-    public NettyServer(NettyServerConfig config, NettyServerHandler handler) {
+    private NettyServer(NettyServerConfig config, NettyServerHandler handler) {
         Objects.requireNonNull(config, "config");
         Objects.requireNonNull(handler, "handler");
 
@@ -110,6 +98,37 @@ public final class NettyServer {
         } catch (Exception e) {
             LOG.error("Netty server start error", e);
             handler.onFailed(e);
+        }
+    }
+
+    public static final Builder builder(int port) {
+        return new Builder(port);
+    }
+
+    public static final class Builder {
+        private NettyServerConfig config;
+        private NettyServerHandler handler;
+
+        private Builder(int port) {
+            this.config = NettyServerConfig.of(port);
+            this.handler = new DefaultNettyServerHandler();
+        }
+
+        public Builder handler(NettyServerHandler handler) {
+            Objects.requireNonNull(handler, "handler");
+            this.handler = handler;
+            return this;
+        }
+
+        public Builder idles(int readIdleSeconds, int writIdleSeconds, int allIdleSeconds) {
+            this.config.setReadIdleSeconds(readIdleSeconds);
+            this.config.setWritIdleSeconds(writIdleSeconds);
+            this.config.setAllIdleSeconds(allIdleSeconds);
+            return this;
+        }
+
+        public NettyServer build() {
+            return new NettyServer(config, handler);
         }
     }
 }

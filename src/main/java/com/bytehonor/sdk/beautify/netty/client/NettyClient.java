@@ -1,12 +1,13 @@
 package com.bytehonor.sdk.beautify.netty.client;
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
 import com.bytehonor.sdk.beautify.netty.common.core.NettyMessageSender;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyClientConfig;
-import com.bytehonor.sdk.beautify.netty.common.model.NettyConfigBuilder;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 import com.bytehonor.sdk.beautify.netty.common.task.NettyTaskScheduler;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
@@ -33,19 +34,7 @@ public class NettyClient {
     private final Bootstrap bootstrap;
 
     // 连接服务端的端口号地址和端口号
-    public NettyClient(String host, int port, NettyClientHandler handler) {
-        this(NettyConfigBuilder.client(host, port).build(), handler);
-    }
-
-    public NettyClient(String host, int port) {
-        this(host, port, new DefaultNettyClientHandler());
-    }
-
-    public NettyClient(NettyClientConfig config) {
-        this(config, new DefaultNettyClientHandler());
-    }
-
-    public NettyClient(NettyClientConfig config, NettyClientHandler handler) {
+    private NettyClient(NettyClientConfig config, NettyClientHandler handler) {
         this.stamp = NettyChannelUtils.stamp(config.getHost(), config.getPort());
         this.config = config;
         this.handler = handler;
@@ -115,5 +104,29 @@ public class NettyClient {
 
     private void ping() {
         NettyMessageSender.ping(stamp);
+    }
+
+    public static final Builder builder(String host, int port) {
+        return new Builder(host, port);
+    }
+
+    public static final class Builder {
+        private NettyClientConfig config;
+        private NettyClientHandler handler;
+
+        private Builder(String host, int port) {
+            this.config = NettyClientConfig.of(host, port);
+            this.handler = new DefaultNettyClientHandler();
+        }
+
+        public Builder handler(NettyClientHandler handler) {
+            Objects.requireNonNull(handler, "handler");
+            this.handler = handler;
+            return this;
+        }
+
+        public NettyClient build() {
+            return new NettyClient(config, handler);
+        }
     }
 }

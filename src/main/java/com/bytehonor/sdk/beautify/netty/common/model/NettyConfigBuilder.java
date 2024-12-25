@@ -4,6 +4,7 @@ package com.bytehonor.sdk.beautify.netty.common.model;
  * @author lijianqiang
  *
  */
+@Deprecated
 public class NettyConfigBuilder {
 
     private NettyClientConfig config;
