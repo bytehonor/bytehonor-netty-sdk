@@ -64,17 +64,17 @@ public class NettyClient {
             future.addListener(new ChannelFutureListener() {
 
                 @Override
-                public void operationComplete(ChannelFuture arg0) throws Exception {
-                    if (arg0.isSuccess()) {
+                public void operationComplete(ChannelFuture arg) throws Exception {
+                    if (arg.isSuccess()) {
                         LOG.info("Netty client connect success, stamp:{}", stamp);
                     } else {
-                        LOG.error("Netty client connect failed, stamp:{}, cause", stamp, future.cause());
+                        LOG.error("Netty client connect failed, stamp:{}, cause", stamp, arg.cause());
                         // group.shutdownGracefully(); // 关闭线程组
                     }
                 }
             });
         } catch (Exception e) {
-            LOG.error("Netty client connect error, stamp:{}, error", stamp, e);
+            LOG.error("Netty client connect failed, stamp:{}, error", stamp, e);
             handler.onError(stamp, e);
         }
     }

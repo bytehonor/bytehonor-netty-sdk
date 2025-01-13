@@ -31,7 +31,6 @@ public class NettyServerConfig implements Serializable {
     private int workThreads;
 
     public NettyServerConfig() {
-        int nThreads = NettyEnvUtils.halfThreads();
         this.port = 85;
         this.ssl = false;
         this.sslEngine = false;
@@ -39,8 +38,8 @@ public class NettyServerConfig implements Serializable {
         this.readIdleSeconds = NettyConstants.READ_IDLE_TIMEOUT_SECONDS;
         this.writIdleSeconds = NettyConstants.WRITE_IDLE_TIMEOUT_SECONDS;
         this.allIdleSeconds = NettyConstants.ALL_IDLE_TIMEOUT_SECONDS;
-        this.bossThreads = nThreads;
-        this.workThreads = nThreads;
+        this.bossThreads = 1;
+        this.workThreads = NettyEnvUtils.halfThreads();
     }
 
     public static NettyServerConfig of(int port) {
