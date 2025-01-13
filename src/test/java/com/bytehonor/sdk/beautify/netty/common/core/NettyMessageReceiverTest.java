@@ -19,7 +19,7 @@ public class NettyMessageReceiverTest {
         receiver.addConsumer(new SampleUserNettyConsumer());
 
         for (int i = 0; i < 10; i++) {
-            receiver.addMessage(mock(i));
+            receiver.onMessage(mock(i));
         }
 
         NettySleeper.sleep(5000L);

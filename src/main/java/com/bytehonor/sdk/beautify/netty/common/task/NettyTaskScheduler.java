@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 
+import com.bytehonor.sdk.beautify.netty.common.util.NettyEnvUtils;
+
 public class NettyTaskScheduler {
 
     private static final String NAMED = "netty-schedule-thread-";
@@ -14,8 +16,8 @@ public class NettyTaskScheduler {
     private final ScheduledExecutorService service;
 
     private NettyTaskScheduler() {
-        int nThreads = Runtime.getRuntime().availableProcessors();
-        this.service = Executors.newScheduledThreadPool(nThreads, new CustomizableThreadFactory(NAMED));
+        int half = NettyEnvUtils.halfThreads();
+        this.service = Executors.newScheduledThreadPool(half, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {

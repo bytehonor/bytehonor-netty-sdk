@@ -14,6 +14,11 @@ public class NettyEnvUtils {
 
     private static String LOCAL_IP = "";
 
+    public static int fullThreads() {
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        return nThreads;
+    }
+
     public static int halfThreads() {
         int nThreads = Runtime.getRuntime().availableProcessors();
         if (nThreads > 2) {

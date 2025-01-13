@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.bytehonor.sdk.beautify.netty.common.cache.ChannelCacheHolder;
 import com.bytehonor.sdk.beautify.netty.common.cache.StampChannelHolder;
-import com.bytehonor.sdk.beautify.netty.common.core.NettyInboundPoolExecutor;
+import com.bytehonor.sdk.beautify.netty.common.core.NettyMessagePoolExecutor;
 import com.bytehonor.sdk.beautify.netty.common.util.NettyChannelUtils;
 
 import io.netty.channel.Channel;
@@ -41,7 +41,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     }
 
     private void onMessage(String stamp, Object msg) {
-        NettyInboundPoolExecutor.onMessage(stamp, msg, handler::onMessage);
+        NettyMessagePoolExecutor.onMessage(stamp, msg, handler::onMessage);
     }
 
     // 当连接建立好的使用调用

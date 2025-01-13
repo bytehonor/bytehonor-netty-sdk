@@ -18,7 +18,7 @@ public abstract class AbstractServerHandler implements NettyServerHandler {
 
     @Override
     public final void onMessage(String stamp, String text) {
-        receiver.addMessage(NettyMessage.of(stamp, text));
+        this.receiver.onMessage(NettyMessage.of(stamp, text));
     }
 
     public final void addConsumer(NettyConsumer consumer) {

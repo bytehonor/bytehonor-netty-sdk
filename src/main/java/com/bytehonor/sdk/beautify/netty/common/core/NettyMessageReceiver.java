@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyFrame;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyMessage;
 import com.bytehonor.sdk.beautify.netty.common.model.NettyPayload;
-import com.bytehonor.sdk.beautify.netty.common.task.NettyTask;
 
 /**
  * 放入线程池处理
@@ -31,20 +30,13 @@ public final class NettyMessageReceiver {
         this.factory.add(consumer);
     }
 
-    public final void addMessage(final NettyMessage message) {
+    public final void onMessage(final NettyMessage message) {
         if (message == null) {
             LOG.warn("message null");
             return;
         }
 
-        NettyMessagePoolExecutor.add(new NettyTask() {
-
-            @Override
-            public void runInSafe() {
-                handle(message);
-            }
-
-        });
+        handle(message);
     }
 
     private void handle(NettyMessage message) {
