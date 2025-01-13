@@ -12,7 +12,7 @@ public class NettyClientTest {
     private static final Logger LOG = LoggerFactory.getLogger(NettyClientTest.class);
 
     public static void main(String[] args) {
-        NettyClient client = NettyClient.builder("www.bytehonor.com", 85).handler(new NettyClientHandler() {
+        NettyClient client = NettyClient.builder("www.bytehonor.com", 95).handler(new NettyClientHandler() {
 
             @Override
             public void onOpen(String stamp) {
