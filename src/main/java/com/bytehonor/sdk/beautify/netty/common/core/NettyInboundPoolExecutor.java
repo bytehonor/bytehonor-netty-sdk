@@ -21,24 +21,24 @@ import io.netty.channel.Channel;
 /**
  * 多线程
  */
-public class NettyMessagePoolExecutor {
+public class NettyInboundPoolExecutor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(NettyMessagePoolExecutor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NettyInboundPoolExecutor.class);
 
-    private static final String NAMED = "netty-message-thread-";
+    private static final String NAMED = "netty-inbound-thread-";
 
     private final ExecutorService executor;
 
-    private NettyMessagePoolExecutor() {
+    private NettyInboundPoolExecutor() {
         int full = NettyEnvUtils.fullThreads();
         this.executor = Executors.newFixedThreadPool(full, new CustomizableThreadFactory(NAMED));
     }
 
     private static class LazyHolder {
-        private static NettyMessagePoolExecutor SINGLE = new NettyMessagePoolExecutor();
+        private static NettyInboundPoolExecutor SINGLE = new NettyInboundPoolExecutor();
     }
 
-    private static NettyMessagePoolExecutor self() {
+    private static NettyInboundPoolExecutor self() {
         return LazyHolder.SINGLE;
     }
 
